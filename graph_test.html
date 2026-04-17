@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Obsidian Graph Test V2 - Structured</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: var(--bg-primary);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        .center-content {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            pointer-events: none;
+            /* 增加一点文字描边或阴影，确保背景复杂时依然清晰 */
+            text-shadow: 0 2px 10px rgba(255,255,255,0.8);
+        }
+
+        .core-text {
+            font-family: 'Newsreader', serif;
+            font-size: 4.5rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .sub-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="hero-graph"></canvas>
+
+    <div class="center-content">
+        <h1 class="core-text">Chen Zai</h1>
+        <p class="sub-text">Environmental Designer</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('hero-graph');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, centerX, centerY;
+        let nodes = [];
+        
+        // 1. 增加关键词数量，提高密度
+        const keywords = [
+            "Spatial Computing", "HCI", "Ecological Restoration", 
+            "Unreal Engine 5", "Data Viz", "Interactive Narrative", 
+            "Physical Computing", "Arduino", "Research", 
+            "Generative Art", "VR/XR", "Python",
+            // 新增：
+            "Bio-design", "Machine Learning", "Sensors", "Unity",
+            "Projection Mapping", "Sustainability", "UX/UI", "Digital Twin"
+        ];
+
+        const mouse = { x: null, y: null };
+
+        class Node {
+            constructor(text) {
+                this.text = text;
+                // 初始化位置
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                // 随机速度
+                this.vx = (Math.random() - 0.5) * 0.5; 
+                this.vy = (Math.random() - 0.5) * 0.5;
+                // 2. 改进：随机大小 (基础半径在 2px 到 5px 之间)
+                this.baseRadius = Math.random() * 3 + 2; 
+                this.radius = this.baseRadius;
+            }
+
+            update() {
+                // 标准移动
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // 边界反弹
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                // --- 3. 核心改进：中心排斥力 (Structural Force) ---
+                // 计算节点到屏幕中心的距离
+                const dxCenter = this.x - centerX;
+                const dyCenter = this.y - centerY;
+                const distCenter = Math.sqrt(dxCenter * dxCenter + dyCenter * dyCenter);
+                
+                // 定义一个“排斥半径”，比如屏幕宽度的 1/5
+                const repulsionRadius = Math.min(width, height) * 0.25;
+
+                // 如果节点进入了中心区域，给它一个反向的推力
+                if (distCenter < repulsionRadius) {
+                    // 计算推力向量 (归一化后乘以一个很小的系数)
+                    const forceX = dxCenter / distCenter;
+                    const forceY = dyCenter / distCenter;
+                    // 推力大小，越靠近中心推力越大
+                    const strength = (repulsionRadius - distCenter) / repulsionRadius * 0.02; 
+                    
+                    this.vx += forceX * strength;
+                    this.vy += forceY * strength;
+                }
+            }
+
+            draw() {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let isHovered = distance < 50;
+
+                // 悬停时目标半径大，平时用基础随机半径
+                const targetRadius = isHovered ? 8 : this.baseRadius;
+                // 简单的缓动动画让变大更平滑
+                this.radius += (targetRadius - this.radius) * 0.1;
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                // 稍微降低没悬停时的透明度，减少杂乱感
+                ctx.fillStyle = isHovered ? '#000000' : 'rgba(100, 100, 100, 0.6)'; 
+                ctx.fill();
+
+                if (isHovered) {
+                    ctx.font = "500 14px 'Inter', sans-serif";
+                    const textWidth = ctx.measureText(this.text).width;
+                    
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+                    ctx.fillRect(this.x + 10, this.y - 15, textWidth + 12, 24);
+
+                    ctx.fillStyle = "#1a1a1a";
+                    ctx.fillText(this.text, this.x + 16, this.y + 2);
+                }
+            }
+        }
+
+        function init() {
+            resize();
+            nodes = [];
+            // 创建 20 个节点
+            keywords.forEach(text => {
+                nodes.push(new Node(text));
+            });
+        }
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            centerX = width / 2;
+            centerY = height / 2;
+        }
+
+        function drawConnections() {
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // 4. 改进：显著增加连线距离阈值 (180 -> 250)
+                    // 让连接更跨越，形成更大的网络
+                    const maxDistance = 250; 
+
+                    if (distance < maxDistance) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        // 让线条更细更淡，防止喧宾夺主
+                        ctx.strokeStyle = `rgba(180, 180, 180, ${1 - distance / maxDistance})`; 
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            nodes.forEach(node => node.update()); // 先更新位置
+            drawConnections(); // 再画线
+            nodes.forEach(node => node.draw()); // 最后画点 (盖在线上)
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resize();
+            // 窗口改变大小时，重新随机分布一下，防止bug
+            nodes.forEach(node => {
+               node.x = Math.random() * width;
+               node.y = Math.random() * height;
+            });
+        });
+        
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null; mouse.y = null;
+        });
+
+        init();
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chen Zai | Environmental Designer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- 基础设置保持不变 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f8f8;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --accent: #2d2d2d;
+            --border: #e0e0e0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- 导航栏 (保持不变) --- */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+        nav.scrolled { box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05); }
+        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-family: 'Newsreader', serif; font-size: 1.5rem; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a { color: #aaaaaa; text-decoration: none; font-size: 0.9375rem; font-weight: 600; transition: color 0.3s ease; position: relative; }
+        .nav-links a:hover { color: var(--accent); }
+        .nav-links a.active { color: var(--accent); }
+        .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.3s ease; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a.active::after { width: 100%; }
+
+        /* --- Hero Section (保持不变) --- */
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6rem 2rem 4rem; }
+        .hero-content { max-width: 900px; text-align: center; animation: fadeInUp 1s ease; position: relative; z-index: 2; text-align: center; max-width: 900px; pointer-events: none; 
+            /* 这里控制名字的高度 */
+            /* 如果觉得名字还太靠上，把 5vh 改大（比如 10vh）；觉得太靠下就改小 */margin-top: 5vh;}
+        .hero-title { font-family: 'Newsreader', serif; font-size: clamp(3.5rem, 10vw, 6rem); font-weight: 300; letter-spacing: -0.02em; margin-bottom: 1.5rem; line-height: 1.1; }
+        .hero-subtitle { display: none; font-size: clamp(1.25rem, 3vw, 1.75rem); color: var(--text-secondary); margin-bottom: 3rem; font-weight: 400; }
+        .education-container { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+        .education-item { text-align: left; padding: 1.5rem; background: var(--bg-secondary); border-radius: 8px; min-width: 280px; }
+        .education-item h3 { font-size: 1.125rem; margin-bottom: 0.5rem; font-weight: 600; }
+        .education-item p { color: var(--text-secondary); font-size: 0.9375rem; }
+        .education-item .gpa { margin-top: 0.5rem; font-weight: 500; color: var(--accent); }
+        .language-switcher { margin-top: 2rem; font-size: 0.875rem; color: var(--text-secondary); }
+        .language-switcher a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease; }
+        .language-switcher a:hover { color: var(--accent); }
+        .language-switcher .active { color: var(--accent); font-weight: 600; }
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 0.75rem; 
+            font-size: 0.875rem; 
+            color: #000000; 
+            animation: bounce 2s infinite; 
+            z-index: 100;
+            pointer-events: auto;
+            
+            /* 轻微背景增强可读性 */
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* --- Hero Section 动态图 --- */
+        .hero {
+            position: relative; /* Canvas 绝对定位 */
+            overflow: hidden;   /* 防止粒子跑出屏幕出现滚动条 */
+            /* 保持原有的 Flex 居中布局 */
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 6rem 2rem 4rem;
+        }
+
+        /* 1. 画布背景 */
+        canvas#hero-graph {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1; /* 放在最底层 */
+        }
+
+        /* 2. 内容层 (文字、按钮) */
+        .hero-content {
+            position: relative;
+            z-index: 2; /* 放在画布之上 */
+            text-align: center;
+            max-width: 900px;
+            /* 关键：让鼠标穿透文字层，这样你才能玩背景的粒子 */
+            pointer-events: none; 
+        }
+
+        /* 3. 标题样式升级 */
+        .hero-title {
+            font-family: 'Newsreader', serif;
+            /* 字体改大一点，更有气场 */
+            font-size: clamp(4rem, 12vw, 7rem); 
+            font-weight: 400; /* 更细更精致 */
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+            color: var(--text-primary);
+            /* 加一点白色发光，防止粒子经过文字后面时看不清 */
+            text-shadow: 0 0 30px rgba(255,255,255,0.8);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .language-switcher {
+            pointer-events: auto; /* 让语言切换器可以被点击 */
+            position: relative;   /* 保持相对定位 */
+        }
+
+        /* 语言切换器微调 */
+        .language-switcher {
+            margin-top: 4rem; /* 稍微拉开点距离 */
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- CV Section — Three Column --- */
+        .cv-section {
+            height: 100vh;
+            background: var(--bg-secondary);
+            display: grid;
+            grid-template-columns: 80px 1fr 240px;
+            padding-top: 80px;
+            overflow: hidden;
+        }
+        .cv-col-left {
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 3rem;
+            border-right: 1px solid var(--border);
+        }
+        .cv-vertical-label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            user-select: none;
+        }
+        .cv-col-main {
+            padding: 4rem 4rem 6rem 4rem;
+        }
+        .cv-biography {
+            margin-bottom: 4rem;
+            padding-bottom: 4rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .cv-biography p {
+            font-size: 1.0625rem;
+            line-height: 1.85;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+        .cv-biography p:last-child { margin-bottom: 0; }
+        .cv-entries { display: flex; flex-direction: column; gap: 0; }
+        .cv-entry-group {
+            padding: 2.5rem 0;
+            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 0 2rem;
+        }
+        .cv-tabs {
+            margin-top: 0;
+        }
+
+        .cv-tab-headers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cv-tab-btn {
+            background: none;
+            border: none;
+            border-right: 1px solid var(--border);
+            padding: 1.1rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cv-tab-btn:last-child {
+            border-right: none;
+        }
+
+        .cv-tab-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .cv-tab-btn.active {
+            color: var(--text-primary);
+            background: white;
+        }
+
+        .cv-tab-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            padding: 0 0;
+            border-bottom: none;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.4s ease,
+                        padding 0.4s ease;
+        }
+
+        .cv-tab-panel.active {
+            max-height: 600px;
+            opacity: 1;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .cv-entry-group:last-child { border-bottom: none; }
+        .cv-entry-group-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            padding-top: 0.15rem;
+        }
+        .cv-entry-items { display: flex; flex-direction: column; gap: 1.75rem; }
+        .cv-entry { display: flex; flex-direction: column; gap: 0.2rem; }
+        .cv-entry-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+        .cv-entry-sub { font-size: 0.9rem; color: var(--text-secondary); }
+        .cv-entry-date { font-size: 0.8rem; color: #aaa; margin-top: 0.1rem; }
+        .cv-entry-courses {
+            font-size: 0.78rem;
+            color: #aaa;
+            margin-top: 0.25rem;
+            font-style: italic;
+            letter-spacing: 0.01em;
+        }
+        .cv-entry-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.55rem;
+            border-radius: 100px;
+            background: var(--accent);
+            color: white;
+            margin-top: 0.4rem;
+            width: fit-content;
+        }
+        .cv-col-right {
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            padding: 4rem 2.5rem 3rem 2.5rem;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .cv-contact-block {
+            padding-bottom: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .cv-contact-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .cv-contact-item {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+            transition: opacity 0.2s ease;
+        }
+        .cv-contact-item:last-child { margin-bottom: 0; }
+        a.cv-contact-item:hover { opacity: 0.5; }
+        .cv-contact-label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 0.35rem;
+        }
+        .cv-social-links { display: flex; flex-direction: column; gap: 0.75rem; }
+        .cv-social-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+        .cv-social-link:hover { opacity: 0.5; }
+        .cv-social-icons {
+            display: flex;
+            flex-direction: row;
+            gap: 1.25rem;
+            align-items: center;
+            margin-top: 0.25rem;
+        }
+        .cv-icon-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        .cv-icon-link:hover {
+            opacity: 0.4;
+        }
+        .cv-icon-disabled {
+            color: #ccc;
+            cursor: default;
+            pointer-events: none;
+        }
+        .cv-divider {
+            display: block;
+            font-size: 1rem;
+            color: var(--border);
+            margin: 0 0 1rem;
+        }
+        .cv-download { margin-top: auto; padding-top: 2rem; }
+        .cv-download a {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 2px;
+            transition: all 0.2s ease;
+        }
+        .cv-download a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+        @media (max-width: 900px) {
+            .cv-section { grid-template-columns: 1fr; }
+            .cv-col-left { display: none; }
+            .cv-col-right { position: relative; top: 0; height: auto; border-left: none; border-top: 1px solid var(--border); padding: 2.5rem 2rem; }
+            .cv-col-main { padding: 2.5rem 2rem 4rem; }
+            .cv-entry-group { grid-template-columns: 1fr; gap: 0.5rem; }
+        }
+
+        .projects-section {
+            height: 100vh;
+            padding: 80px 4rem 2rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .projects-section .section-title {
+            text-align: center; 
+            margin-bottom: 0.5rem; /* 增加标题和下方内容的距离 */
+            flex-shrink: 0;
+        }
+
+        /* --- PDF 下载链接样式 --- */
+        .pdf-link {
+            display: inline-block;
+            font-size: 0.9375rem;     /* 和导航栏字体差不多大 */
+            color: var(--text-secondary); /* 默认灰色，不抢视觉重心 */
+            text-decoration: none;
+            padding-bottom: 2px;
+            border-bottom: 1px solid transparent; /* 预留边框位置 */
+            transition: all 0.3s ease;
+        }
+
+        .pdf-link:hover {
+            color: var(--accent);     /* 悬停变黑 */
+            border-bottom-color: var(--accent); /* 出现下划线 */
+            transform: translateY(-2px); /* 微微上浮 */
+        }
+
+        .projects-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            /* 让容器高度自适应，如果屏幕高就撑满，屏幕矮就按内容撑开 */
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        .projects-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr; 
+            gap: 2rem;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* --- 左侧：大图预览框 --- */
+        .project-preview {
+            position: sticky; /* 改回 sticky，这样页面滚动时它能稍微跟随 */
+            top: 120px;       /* 距离顶部的距离 */
+            width: 100%;
+            /* 让图片高度跟随右侧列表的高度，但在小屏滚动时保持视窗内 */
+            height: calc(100vh - 160px); 
+            max-height: 700px; /* 限制最大高度，防止图片太大 */
+            min-height: 500px; /* 限制最小高度 */
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .project-preview-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Newsreader', serif; font-size: 2rem; color: white;
+            opacity: 0; transition: opacity 0.3s ease; 
+            object-fit: cover;
+            z-index: 1;
+        }
+        .project-preview-image.active { opacity: 1; z-index: 2; }
+        /* 渐变色背景 */
+        .project-preview-image[data-project="1"] { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .project-preview-image[data-project="2"] { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .project-preview-image[data-project="3"] { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .project-preview-image[data-project="4"] { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .project-preview-image[data-project="5"] { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+        /* --- 新增：让图片完美铺满容器 --- */
+        .project-preview-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 关键属性：让图片裁剪填充，不变形 */
+            display: block;    /* 消除图片底部的微小空隙 */
+        }
+
+
+        /* --- 右侧：5个项目列表 --- */
+        .project-list {
+            display: grid;
+            grid-template-rows: repeat(5, 1fr);
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .project-item {
+            text-decoration: none;
+            color: var(--text-primary);
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            border-radius: 0;
+            padding: 0 1rem 0 0;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .project-item:first-child {
+            border-top: 1px solid var(--border);
+        }
+
+        .project-item:hover, .project-item.active {
+            background: transparent;
+            border-bottom: 1px solid var(--accent);
+            box-shadow: none;
+        }
+
+        .project-item h3 { font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.15rem; color: var(--text-primary); }
+        .project-item p { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+        .project-tags { display: flex; gap: 0.4rem; margin: 0.15rem 0 0 0; }
+        .project-tag { font-size: 0.7rem; color: var(--text-secondary); background: rgba(0,0,0,0.05); padding: 0.1rem 0.45rem; border-radius: 100px; }
+        .view-detail { 
+            font-size: 0.9rem; 
+            font-weight: 400; 
+            color: var(--text-secondary); 
+            opacity: 0; 
+            transform: translateX(-6px); 
+            transition: all 0.3s ease; 
+            flex-shrink: 0;
+            margin-left: 1rem;
+            white-space: nowrap;
+        }
+        .project-item:hover .view-detail, .project-item.active .view-detail { opacity: 1; transform: translateX(0); }
+        .project-item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            flex: 1;
+            min-width: 0;
+        }
+        .project-tags { display: flex; gap: 0.5rem; margin: 0.5rem 0; }
+        .project-tag { font-size: 0.75rem; color: var(--text-secondary); background: rgba(0,0,0,0.05); padding: 0.2rem 0.6rem; border-radius: 100px; }
+
+        /* --- Skills Section (保持不变) --- */
+        .skills-section { min-height: 100vh; padding: 6rem 2rem; background: var(--bg-secondary); display: flex; align-items: center; }
+        .skills-grid { max-width: 1400px; margin: 4rem auto 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; }
+        .skill-category { padding: 2.5rem; background: white; border-radius: 12px; border-left: 4px solid var(--accent); }
+        .skill-category h3 { font-size: 1.25rem; margin-bottom: 1.5rem; font-weight: 600; }
+        .skill-list { list-style: none; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .skill-list li { padding: 0.625rem 1.125rem; background: var(--bg-secondary); border-radius: 20px; font-size: 0.9375rem; color: var(--text-secondary); border: 1px solid var(--border); }
+
+        /* --- Design Lab Section --- */
+        .lab-section {
+            /* 1. 强制一屏高度 (与 Projects 保持一致) */
+            height: 100vh;
+            /* 顶部避开导航栏，底部留白 */
+            padding: 120px 4rem 40px 4rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 复用 projects-container 的样式，但确保它在 Lab 里也生效 */
+        .lab-section .projects-container {
+            width: 100%;
+            height: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lab-section .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            flex-shrink: 0; /* 防止标题被压缩 */
+        }
+
+        .lab-grid {
+            width: 100%;
+            /* 2. 关键：让网格自动填满剩余的所有高度 */
+            flex: 1; 
+            display: grid;
+            /* 3. 完美拼图数学：4列 x 3行 */
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(3, 1fr); 
+            gap: 0.75rem;
+        }
+
+        .lab-card {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            /* 确保有内容或没内容都能撑开 */
+            width: 100%; 
+            height: 100%; 
+        }
+
+      
+        /* Row 1 */
+        .lab-card:nth-child(1) { grid-column: span 4; } /* 宽 */
+        .lab-card:nth-child(2) { grid-column: span 2; } /* 普通 */
+        .lab-card:nth-child(3) { grid-column: span 2; } /* 普通 */
+
+        /* Row 2 */
+        .lab-card:nth-child(4) { grid-column: span 5; } /* 超宽 */
+        .lab-card:nth-child(5) { grid-column: span 3; } /* 普通 */
+
+        /* Row 3 */
+        .lab-card:nth-child(6) { grid-column: span 2; } /* 宽 */
+        .lab-card:nth-child(7) { grid-column: span 6; } /* 宽 */
+
+
+        /* --- 占位图与渐变色 --- */
+        .lab-card-placeholder {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+        .lab-card:hover .lab-card-placeholder { transform: scale(1.05); }
+
+        /* 渐变色 */
+        .lab-card:nth-child(1) .lab-card-placeholder { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .lab-card:nth-child(2) .lab-card-placeholder { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
+        .lab-card:nth-child(3) .lab-card-placeholder { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); }
+        .lab-card:nth-child(4) .lab-card-placeholder { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .lab-card:nth-child(5) .lab-card-placeholder { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .lab-card:nth-child(6) .lab-card-placeholder { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .lab-card:nth-child(7) .lab-card-placeholder { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+        /* --- 遮罩层 --- */
+        .lab-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 1.5rem;
+            color: white;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            display: flex; align-items: flex-end;
+        }
+        .lab-card:hover .lab-overlay { opacity: 1; transform: translateY(0); }
+
+        /* --- 移动端适配 --- */
+        @media (max-width: 1024px) {
+            .lab-section { height: auto; padding: 6rem 2rem; }
+            .lab-grid {
+                display: flex;
+                flex-direction: column; /* 手机上变成垂直排列 */
+                gap: 1.5rem;
+            }
+            .lab-card { 
+                height: 250px; 
+                grid-column: span 1 !important; /* 强制取消所有 grid 跨度 */
+            }
+        }
+
+        
+
+        /* --- 动画 --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(10px);
+            }
+        }
+        /* --- 移动端适配 --- */
+        @media (max-width: 1024px) {
+            .projects-layout {
+                grid-template-columns: 1fr; /* 手机端单列 */
+                gap: 2rem;
+            }
+            .project-preview {
+                position: relative; /* 手机端不需要sticky */
+                top: 0;
+                width: 100%;
+                aspect-ratio: 16/9; /* 手机端改为长方形更节省纵向空间 */
+                margin-bottom: 1rem;
+            }
+            .cv-item-header { flex-direction: column; gap: 0.5rem; }
+            .interests-grid, .skills-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== 根治跳转精度：scroll-snap ===== */
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+
+        /* CV section 内部滚动 */
+        .cv-col-main {
+            overflow-y: auto;
+            height: 100%;
+            padding: 2rem 4rem 4rem 4rem;
+            scroll-snap-type: none; /* 内部不 snap */
+        }
+
+        .cv-col-right {
+            overflow-y: auto;
+        }
+
+        /* 去掉 hero section 对 scroll-snap 的干扰 */
+        .hero {
+            scroll-snap-align: start;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-logo">Chen Zai</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#cv">CV</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#lab">Lab</a></li>
+            </ul>
+        </div>
+    </nav>
+
+   <section class="hero" id="home">
+        <canvas id="hero-graph"></canvas>
+
+        <div class="hero-content">
+            <h1 class="hero-title">Chen Zai</h1>
+            <p class="hero-subtitle"></p>
+            
+            <div class="language-switcher">
+                <a href="#" class="active">English</a> | <a href="#">中文</a>
+            </div>
+        </div>
+        
+        <div class="scroll-hint" onclick="document.getElementById('cv').scrollIntoView({behavior: 'smooth'})" style="cursor: pointer;">
+            <span>Explore</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 3V17M10 17L15 12M10 17L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+    </section>
+
+    <section class="cv-section" id="cv">
+
+        <div class="cv-col-left">
+            <span class="cv-vertical-label">CV</span>
+        </div>
+
+        <div class="cv-col-main">
+            <div class="cv-biography">
+                <p>Chen Zai (b. 2004, China) is an environmental designer and interdisciplinary researcher currently pursuing a Bachelor of Arts at Nankai University, with an expected graduation in 2026. Her practice operates at the intersection of spatial design, human-computer interaction, and ecological systems thinking — asking how designed environments can listen, respond, and adapt to the people and ecologies that inhabit them.</p>
+                <p>Her work spans a broad range of media and methods: from data-driven urban analysis and VR spatial interfaces to physical computing installations and community co-creation processes. What connects these projects is a sustained interest in thresholds — the edges where the digital meets the material, where individual experience meets collective memory, and where design can quietly shift how people perceive their surroundings.</p>
+                <p>Chen Zai has been recognized with a National Second Prize for her Tianjin Salt Field Street Design, and her exhibition work has been permanently adopted by the Tianjin Science Museum. She has studied at the University of California, Berkeley (Summer 2024, GPA 3.9), where she deepened her engagement with HCI methodologies and participatory design frameworks.</p>
+                <p>She is currently open to graduate program opportunities and collaborative research projects in the fields of environmental design, spatial computing, and ecological interaction design.</p>
+            </div>
+
+            <div class="cv-tabs">
+                <div class="cv-tab-headers">
+                    <button class="cv-tab-btn" onclick="toggleTab('education')">Education</button>
+                    <button class="cv-tab-btn" onclick="toggleTab('awards')">Awards</button>
+                    <button class="cv-tab-btn" onclick="toggleTab('skills')">Skills</button>
+                </div>
+
+                <div class="cv-tab-panel" id="tab-education">
+                    <div class="cv-entry">
+                        <div class="cv-entry-title">University of California, Berkeley</div>
+                        <div class="cv-entry-sub">Master of Design · Incoming Fall 2026</div>
+                    </div>
+
+                    <div class="cv-entry">
+                        <div class="cv-entry-title">Nankai University</div>
+                        <div class="cv-entry-sub">B.A. Environmental Design · GPA 3.7 / 4.0 · rank 1</div>
+                        <div class="cv-entry-date">2022 – 2026</div>
+                    </div>
+                    <div class="cv-entry">
+                        <div class="cv-entry-title">University of California, Berkeley</div>
+                        <div class="cv-entry-sub">Summer Session D · GPA 3.9 / 4.0</div>
+                        <div class="cv-entry-courses">Visual Thinking · VR in Psychological Therapy</div>
+                        <div class="cv-entry-date">Jul – Aug 2024</div>
+                    </div>
+                </div>
+
+                <div class="cv-tab-panel" id="tab-awards">
+                    <div class="cv-entry">
+                        <div class="cv-entry-title">National Second Prize</div>
+                        <div class="cv-entry-sub">Tianjin Salt Field Scenic Street Design</div>
+                        <div class="cv-entry-date">2024</div>
+                    </div>
+                </div>
+
+                <div class="cv-tab-panel" id="tab-skills">
+                    <div class="cv-entry">
+                        <div class="cv-entry-title">Design</div>
+                        <div class="cv-entry-sub">Unreal Engine 5, Blender, Rhino, Figma, AutoCAD, SketchUp, Photoshop</div>
+                    </div>
+                    <div class="cv-entry">
+                        <div class="cv-entry-title">Programming</div>
+                        <div class="cv-entry-sub">Python, Arduino, Microcontroller Programming</div>
+                    </div>
+                    <div class="cv-entry">
+                        <div class="cv-entry-title">Languages</div>
+                        <div class="cv-entry-sub">Chinese (Native) · English (IELTS 7.5)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cv-col-right">
+            <div class="cv-contact-block">
+                 <span class="cv-contact-label">Email</span>
+                 <a href="mailto:zai_seuc@berkeley.edu" class="cv-contact-item">zai_seuc@berkeley.edu</a>
+                 <a href="mailto:chen_seuc@qq.com" class="cv-contact-item">chen_seuc@qq.com</a>  
+            </div>
+            <span class="cv-divider">—</span>
+
+            <div class="cv-contact-block">
+                <span class="cv-contact-label">Phone</span>
+                <span class="cv-contact-item">+86 187 8027 1110</span>
+            </div>
+            <span class="cv-divider">—</span>
+
+            <div class="cv-contact-block">
+                <span class="cv-contact-label">Find me at</span>
+                <div class="cv-social-icons">
+                    <!-- GitHub -->
+                    <a href="https://github.com/zayyyseuc" target="_blank" class="cv-icon-link" title="GitHub">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <!-- X (Twitter) — 暂无链接 -->
+                    <a href="#" class="cv-icon-link cv-icon-disabled" title="X (Coming soon)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+                        </svg>
+                    </a>
+                    <!-- 小红书 — 暂无链接 -->
+                    <a href="#" class="cv-icon-link cv-icon-disabled" title="小红书 (Coming soon)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.5 6.5h-2v1h2v1h-2v1h2v1h-3.5V8H8v8h1.5v-3h1V16H12v-3h1v3h1.5V8.5H15.5zm-7 1H8v5h.5V9.5z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <span class="cv-divider">—</span>
+
+            <div class="cv-contact-block">
+                <span class="cv-contact-label">Based in</span>
+                <span class="cv-contact-item">Tianjin·Chengdu, China</span>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="projects-section" id="projects">
+            <div class="projects-container">
+                <div class="projects-layout">
+                    <div class="project-preview">
+                        <div class="project-preview-image active" data-project="1">
+                            <img src="images/urban.png" alt="Urban Mirage">
+                        </div>
+
+                        <div class="project-preview-image" data-project="2">
+                            <img src="images/vr.png" alt="CUBIK">
+                        </div>
+
+                        <div class="project-preview-image" data-project="3">
+                            <img src="images/forest.png" alt="Fragments of the Forest">
+                        </div>
+
+                        <div class="project-preview-image" data-project="4">
+                            <img src="images/silent.png" alt="Silent Signal">
+                        </div>
+
+                        <div class="project-preview-image" data-project="5">
+                            <img src="images/pet.png" alt="Pet Space">
+                        </div>
+                    </div>
+
+                    <div class="project-list">
+                        <a href="p_urban.html" class="project-item active" data-project="1">
+                            <div class="project-item-content">
+                                <h3>Urban Mirage</h3>
+                                <div class="project-tags">
+                                    <span class="project-tag">Pseudo-urbanization</span>
+                                    <span class="project-tag">Data Viz</span>
+                                </div>
+                                <p>Multimodal perception system for detecting pseudo-urbanization phenomena.</p>
+                            </div>
+                            <div class="view-detail">→</div>
+                        </a>
+
+                        <a href="p_cubik.html" class="project-item" data-project="2">
+                            <div class="project-item-content">
+                                <h3>CUBIK</h3>
+                                <div class="project-tags">
+                                    <span class="project-tag">VR Interface</span>
+                                    <span class="project-tag">UE5</span>
+                                </div>
+                                <p>Gravity-adaptive spatial file system for VR immersive workflows.</p>
+                            </div>
+                            <div class="view-detail">View Details →</div>
+                        </a>
+
+                        <a href="p_forest.html" class="project-item" data-project="3">
+                            <div class="project-item-content">
+                                <h3>Fragments of the Forest</h3>
+                                <div class="project-tags">
+                                    <span class="project-tag">Game Design</span>
+                                    <span class="project-tag">Ecology</span>
+                                </div>
+                                <p>Educational game applying ecological corridor theory.</p>
+                            </div>
+                            <div class="view-detail">View Details →</div>
+                        </a>
+
+                        <a href="p_silent.html" class="project-item" data-project="4">
+                            <div class="project-item-content">
+                                <h3>Silent Signal</h3>
+                                <div class="project-tags">
+                                    <span class="project-tag">Healthcare</span>
+                                    <span class="project-tag">Arduino</span>
+                                </div>
+                                <p>Passive biometric monitoring for early stroke detection.</p>
+                            </div>
+                            <div class="view-detail">View Details →</div>
+                        </a>
+
+                        <a href="p_pet.html" class="project-item" data-project="5">
+                            <div class="project-item-content">
+                                <h3>Pet Space</h3>
+                                <div class="project-tags">
+                                    <span class="project-tag">Robotics</span>
+                                    <span class="project-tag">Interactive</span>
+                                </div>
+                                <p>Environment-responsive robotic desk lamp.</p>
+                            </div>
+                            <div class="view-detail">View Details →</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    
+
+    <section class="lab-section" id="lab">
+        <div class="projects-container">
+            <h2 class="section-title" style="text-align: center;">Design Lab</h2>
+            
+            <div class="lab-grid">
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div> <div class="lab-overlay"><span>UI Study</span></div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Material Test</span></div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Sketch</span></div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Concept Art</span></div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Icon</span></div>
+                </div>
+                
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>3D Render</span></div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Photography</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <footer>
+        <p>© 2026 Chen Zai. Designed with passion for interdisciplinary design.</p>
+    </footer>
+
+    <script>
+        // Project hover interaction (JS保持逻辑不变，CSS处理了显示隐藏)
+        const projectItems = document.querySelectorAll('.project-item');
+        const projectPreviews = document.querySelectorAll('.project-preview-image');
+
+        projectItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const projectId = item.getAttribute('data-project');
+                
+                // 移除所有激活状态
+                projectItems.forEach(p => p.classList.remove('active'));
+                projectPreviews.forEach(p => p.classList.remove('active'));
+                
+                // 激活当前项
+                item.classList.add('active');
+                const targetImage = document.querySelector(`.project-preview-image[data-project="${projectId}"]`);
+                if(targetImage) targetImage.classList.add('active');
+            });
+        });
+
+        // Smooth scroll — 配合 scroll-snap 使用 scrollIntoView
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+    
+    <script>
+        const canvas = document.getElementById('hero-graph');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, centerX, centerY;
+        let nodes = [];
+        
+        // --- 技能关键词  ---
+        const keywords = [
+            "Spatial Computing", "HCI", "Ecological Restoration", 
+            "Unreal Engine 5", "Data Viz", "Interactive Narrative", 
+            "Physical Computing", "Arduino", "Research", 
+            "Generative Art", "VR/XR", "Python",
+            "Bio-design", "Machine Learning", "Sensors", "Unity",
+            "Projection Mapping", "Sustainability", "UX/UI", "Digital Twin"
+        ];
+
+        const mouse = { x: null, y: null };
+
+        class Node {
+            constructor(text) {
+                this.text = text;
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5; 
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.baseRadius = Math.random() * 3 + 2; // 随机大小
+                this.radius = this.baseRadius;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // 边界反弹
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                // --- 核心：中心排斥力 (防止遮挡你的名字) ---
+                const dxCenter = this.x - centerX;
+                const dyCenter = this.y - centerY;
+                const distCenter = Math.sqrt(dxCenter * dxCenter + dyCenter * dyCenter);
+                // 排斥圈大小
+                const repulsionRadius = Math.min(width, height) * 0.25;
+
+                if (distCenter < repulsionRadius) {
+                    const forceX = dxCenter / distCenter;
+                    const forceY = dyCenter / distCenter;
+                    const strength = (repulsionRadius - distCenter) / repulsionRadius * 0.02; 
+                    this.vx += forceX * strength;
+                    this.vy += forceY * strength;
+                }
+            }
+
+            draw() {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let isHovered = distance < 50; // 悬停触发距离
+
+                const targetRadius = isHovered ? 8 : this.baseRadius;
+                this.radius += (targetRadius - this.radius) * 0.1;
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = isHovered ? '#000000' : 'rgba(100, 100, 100, 0.6)'; 
+                ctx.fill();
+
+                // 只有悬停时才显示文字
+                if (isHovered) {
+                    ctx.font = "500 14px 'Inter', sans-serif";
+                    const textWidth = ctx.measureText(this.text).width;
+                    
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+                    ctx.fillRect(this.x + 10, this.y - 15, textWidth + 12, 24);
+
+                    ctx.fillStyle = "#1a1a1a";
+                    ctx.fillText(this.text, this.x + 16, this.y + 2);
+                }
+            }
+        }
+
+        function init() {
+            resize();
+            nodes = keywords.map(text => new Node(text));
+        }
+
+        function resize() {
+            // 使用 window 尺寸以确保铺满全屏
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            centerX = width / 2;
+            centerY = height / 2;
+        }
+
+        function drawConnections() {
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const maxDistance = 250; // 连线阈值
+
+                    if (distance < maxDistance) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.strokeStyle = `rgba(180, 180, 180, ${1 - distance / maxDistance})`; 
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            nodes.forEach(node => node.update());
+            drawConnections();
+            nodes.forEach(node => node.draw());
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resize();
+            nodes.forEach(node => {
+               node.x = Math.random() * width;
+               node.y = Math.random() * height;
+            });
+        });
+        
+        // 监听整个 Hero 区域的鼠标移动
+        document.querySelector('.hero').addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+        
+        document.querySelector('.hero').addEventListener('mouseleave', () => {
+            mouse.x = null; mouse.y = null;
+        });
+
+        init();
+        animate();
+
+        function toggleTab(id) {
+            const panels = document.querySelectorAll('.cv-tab-panel');
+            const buttons = document.querySelectorAll('.cv-tab-btn');
+            const targetPanel = document.getElementById('tab-' + id);
+            const isAlreadyOpen = targetPanel.classList.contains('active');
+            const scrollContainer = document.querySelector('.cv-col-main');
+
+            // 全部收起
+            panels.forEach(p => p.classList.remove('active'));
+            buttons.forEach(b => b.classList.remove('active'));
+
+            if (!isAlreadyOpen) {
+                targetPanel.classList.add('active');
+                buttons.forEach(btn => {
+                    if (btn.getAttribute('onclick').includes(id)) btn.classList.add('active');
+                });
+
+                // 等 max-height 动画彻底结束后，再精确计算并滚动
+                function onExpanded(e) {
+                    if (e.propertyName !== 'max-height') return; // 只响应 max-height 动画结束
+                    targetPanel.removeEventListener('transitionend', onExpanded);
+
+                    const containerRect = scrollContainer.getBoundingClientRect();
+                    const panelRect = targetPanel.getBoundingClientRect();
+                    const panelBottomRelative = panelRect.bottom - containerRect.top + scrollContainer.scrollTop;
+                    scrollContainer.scrollTo({
+                        top: panelBottomRelative - scrollContainer.clientHeight + 32,
+                        behavior: 'smooth'
+                    });
+                }
+                targetPanel.addEventListener('transitionend', onExpanded);
+
+            } else {
+                // 收起时直接滑回 tab 栏
+                const tabHeaders = document.querySelector('.cv-tab-headers');
+                const containerRect = scrollContainer.getBoundingClientRect();
+                const tabRect = tabHeaders.getBoundingClientRect();
+                const tabTopRelative = tabRect.top - containerRect.top + scrollContainer.scrollTop;
+                scrollContainer.scrollTo({
+                    top: tabTopRelative - 32,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        // 导航栏高亮
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    const active = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+                    if (active) active.classList.add('active');
+                }
+            });
+        }, { threshold: 0.4 });
+
+        sections.forEach(section => observer.observe(section));
+    </script>
+</body>
+</html>

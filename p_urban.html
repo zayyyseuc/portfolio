@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Mirage | Chen Zai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #f5f2ed;
+            --bg2: #ede9e2;
+            --bg3: #e4dfd6;
+            --text: #1a1510;
+            --text2: #6b6256;
+            --text3: #a89e92;
+            --accent: #c0392b;
+            --accent2: #e8b4a0;
+            --border: rgba(26,21,16,0.1);
+            --border2: rgba(26,21,16,0.05);
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 1.25rem 2.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+        }
+
+        nav.idle {
+            background: transparent;
+            border-bottom-color: transparent;
+            backdrop-filter: blur(0px);
+        }
+
+        .nav-back {
+            display: flex; align-items: center; gap: 0.5rem;
+            color: var(--text2); text-decoration: none;
+            font-size: 0.8125rem; letter-spacing: 0.05em;
+            transition: opacity 0.4s ease, color 0.2s;
+        }
+
+        nav.idle .nav-back {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav-back:hover { color: var(--text); }
+        .nav-back svg { transition: transform 0.2s; }
+        .nav-back:hover svg { transform: translateX(-3px); }
+        #nav-next:hover svg { transform: translateX(3px); }
+
+        .nav-title {
+            font-family: 'Newsreader', serif;
+            font-size: 1rem; font-weight: 400;
+            color: var(--text2);
+            letter-spacing: 0.02em;
+        }
+
+        /* ── SECTION BASE ── */
+        section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            min-height: 100vh;
+        }
+
+        /* ══════════════════════════════
+           SECTION 1 — HERO (全屏背景图模式)
+        ══════════════════════════════ */
+        .hero {
+            position: relative; /* 作为图层容器 */
+            min-height: 100vh;
+            display: flex;
+            align-items: center; /* 让文字整体垂直居中 */
+            padding-top: 72px;
+            overflow: hidden; 
+        }
+
+        /* 底层：图片铺满全屏 */
+        .hero-image {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            background: var(--bg2);
+        }
+
+        /* 重点！中间层：渐变遮罩 
+           从左向右：背景实色 -> 80%背景色 -> 完全透明
+           让左侧文字清晰，右侧图片透出 */
+        .hero-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            /* 这里的 245,242,237 是你 urban 页面 --bg 的 RGB 值 */
+            background: linear-gradient(to right, rgba(245,242,237, 1) 0%, rgba(245,242,237, 0.85) 45%, transparent 100%);
+            pointer-events: none; /* 让鼠标穿透遮罩 */
+        }
+
+        .hero-image-placeholder {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 1rem;
+        }
+        .hero-image-placeholder .img-label {
+            font-size: 0.7rem; letter-spacing: 0.2em;
+            color: rgba(0,0,0,0.2); text-transform: uppercase;
+        }
+        .hero-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: right center; /* 优先保证图片右侧内容完整 */
+            display: block;
+        }
+
+        .scroll-cue {
+            position: absolute;
+            bottom: 2rem;
+            right: 3rem;
+            display: flex; flex-direction: row; align-items: center; gap: 0.6rem;
+            font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text2);
+            cursor: pointer;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(8px);
+            padding: 0.85rem 1.5rem;
+            border: 1px solid rgba(26,21,16,0.1);
+            border-radius: 3px;
+            transition: color 0.2s, background 0.2s;
+            z-index: 10;
+            animation: scrollPulse 2.5s ease-in-out infinite;
+        }
+        .scroll-cue:hover { color: var(--text); background: rgba(255,255,255,0.8); }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.6; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(3px); }
+        }
+
+        /* 顶层：文字区域，仅占左侧 55% 宽度 */
+        .hero-text {
+            position: relative;
+            z-index: 1;
+            width: 55%; 
+            max-width: 800px;
+            padding: 2rem 2rem 2rem 5rem;
+            display: flex; flex-direction: column; justify-content: center;
+            background: transparent; /* 去除原本的背景色 */
+            border-left: none;       /* 去除原本的中间分割线 */
+        }
+
+        /* ... 原本的 .project-number, .project-title 等保持不变 ... */
+        .project-number {
+            font-size: 0.7rem; letter-spacing: 0.25em;
+            color: var(--text3); text-transform: uppercase; margin-bottom: 2.5rem;
+        }
+        .project-title {
+            font-family: 'Newsreader', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 300;
+            line-height: 1.05; letter-spacing: -0.02em;
+            margin-bottom: 0.5rem; color: var(--text);
+        }
+        .project-rule {
+            width: 2.5rem; height: 2px;
+            background: var(--accent); margin: 1.5rem 0;
+        }
+        .project-subtitle {
+            font-family: 'Newsreader', serif; font-style: italic;
+            font-size: 1rem; color: var(--text2);
+            line-height: 1.6; margin-bottom: 2.5rem; max-width: 420px;
+        }
+        .project-meta {
+            display: flex; flex-direction: column; gap: 1rem; margin-bottom: 3rem;
+        }
+        .meta-row { display: flex; align-items: flex-start; gap: 1.5rem; }
+        .meta-label {
+            font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--text3); min-width: 80px; padding-top: 2px;
+        }
+        .meta-value { font-size: 0.8125rem; color: var(--text2); line-height: 1.5; }
+        .meta-tag {
+            display: inline-block; font-size: 0.65rem; letter-spacing: 0.08em;
+            border: 1px solid var(--border); color: var(--text3);
+            padding: 0.2rem 0.6rem; border-radius: 2px;
+            margin-right: 0.4rem; margin-bottom: 0.3rem;
+        }
+        .project-vision {
+            padding: 1.5rem; border: 1px solid var(--border);
+            border-left: 2px solid var(--accent);
+            background: rgba(255,255,255,0.4); /* 让框体稍微透出一点背景 */
+            backdrop-filter: blur(4px);
+        }
+        .vision-label {
+            font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 0.75rem;
+        }
+        .vision-text { font-size: 0.8125rem; line-height: 1.75; color: var(--text2); }
+
+        /* ══ TABS ══ */
+        .detail {
+            min-height: 100vh; display: flex; flex-direction: column;
+            padding-top: 72px; background: var(--bg);
+        }
+        .tab-bar {
+            display: flex; border-bottom: 1px solid var(--border);
+            flex-shrink: 0; width: 100%;
+        }
+        .tab-btn {
+            flex: 1; padding: 1.25rem 1rem; text-align: center;
+            font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+            font-weight: 500; color: var(--text3);
+            background: none; border: none; border-bottom: 2px solid transparent;
+            cursor: pointer; transition: all 0.2s ease; position: relative; bottom: -1px;
+        }
+        .tab-btn:hover { color: var(--text2); }
+        .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
+
+        .tab-panels { flex: 1; overflow: hidden; position: relative; }
+        .tab-panel {
+            position: absolute; inset: 0; overflow-y: auto;
+            padding: 3.5rem 4rem; opacity: 0; transform: translateY(12px);
+            pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .tab-panel.active {
+            opacity: 1; transform: translateY(0);
+            pointer-events: auto; position: relative;
+        }
+
+        /* Content blocks */
+        .panel-intro { max-width: 680px; margin-bottom: 3.5rem; }
+        .panel-intro h3 {
+            font-family: 'Newsreader', serif; font-size: 1.75rem; font-weight: 300;
+            margin-bottom: 1rem; color: var(--text);
+        }
+        .panel-intro p { font-size: 0.875rem; line-height: 1.85; color: var(--text2); }
+
+        .stat-row {
+            display: flex; gap: 1px; background: var(--border);
+            border: 1px solid var(--border); margin-bottom: 2.5rem; overflow: hidden;
+        }
+        .stat {
+            flex: 1; padding: 2rem; background: var(--bg);
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .stat-value {
+            font-family: 'Newsreader', serif; font-size: 2.5rem; font-weight: 300;
+            color: var(--text); line-height: 1;
+        }
+        .stat-value span { color: var(--accent); }
+        .stat-desc { font-size: 0.75rem; line-height: 1.6; color: var(--text3); }
+
+        .content-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1px; background: var(--border);
+            border: 1px solid var(--border); margin-bottom: 2.5rem;
+        }
+        .content-cell { background: var(--bg); padding: 2rem; }
+        .cell-label {
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text3); margin-bottom: 0.75rem;
+        }
+        .cell-title { font-size: 1rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
+        .cell-body { font-size: 0.8rem; line-height: 1.75; color: var(--text2); }
+
+        .img-block {
+            background: var(--bg2); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            padding: 4rem 2rem; margin-bottom: 2.5rem;
+            min-height: 280px; position: relative; overflow: hidden;
+        }
+        .img-block-label {
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text3); text-align: center;
+        }
+
+        .flow-steps {
+            display: flex; gap: 1px; background: var(--border);
+            border: 1px solid var(--border); margin-bottom: 2.5rem;
+        }
+        .flow-step { flex: 1; padding: 1.5rem; background: var(--bg); position: relative; }
+        .flow-step::after {
+            content: '→'; position: absolute; right: -0.75rem; top: 50%;
+            transform: translateY(-50%); color: var(--text3); font-size: 0.8rem; z-index: 1;
+        }
+        .flow-step:last-child::after { display: none; }
+        .step-num { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 0.5rem; }
+        .step-title { font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+        .step-body { font-size: 0.75rem; line-height: 1.65; color: var(--text2); }
+
+        .quote-block {
+            padding: 2rem 2.5rem; border-left: 2px solid var(--accent);
+            background: rgba(192,57,43,0.04); margin-bottom: 2.5rem;
+        }
+        .quote-text {
+            font-family: 'Newsreader', serif; font-style: italic; font-size: 1.125rem;
+            color: var(--text); line-height: 1.6; margin-bottom: 0.75rem;
+        }
+        .quote-source { font-size: 0.7rem; letter-spacing: 0.1em; color: var(--text3); }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
+
+        h4.section-sub {
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text3); margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem; border-bottom: 1px solid var(--border);
+        }
+
+        ul.detail-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
+        ul.detail-list li {
+            font-size: 0.8125rem; line-height: 1.65; color: var(--text2);
+            padding-left: 1.25rem; position: relative;
+        }
+        ul.detail-list li::before { content: '—'; position: absolute; left: 0; color: var(--text3); }
+
+        .acc-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+        .acc-label { font-size: 0.75rem; color: var(--text2); min-width: 160px; }
+        .acc-bar-wrap { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+        .acc-bar { height: 100%; background: var(--accent); border-radius: 2px; }
+        .acc-val { font-size: 0.75rem; font-weight: 600; color: var(--text); min-width: 40px; text-align: right; }
+
+        .code-block {
+            background: #1a1510; color: #c8b89a;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.72rem; line-height: 1.8;
+            padding: 1.5rem 2rem; border-radius: 4px;
+            overflow-x: auto; margin-bottom: 1.5rem;
+        }
+        .code-block .kw { color: #c0392b; }
+        .code-block .fn { color: #d4804a; }
+        .code-block .cm { color: #6b6256; }
+
+        .tab-panel::-webkit-scrollbar { width: 4px; }
+        .tab-panel::-webkit-scrollbar-track { background: transparent; }
+        .tab-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        /* ══════════════════════════════
+           SECTION 2 — DEPLOYMENT GRID (12x12 一屏流)
+        ══════════════════════════════ */
+        .deployment-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(12, 1fr);
+            gap: 1.5vh 1.5vw;
+            width: 100%;
+            /* 减去顶部导航、Tab栏和上下内边距，确保完美锁定在一屏 */
+            height: calc(100vh - 220px); 
+            min-height: 550px;
+            position: relative;
+        }
+
+        /* 中间的 */
+        .bg-shape {
+            grid-column: 4 / 11;
+            grid-row: 2 / 12; /* 上下留出一行呼吸空间 */
+            z-index: 0;
+            border-radius: 4px;
+            overflow: hidden; /* 保证图片的四角也是圆角 */
+        }
+        
+        .bg-shape img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保证图片完美铺满这个区域不变形 */
+            display: block;
+            /* 可选：如果你觉得背景图太抢眼，可以稍微降低一点它的透明度让它退居幕后 */
+            opacity: 0.85; 
+        }
+
+        .img-group { position: relative; cursor: pointer; }
+        .main-img {
+            position: absolute; width: 100%; height: 100%; object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.7s ease;
+            z-index: 1;
+        }
+        .hover-img {
+            position: absolute; object-fit: cover;
+            opacity: 0; transform: translateY(15px); box-shadow: 0 0 0 rgba(0,0,0,0);
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 2;
+            filter: contrast(1.2) brightness(0.8) grayscale(100%);
+            border: 4px solid var(--bg); 
+        }
+
+        .img-group:hover .main-img { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+        .img-group:hover .hover-img { opacity: 1; transform: translateY(0); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+
+        .group-1 { grid-column: 2 / 6; grid-row: 1 / 7; z-index: 5; }
+        .group-1 .main-img { width: 85%; height: 75%; top: 0; right: 0; }
+        .group-1 .hover-img { width: 45%; height: 45%; bottom: 0; left: 0; }
+
+        .group-2 { grid-column: 3 / 7; grid-row: 7 / 13; z-index: 5; }
+        .group-2 .main-img { width: 85%; height: 80%; top: 0; left: 0; }
+        .group-2 .hover-img { width: 50%; height: 45%; bottom: 0; right: 0; }
+
+        .group-3 { grid-column: 9 / 12; grid-row: 4 / 9; z-index: 5; }
+        .group-3 .main-img { width: 90%; height: 75%; top: 0; left: 0; }
+        .group-3 .hover-img { width: 55%; height: 50%; bottom: 0; right: -15%; }
+
+        .important-numbers {
+            grid-column: 11 / 13; grid-row: 1 / 4; z-index: 5;
+            display: flex; flex-direction: column; align-items: flex-end; text-align: right;
+        }
+        .num-val { font-family: 'Newsreader', serif; font-size: clamp(2rem, 5vh, 3.5rem); font-weight: 300; line-height: 1; color: var(--text); }
+        .num-val span { color: var(--accent); }
+        .num-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); margin-top: 0.5rem; }
+
+        .info-list {
+            grid-column: 1 / 4; grid-row: 9 / 13; z-index: 5;
+            display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 2vh;
+        }
+        .info-title { font-size: 0.75rem; font-weight: 600; margin-bottom: 1vh; letter-spacing: 0.05em; color: var(--text); }
+        .info-item {
+            font-size: 0.7rem; color: var(--text2); padding: 0.8vh 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .glass-card {
+            grid-column: 8 / 13; grid-row: 10 / 13; z-index: 50; 
+            /* 提取了 var(--bg) 的 RGB 色值来实现毛玻璃透明背景 */
+            background: rgba(245, 242, 237, 0.65); 
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 2px;
+            padding: clamp(1.5rem, 3vh, 3rem); box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .glass-title { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; margin-bottom: 1vh; color: var(--accent); }
+        .glass-desc { font-size: clamp(0.8rem, 1.5vh, 0.95rem); line-height: 1.6; color: var(--text2); }
+
+        /* 混淆矩阵自定义 Tooltip */
+        .custom-tooltip {
+            position: fixed;
+            pointer-events: none;
+            background: #1a1510;
+            color: #f5f2ed;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            padding: 8px 12px;
+            border-radius: 2px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+            white-space: nowrap;
+            line-height: 1.6;
+        }
+        .custom-tooltip.visible { opacity: 1; }
+        .tooltip-val { color: #c0392b; font-weight: 500; }
+
+        /* ══════════════════════════════
+        INTERACTIVE HARDWARE MAP (TECH TAB)
+        ══════════════════════════════ */                   
+        /* 1. 外层画框：负责居中和裁切超出的部分 */
+        .tech-wrap {
+            position: relative; 
+            width: 100%;
+            height: calc(100vh - 135px); 
+            min-height: 500px;
+            background: var(--bg); 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* 🔥 极其关键：裁切掉铺满后溢出的边缘 */
+        }
+
+        /* 2. 核心包裹层：用魔法算法永远撑满屏幕 */
+        .interactive-area {
+            position: relative;
+            display: flex; 
+            /* 🔥 终极自适应大招：获取屏幕高度和宽度中足够大的值。
+            这保证了不管屏幕多宽多高，图片都会等比放大直到超出屏幕边缘，实现完美的 cover 铺满效果，同时百分比坐标绝对不漂移！*/
+            height: max(110vh, 80vw); 
+        }
+
+        /* 3. 图片跟随包裹层等比放大 */
+        .device-img {
+            display: block;
+            height: 100%; 
+            width: auto; 
+        }
+
+        /* 4. 将暗色遮罩放进包裹层内，完美卡在图片和白点中间 */
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(26, 21, 16, 0.4); /* 你的高级感暗色滤镜 */
+            pointer-events: none;
+            z-index: 5; /* 👉 关键：垫在白点之下 (5) */
+        }
+
+        /* 确保你的热点图层在最顶层（这部分你应该已经有了，确认 z-index 即可） */
+        .hotspot {
+            /* 你的其他样式... */
+            z-index: 10; 
+        }
+
+        .hotspot {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, transform 0.2s;
+            z-index: 10;
+        }
+        .hotspot:hover { background: rgba(255,255,255,0.35); transform: scale(1.15); }
+        .hotspot.active { background: rgba(255,255,255,0.4); }
+        .hotspot-ring {
+            position: absolute;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.4);
+            animation: pulse 2.2s ease-out infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+        .hotspot-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+
+        .info-card {
+            position: absolute;
+            width: 240px;
+            background: rgba(26,21,16,0.85); /* 调整为你网站的深色强调色 */
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            padding: 16px;
+            color: #fff;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 20;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .info-card.visible { opacity: 1; transform: translateY(0); }
+        .card-label {
+            font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--accent2); margin-bottom: 6px; /* 使用了你的辅助高亮色 */
+        }
+        .card-title { font-size: 0.85rem; font-weight: 500; color: #fff; margin-bottom: 8px; }
+        .card-body { font-size: 0.75rem; color: rgba(255,255,255,0.7); line-height: 1.65; }
+        .tech-legend {
+            position: absolute; bottom: 1.5rem; left: 1.5rem;
+            font-size: 0.65rem; color: rgba(255,255,255,0.5); letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        /* ══════════════════════════════
+        STRATEGY V3: SIDEBAR + CARD STACK
+        ══════════════════════════════ */
+
+        /* 外层容器：左栏 + 右侧卡片区 */
+        .strat-shell {
+            display: flex;
+            height: calc(100vh - 72px - 49px); /* 减去nav和tabbar */
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        /* ── 左侧导航栏 ── */
+        .strat-sidebar {
+            width: 20vw;
+            min-width: 180px;
+            max-width: 260px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            background: var(--bg);
+            position: relative;
+            z-index: 2;
+        }
+
+        .strat-sidebar-title {
+            display: none;
+        }
+
+        .strat-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;              /* ← 新增：均分侧边栏高度 */
+            padding: 0 1.75rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            position: relative;
+            transition: background 0.2s ease;
+        }
+
+        .strat-nav-item::before {
+            /* 左边的活跃线 */
+            content: '';
+            position: absolute;
+            left: 0; top: 20%; bottom: 20%;
+            width: 2px;
+            background: var(--accent);
+            transform: scaleY(0);
+            transform-origin: center;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .strat-nav-item.active::before { transform: scaleY(1); }
+
+        /* 分割线（最后一个除外） */
+        .strat-nav-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 1.75rem; right: 1.75rem;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .strat-nav-item:hover { background: var(--bg2); }
+        .strat-nav-item.active { background: rgba(192,57,43,0.04); }
+
+        .strat-nav-num {
+            font-family: 'Newsreader', serif;
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: var(--border);
+            line-height: 1;
+            transition: color 0.3s ease;
+            flex-shrink: 0;
+            width: 2rem;
+        }
+        .strat-nav-item.active .strat-nav-num { color: var(--accent); }
+        .strat-nav-item:hover .strat-nav-num { color: var(--text3); }
+
+        .strat-nav-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        .strat-nav-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text3);
+            line-height: 1.3;
+            transition: color 0.2s;
+        }
+        .strat-nav-item.active .strat-nav-label { color: var(--text); }
+        .strat-nav-sub {
+            font-size: 0.65rem;
+            color: var(--text3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .strat-nav-item.active .strat-nav-sub { opacity: 1; }
+
+        /* 卡片堆叠 — 顶层卡片宽度略窄于容器，右侧露出后续卡片 */
+        .strat-card-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg3); /* 略深的底色，衬托卡片 */
+        }
+
+        .strat-card {
+            position: absolute;
+            top: 1.5rem;
+            bottom: 2rem;
+            left: 1.5rem;
+            /* 宽度：容器宽 - 左边距 - 后续卡露出的宽度 */
+            width: calc(100% - 1.5rem - 5rem);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow-y: auto;
+            transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.55s ease;
+            will-change: transform;
+        }
+
+        /* 层级叠放 */
+        .strat-card[data-depth="0"] {
+            transform: translateX(0);
+            z-index: 10;
+            /* 顶层卡：右侧向后投影 + 整体底部阴影 */
+            box-shadow:
+                6px 0 20px rgba(26,21,16,0.14),
+                0 8px 32px rgba(26,21,16,0.12),
+                0 2px 6px rgba(26,21,16,0.06);
+        }
+        .strat-card[data-depth="1"] {
+            transform: translateX(calc(100% + 0rem));
+            z-index: 9;
+            box-shadow:
+                inset 4px 0 14px rgba(26,21,16,0.09),
+                0 6px 24px rgba(26,21,16,0.08);
+        }
+        .strat-card[data-depth="2"] {
+            transform: translateX(calc(100% + 1.4rem));
+            z-index: 8;
+            box-shadow:
+                inset 4px 0 10px rgba(26,21,16,0.06),
+                0 4px 16px rgba(26,21,16,0.06);
+        }
+        .strat-card[data-depth="3"] {
+            transform: translateX(calc(100% + 2.5rem));
+            z-index: 7;
+            box-shadow:
+                inset 4px 0 8px rgba(26,21,16,0.04),
+                0 3px 10px rgba(26,21,16,0.04);
+        }
+        .strat-card[data-depth="4"] {
+            transform: translateX(calc(100% + 3.3rem));
+            z-index: 6;
+            box-shadow:
+                inset 4px 0 6px rgba(26,21,16,0.03),
+                0 2px 6px rgba(26,21,16,0.03);
+        }
+
+        /* 正在滑出（向左）— 已由 JS inline style 控制，class 保留备用 */
+        .strat-card.exit-left {
+            transform: translateX(-110%) !important;
+            box-shadow: none !important;
+        }
+
+        /* 卡片内部布局 */
+        .strat-card-inner {
+            padding: 3rem 3.5rem 3rem 3rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* 卡片顶部 header */
+        .strat-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding-bottom: 1.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .strat-card-tag {
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+        }
+        .strat-card-title {
+            font-family: 'Newsreader', serif;
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.2;
+        }
+        .strat-card-desc {
+            font-size: 0.8125rem;
+            color: var(--text2);
+            line-height: 1.8;
+            max-width: 560px;
+            margin-top: 0.6rem;
+        }
+        .strat-card-badge {
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            color: var(--text3);
+            border: 1px solid var(--border);
+            padding: 0.3rem 0.75rem;
+            white-space: nowrap;
+        }
+
+        /* 主内容区：两栏 */
+        .strat-card-body {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 2.5rem;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .strat-card-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .strat-card-right {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        /* 信息模块 */
+        .info-module {
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            background: var(--bg2);
+            border-radius: 6px;
+        }
+        .info-module-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 0.6rem;
+        }
+        .info-module p {
+            font-size: 0.78rem;
+            line-height: 1.75;
+            color: var(--text2);
+        }
+
+        /* 公式框 */
+        .formula-block {
+            background: var(--text);
+            color: var(--bg);
+            padding: 1.25rem 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
+            border-left: 3px solid var(--accent);
+            border-radius: 6px;
+        }
+
+        /* 指标行 */
+        .metric-row {
+            display: flex;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .metric-cell {
+            flex: 1;
+            background: var(--bg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .metric-val {
+            font-family: 'Newsreader', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1;
+        }
+        .metric-val span { color: var(--accent); }
+        .metric-desc {
+            font-size: 0.65rem;
+            color: var(--text3);
+            line-height: 1.5;
+        }
+
+        /* 占位框 — 主视觉区 */
+        .placeholder-main {
+            flex: 1;
+            min-height: 0;
+            background: var(--bg2);
+            border: 1px dashed rgba(26,21,16,0.12);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .placeholder-main .ph-icon {
+            width: 40px; height: 40px;
+            opacity: 0.15;
+        }
+        .placeholder-main .ph-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text3);
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* 小占位框 */
+        .placeholder-mini {
+            background: rgba(255,255,255,0.5);
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text3);
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 1.5rem 1rem;
+        }
+
+        /* 标签列表 */
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .tag-chip {
+            font-size: 0.62rem;
+            letter-spacing: 0.08em;
+            border: 1px solid var(--border);
+            color: var(--text3);
+            padding: 0.2rem 0.55rem;
+        }
+
+        /* 步骤序列 */
+        .step-seq {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .step-seq-item {
+            background: var(--bg);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .step-seq-num {
+            font-size: 0.6rem;
+            color: var(--accent);
+            font-family: 'Newsreader', serif;
+            width: 1.2rem;
+        }
+        .step-seq-text {
+            font-size: 0.75rem;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        /* 混淆矩阵占位格 */
+        .matrix-placeholder {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+        }
+        .matrix-cell-ph {
+            background: var(--bg2);
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: var(--text3);
+        }
+        .matrix-cell-ph.diag {
+            background: rgba(192,57,43,0.08);
+            color: var(--accent);
+            font-weight: 600;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+
+    <nav id="main-nav" class="idle">
+        <a href="index (3).html#projects" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 13L5 8L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+        </a>
+        <span class="nav-title">Urban Mirage</span>
+        <a href="p_cubik.html" class="nav-back" id="nav-next">
+            Next
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </nav>
+
+
+    <section class="hero" id="top">
+
+        <div class="hero-image">
+            <img src="images/urban.png" class="hero-img" alt="Urban Mirage"> 
+            <div class="hero-image-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <rect x="1" y="1" width="38" height="38" rx="2" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                    <path d="M8 28L16 18L22 24L28 16L36 28H8Z" fill="rgba(255,255,255,0.08)"/>
+                    <circle cx="12" cy="14" r="3" fill="rgba(255,255,255,0.08)"/>
+                </svg>
+                <span class="img-label">Image Placeholder</span>
+            </div>
+            <div class="scroll-cue" onclick="document.getElementById('detail').scrollIntoView({behavior:'smooth'})">
+                <span>Explore</span>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 3V13M8 13L12 9M8 13L4 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="hero-text">
+            <div class="project-number">Project 01</div>
+            <h1 class="project-title">Urban Mirage</h1>
+            <div class="project-rule"></div>
+            <p class="project-subtitle">Multimodal Perception System for Detecting Pseudo-Urbanization Phenomena.</p>
+
+            <div class="project-meta">
+                <div class="meta-row">
+                    <span class="meta-label">Type</span>
+                    <span class="meta-value">Interactive Installation · Research Prototype</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Tech</span>
+                    <div>
+                        <span class="meta-tag">Machine Learning</span>
+                        <span class="meta-tag">CNN</span>
+                        <span class="meta-tag">Multimodal Fusion</span>
+                        <span class="meta-tag">ESP32</span>
+                        <span class="meta-tag">Python</span>
+                    </div>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Duration</span>
+                    <span class="meta-value">2025 / 04 – 09</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Link</span>
+                    <a href="https://github.com/zayyyseuc/GhostTown/tree/main" target="_blank" style="font-size:0.8125rem;color:var(--accent);text-decoration:none;">github.com/zayyyseuc/GhostTown</a>
+                </div>
+            </div>
+
+            <div class="project-vision">
+                <div class="vision-label">Project Vision</div>
+                <p class="vision-text">A ghost city photographed at noon looks indistinguishable from a thriving metropolis. But the silence speaks. Urban Mirage reveals that true urban vitality cannot be captured by a single sense — by fusing acoustic signatures with visual scenes, we reveal not what a city looks like, but what it feels like to inhabit.</p>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="detail" id="detail">
+
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('research', this)">Research</button>
+            <button class="tab-btn" onclick="switchTab('strategy', this)">Strategy</button>
+            <button class="tab-btn" onclick="switchTab('tech', this)">Technical Implementation</button>
+            <button class="tab-btn" onclick="switchTab('deployment', this)">Deployment</button>
+        </div>
+
+        <div class="tab-panels">
+
+            <div class="tab-panel active" id="panel-research" style="display: flex; flex-direction: column; height: 100%; box-sizing: border-box;">
+
+                <!-- 顶部：标题 + 两句话背景 -->
+                <div style="margin-bottom: 2rem; max-width: 720px;">
+                    <p style="font-size:0.875rem;line-height:1.85;color:var(--text2);">In China's rapid urbanization, a paradox has emerged: large-scale districts appear architecturally complete, yet remain socially quiet. The most telling signals of emptiness are often subtle, ambient, and multisensory — invisible to conventional visual surveillance.</p>
+                </div>
+
+                <!-- 主体：三列内容 + 右侧图片留空 -->
+                <div style="display: flex; flex-direction: column; gap: 1px; flex: 1; min-height: 0;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); flex: 1; min-height: 0;">
+
+                        <!-- 列 1：核心问题 -->
+                        <div style="background: var(--bg); padding: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem;">
+                            <div>
+                                <div class="cell-label">Core Question</div>
+                                <div class="quote-block" style="margin: 0; padding: 1.25rem 1.5rem;">
+                                    <p class="quote-text" style="font-size:1rem;">"How is emptiness perceived and detected?"</p>
+                                    <p class="quote-source">— Research Question</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="cell-label" style="margin-bottom:0.5rem;">Hypothesis</div>
+                                <p style="font-size:0.78rem;color:var(--text2);line-height:1.75;">Urban vitality leaves sensory traces — acoustic signatures, micro-events, foot rhythm. These signals can be read computationally when visual cues are deceptive.</p>
+                            </div>
+                            <div>
+                                <div class="cell-label" style="margin-bottom:0.5rem;">Research Lens</div>
+                                <p style="font-size:0.78rem;color:var(--text2);line-height:1.75;">We no longer rely solely on static demographics, but instead use mobile data — night-time footfall, transport journeys, food delivery routes — to interpret cities.</p>
+                                <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+                                    <p style="font-size:0.72rem;color:var(--text3);line-height:1.7;">"What does a city look like?" → "How does a city <em>feel</em> and sound at street level?"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 列 2：neighbourhood survey -->
+                        <div style="position: relative; overflow: hidden; min-height: 0;">
+                            <img src="images/urban_survey.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;">
+                            <div style="position:absolute;inset:0;background:rgba(20,16,12,0.62);"></div>
+                            <div style="position:relative;z-index:1;padding:1.75rem;height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:1rem;">
+                                <div style="font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.45);">Urban Void & Urban Core</div>
+                                <p style="font-size:0.78rem;color:rgba(255,255,255,0.85);line-height:1.75;">Overlaying night-time mobility, POI opening hours, and vacancy indicators, we classify streets into hot corridors and cold gaps.</p>
+                                <div style="margin-top:auto;display:flex;flex-direction:column;gap:0.6rem;">
+                                    <div style="display:flex;align-items:center;gap:0.6rem;">
+                                        <span style="width:10px;height:10px;background:#fff;opacity:0.9;flex-shrink:0;"></span>
+                                        <span style="font-size:0.65rem;color:rgba(255,255,255,0.7);">White — Active Commercial Core</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:0.6rem;">
+                                        <span style="width:10px;height:10px;background:#888;opacity:0.9;flex-shrink:0;"></span>
+                                        <span style="font-size:0.65rem;color:rgba(255,255,255,0.7);">Gray — Low-Activity Residential Fabric</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:0.6rem;">
+                                        <span style="width:10px;height:10px;background:#c0392b;opacity:0.9;flex-shrink:0;"></span>
+                                        <span style="font-size:0.65rem;color:rgba(255,255,255,0.7);">Red — Void Risk Spots</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 列 3：Problem Statement -->
+                        <div style="background: var(--bg); padding: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem;">
+                            <div class="cell-label">Problem Statement</div>
+
+                            <div>
+                                <div class="cell-label" style="margin-bottom:0.5rem;">The Gap</div>
+                                <p style="font-size:0.78rem;color:var(--text2);line-height:1.75;">Architectural density and social vitality are decoupled. Large-scale districts can appear complete — roads paved, towers lit — yet remain thinly populated and socially quiet. This gap is invisible to conventional documentation.</p>
+                            </div>
+
+                            <div>
+                                <div class="cell-label" style="margin-bottom:0.5rem;">Limitation of Visual Evidence</div>
+                                <p style="font-size:0.78rem;color:var(--text2);line-height:1.75;">Cameras register polished facades while missing the absence of social rhythms. A city may look "finished" yet feel uninhabited — the most telling signals are often subtle, ambient, and multisensory.</p>
+                            </div>
+
+                            <div style="margin-top:auto;">
+                                <div style="border-left:2px solid var(--accent);padding:0.75rem 1rem;background:rgba(192,57,43,0.03);">
+                                    <p style="font-size:0.72rem;color:var(--text2);line-height:1.7;font-style:italic;">Urban vitality as sensory evidence — acoustic signatures, micro-events, the rhythm of daily life.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- TAB 2: STRATEGY — Sidebar + Card Stack -->
+            <div class="tab-panel" id="panel-strategy" style="padding: 0; overflow: hidden;">
+
+                <div class="strat-shell">
+
+                    <!-- LEFT SIDEBAR -->
+                    <nav class="strat-sidebar" aria-label="Strategy steps">
+                        <p class="strat-sidebar-title">Research Phases</p>
+
+                        <button class="strat-nav-item active" data-step="0" onclick="switchStrategyV3(0, this)">
+                            <span class="strat-nav-num">01</span>
+                            <span class="strat-nav-text">
+                                <span class="strat-nav-label">Class Mapping</span>
+                                <span class="strat-nav-sub">Proxy Dataset Design</span>
+                            </span>
+                        </button>
+
+                        <button class="strat-nav-item" data-step="1" onclick="switchStrategyV3(1, this)">
+                            <span class="strat-nav-num">02</span>
+                            <span class="strat-nav-text">
+                                <span class="strat-nav-label">Baseline</span>
+                                <span class="strat-nav-sub">Unimodal Performance</span>
+                            </span>
+                        </button>
+
+                        <button class="strat-nav-item" data-step="2" onclick="switchStrategyV3(2, this)">
+                            <span class="strat-nav-num">03</span>
+                            <span class="strat-nav-text">
+                                <span class="strat-nav-label">Multimodal Fusion</span>
+                                <span class="strat-nav-sub">1 + 1 &gt; 2 Hypothesis</span>
+                            </span>
+                        </button>
+
+                        <button class="strat-nav-item" data-step="3" onclick="switchStrategyV3(3, this)">
+                            <span class="strat-nav-num">04</span>
+                            <span class="strat-nav-text">
+                                <span class="strat-nav-label">Weight Sensitivity</span>
+                                <span class="strat-nav-sub">Hyperparameter Tuning</span>
+                            </span>
+                        </button>
+
+                        <button class="strat-nav-item" data-step="4" onclick="switchStrategyV3(4, this)">
+                            <span class="strat-nav-num">05</span>
+                            <span class="strat-nav-text">
+                                <span class="strat-nav-label">Interpretation</span>
+                                <span class="strat-nav-sub">Confusion Matrix Analysis</span>
+                            </span>
+                        </button>
+                    </nav>
+
+                    <!-- RIGHT CARD STACK -->
+                    <div class="strat-card-area" id="strat-card-area">
+
+                        <!-- CARD 0: CLASS MAPPING -->
+                        <div class="strat-card" id="strat-card-0" data-depth="0">
+                            <div class="strat-card-inner">
+                                <div class="strat-card-header">
+                                    <div>
+                                        <div class="strat-card-tag">Phase 00 — Proxy Dataset Design</div>
+                                        <h2 class="strat-card-title">Class Mapping</h2>
+                                        <p class="strat-card-desc">Ghost towns are compositional scenes — they don't have unique "ghost features" but rather unusual combinations of normal urban elements. We define a three-category classification schema (Urban Void / Residential / Urban Core) derived from POI density, night-time mobility, and acoustic profiles.</p>
+                                    </div>
+                                    <span class="strat-card-badge">6 sub-classes</span>
+                                </div>
+
+                                <div class="strat-card-body" style="align-items: stretch;">
+
+                                    <!-- 左：分类表 -->
+                                    <div class="strat-card-left" style="display: flex; flex-direction: column; justify-content: center; gap: 1.25rem;">
+
+                                        <div class="info-module" style="margin: 0;">
+                                            <div class="info-module-label">Why proxy data?</div>
+                                            <p>Ghost towns require 100k+ samples for deep learning — physically infeasible to collect in situ. Ghost towns are compositional: they don't have unique "ghost features" but unusual combinations of normal urban elements. Proxy datasets let us learn those combinations at scale.</p>
+                                        </div>
+
+                                        <div style="display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);">
+                                            <div style="background:var(--bg);padding:0.75rem 1.25rem;display:flex;gap:1rem;align-items:center;">
+                                                <span style="font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);min-width:1.5rem;flex-shrink:0;">A</span>
+                                                <div>
+                                                    <div style="font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:0.15rem;">Urban Void</div>
+                                                    <div style="font-size:0.65rem;color:var(--text3);">A1 Construction · A2 Nature / Wilderness</div>
+                                                </div>
+                                            </div>
+                                            <div style="background:var(--bg);padding:0.75rem 1.25rem;display:flex;gap:1rem;align-items:center;">
+                                                <span style="font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);min-width:1.5rem;flex-shrink:0;">B</span>
+                                                <div>
+                                                    <div style="font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:0.15rem;">Residential Area</div>
+                                                    <div style="font-size:0.65rem;color:var(--text3);">B1 High-Rise · B2 Low-Rise Community</div>
+                                                </div>
+                                            </div>
+                                            <div style="background:var(--bg);padding:0.75rem 1.25rem;display:flex;gap:1rem;align-items:center;">
+                                                <span style="font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);min-width:1.5rem;flex-shrink:0;">C</span>
+                                                <div>
+                                                    <div style="font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:0.15rem;">Urban Core</div>
+                                                    <div style="font-size:0.65rem;color:var(--text3);">C1 Commercial Area · C2 Traffic Corridor</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- 右：两个数据集的选择理由 -->
+                                    <div class="strat-card-right" style="display: flex; flex-direction: column; justify-content: center; gap: 1.25rem;">
+
+                                        <div class="info-module" style="margin: 0;">
+                                            <div class="info-module-label">TAU Urban Acoustic Scenes</div>
+                                            <p>Recorded across 10+ European cities (Berlin, Helsinki, Barcelona…) with Stockholm held out as an unseen test city. Ensures spatial diversity — the model learns universal construction acoustics rather than city-specific quirks. 16kHz mono, 10s clips; sub-class labels align directly with A–C schema.</p>
+                                        </div>
+
+                                        <div class="info-module" style="margin: 0;">
+                                            <div class="info-module-label">Cityscapes Dataset</div>
+                                            <p>50 European cities, dense semantic segmentation maps. Original images labelled by scene type using segmentation masks — void, residential, and core zones are visually distinguishable by facade density and street-level activity cues. 62.83% peak validation accuracy reflects genuine scene ambiguity, not model failure.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARD 1: BASELINE -->
+                        <div class="strat-card" id="strat-card-1" data-depth="1" style="overflow:hidden;">
+                            <div class="strat-card-inner" style="gap:1.25rem;">
+
+                                <!-- TOP: header -->
+                                <div class="strat-card-header" style="flex-shrink:0;">
+                                    <div>
+                                        <div class="strat-card-tag">Phase 01 — Unimodal Benchmarking</div>
+                                        <h2 class="strat-card-title">Baseline</h2>
+                                        <p class="strat-card-desc">Establishing performance ceilings for each individual modality. Audio-only achieved ~44% accuracy capturing temporal dynamics; image-only reached ~63% capturing spatial structure — neither sufficient alone for robust ghost-town classification.</p>
+                                    </div>
+                                    <span class="strat-card-badge">Phase 01 of 04</span>
+                                </div>
+
+                                <!-- BOTTOM: two charts side by side, fills remaining space -->
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;flex:2;min-height:0;">
+                                    <div id="audio-chart-baseline" style="flex:1; min-height:280px;"></div>
+                                    <div id="img-chart-baseline" style="flex:1; min-height:280px;"></div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- CARD 2: MULTIMODAL FUSION -->
+                        <div class="strat-card" id="strat-card-2" data-depth="2">
+                            <div class="strat-card-inner" style="gap:0; padding:0; flex-direction:row;">
+
+                                <div style="width:42%; display:flex; flex-direction:column; gap:0; border-right:1px solid var(--border);">
+
+                                    <div style="flex:1; display:flex; flex-direction:row; border-bottom:1px solid var(--border);">
+                                        <div id="m-audio-only" style="aspect-ratio:1/1; height:100%; flex-shrink:0;"></div>
+                                        <div style="padding:1.5rem 1.25rem; display:flex; flex-direction:column; gap:0.5rem;">
+                                            <div style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent);">A=1 · I=0</div>
+                                            <div style="font-size:0.75rem; line-height:1.7; color:var(--text2);">Audio Model: ~44% accuracy. Struggles with commercial zones (C1/C2).</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="flex:1; display:flex; flex-direction:row;">
+                                        <div id="m-image-only" style="aspect-ratio:1/1; height:100%; flex-shrink:0;"></div>
+                                        <div style="padding:1.5rem 1.25rem; display:flex; flex-direction:column; gap:0.5rem;">
+                                            <div style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent);">A=0 · I=1</div>
+                                            <div style="font-size:0.75rem; line-height:1.7; color:var(--text2);">Image Model: ~63% accuracy. Superior on visually distinctive areas.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="flex:1; display:flex; flex-direction:column; padding:2.5rem 2.5rem 2rem 2.5rem; gap:1.5rem;">
+                                    <div style="flex-shrink:0;">
+                                        <div class="strat-card-tag">Phase 02 — Fusion Efficacy</div>
+                                        <h2 class="strat-card-title">Multimodal Fusion</h2>
+                                        <p class="strat-card-desc" style="margin-top:0.6rem;">Combined accuracy: <b>76.7%</b>. Audio covers visual weaknesses; image corrects audio ambiguities.</p>
+                                    </div>
+
+                                    <div id="m-fusion-main" style="flex:1; min-height:0; background:var(--card); border-radius:6px;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="custom-tooltip" id="matrix-tooltip"></div>
+
+                        <!-- CARD 3: WEIGHT SENSITIVITY -->
+                        <div class="strat-card" id="strat-card-3" data-depth="3">
+                            <div class="strat-card-inner">
+                                <div class="strat-card-header">
+                                    <div>
+                                        <div class="strat-card-tag">Phase 03 — Hyperparameter Tuning</div>
+                                        <h2 class="strat-card-title">Weight Sensitivity</h2>
+                                        <p class="strat-card-desc">Systematically sweeping the fusion weight α from 0.0 to 1.0 to identify the optimal trust ratio between modalities. The "golden ratio" maximises system accuracy and reveals the relative contribution of each sensory stream.</p>
+                                    </div>
+                                    <span class="strat-card-badge">α sweep 0.0 → 1.0</span>
+                                </div>
+                                <div class="strat-card-body" style="align-items: stretch;">
+
+                                    <!-- 左：只留两个数字 + 一句核心结论 -->
+                                    <div class="strat-card-left" style="flex: 0 0 220px; min-width: 180px; display: flex; flex-direction: column; justify-content: center; gap: 1.5rem;">
+
+                                        <div class="metric-row" style="flex-direction: column; gap: 1rem;">
+                                            <div class="metric-cell">
+                                                <div class="metric-val">α<span>=0.5</span></div>
+                                                <div class="metric-desc">Optimal — equal trust in both modalities</div>
+                                            </div>
+                                            <div class="metric-cell">
+                                                <div class="metric-val">76.67<span>%</span></div>
+                                                <div class="metric-desc">Peak fusion accuracy at sweet spot</div>
+                                            </div>
+                                        </div>
+
+                                        <p style="font-size: 0.72rem; color: var(--text3); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 1rem;">
+                                            Naive 50/50 weighting is not guaranteed optimal — modalities contribute unequally depending on scene type. Empirical sweep finds the true sweet spot.
+                                        </p>
+
+                                    </div>
+
+                                    <!-- 右：图表，占满剩余空间 -->
+                                    <div class="strat-card-right" style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+
+                                        <!-- 三个 metric 卡移除，数字已在左侧 -->
+                                        <div style="position: relative; width: 100%; flex: 1; min-height: 260px;">
+                                            <canvas id="sensitivityChart"></canvas>
+                                        </div>
+
+                                        <div style="margin-top: 1rem; border: 0.5px solid var(--border); border-radius: 4px; overflow: auto;">
+                                            <table id="dataTable" style="width: 100%; border-collapse: collapse; font-size: 11px; table-layout: fixed;">
+                                                <thead>
+                                                    <tr style="border-bottom: 0.5px solid var(--border);">
+                                                        <td style="padding: 6px 10px; color: var(--text3); width: 80px;">α</td>
+                                                        <td id="th0"  style="padding: 6px 4px; text-align: center; color: var(--text3);">0.0</td>
+                                                        <td id="th1"  style="padding: 6px 4px; text-align: center; color: var(--text3);">0.1</td>
+                                                        <td id="th2"  style="padding: 6px 4px; text-align: center; color: var(--text3);">0.2</td>
+                                                        <td id="th3"  style="padding: 6px 4px; text-align: center; color: var(--text3);">0.3</td>
+                                                        <td id="th4"  style="padding: 6px 4px; text-align: center; color: var(--text3);">0.4</td>
+                                                        <td id="th5"  style="padding: 6px 4px; text-align: center; color: var(--text3); font-weight: 600;">0.5</td>
+                                                        <td id="th6"  style="padding: 6px 4px; text-align: center; color: var(--text3);">0.6</td>
+                                                        <td id="th7"  style="padding: 6px 4px; text-align: center; color: var(--text3);">0.7</td>
+                                                        <td id="th8"  style="padding: 6px 4px; text-align: center; color: var(--text3);">0.8</td>
+                                                        <td id="th9"  style="padding: 6px 4px; text-align: center; color: var(--text3);">0.9</td>
+                                                        <td id="th10" style="padding: 6px 4px; text-align: center; color: var(--text3);">1.0</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="padding: 6px 10px; color: var(--text3);">Acc.</td>
+                                                        <td id="td0"  style="padding: 6px 4px; text-align: center; color: var(--text);">53.7%</td>
+                                                        <td id="td1"  style="padding: 6px 4px; text-align: center; color: var(--text);">55.7%</td>
+                                                        <td id="td2"  style="padding: 6px 4px; text-align: center; color: var(--text);">60.0%</td>
+                                                        <td id="td3"  style="padding: 6px 4px; text-align: center; color: var(--text);">67.3%</td>
+                                                        <td id="td4"  style="padding: 6px 4px; text-align: center; color: var(--text);">75.0%</td>
+                                                        <td id="td5"  style="padding: 6px 4px; text-align: center; color: var(--text); font-weight: 600;">76.67%</td>
+                                                        <td id="td6"  style="padding: 6px 4px; text-align: center; color: var(--text);">72.0%</td>
+                                                        <td id="td7"  style="padding: 6px 4px; text-align: center; color: var(--text);">67.3%</td>
+                                                        <td id="td8"  style="padding: 6px 4px; text-align: center; color: var(--text);">64.0%</td>
+                                                        <td id="td9"  style="padding: 6px 4px; text-align: center; color: var(--text);">62.3%</td>
+                                                        <td id="td10" style="padding: 6px 4px; text-align: center; color: var(--text);">60.0%</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARD 4: INTERPRETATION -->
+                        <div class="strat-card" id="strat-card-4" data-depth="4">
+                            <div class="strat-card-inner">
+                                <div class="strat-card-header">
+                                    <div>
+                                        <div class="strat-card-tag">Phase 04 — Experimental Analysis & Reflection</div>
+                                        <h2 class="strat-card-title">Interpretation</h2>
+                                        <p class="strat-card-desc">Confusion matrix analysis reveals which classes each modality handles best and worst, validating that audio and image errors are complementary — the necessary precondition for fusion to provide genuine benefit beyond simple averaging.</p>
+                                    </div>
+                                    <span class="strat-card-badge">3 confusion matrices</span>
+                                </div>
+                                <div class="strat-card-body" style="align-items: stretch;">
+
+                                    <!-- 左：三条 finding，每条一句话 -->
+                                    <div class="strat-card-left" style="display: flex; flex-direction: column; justify-content: center; gap: 1.25rem;">
+                                        <div class="info-module" style="margin: 0;">
+                                            <div class="info-module-label">Audio model</div>
+                                            <p>Excels on A1–B2 (construction & residential). Fails on C1/C2 — commercial machinery and traffic noise are acoustically indistinguishable.</p>
+                                        </div>
+                                        <div class="info-module" style="margin: 0;">
+                                            <div class="info-module-label">Image model</div>
+                                            <p>Strong on B2, C1, C2 — visually distinctive streetscapes. Weak on A1/A2 where construction sites lack stable visual identity.</p>
+                                        </div>
+                                        <div class="info-module" style="margin: 0;">
+                                            <div class="info-module-label">Fusion effect</div>
+                                            <p>Error spaces are orthogonal — audio covers image blind spots and vice versa. Overall accuracy: <strong>76.67%</strong>, a 10% gain over the best single-modality result.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- 右：结论 + outlook -->
+                                    <div class="strat-card-right" style="display: flex; flex-direction: column; justify-content: center; gap: 1.25rem;">
+
+                                        <div style="border: 1px solid var(--border); border-left: 2px solid var(--accent); padding: 1.25rem 1.5rem; background: rgba(192,57,43,0.03);">
+                                            <div class="info-module-label" style="margin-bottom: 0.5rem;">Conclusion</div>
+                                            <p style="font-size: 0.8rem; color: var(--text2); line-height: 1.8;">
+                                                The systematic weight sweep confirms multimodal fusion significantly outperforms either unimodal baseline. The performance curve reveals a sufficiently wide stable operating region, validating robust real-world deployment.
+                                            </p>
+                                        </div>
+
+                                        <div style="border: 1px solid var(--border); padding: 1.25rem 1.5rem;">
+                                            <div class="info-module-label" style="margin-bottom: 0.5rem;">Core Direction</div>
+                                            <p style="font-size: 0.8rem; color: var(--text2); line-height: 1.8;">
+                                                From "what can data classify?" to "how do humans experience urban emptiness — and can AI learn this embodied understanding?" The next step moves beyond isolated audio-image pairs toward spatial reasoning and perceptual affordances.
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- /strat-card-area -->
+                </div><!-- /strat-shell -->
+            </div>
+
+            <!-- TAB 3: technical implementation -->
+            <div class="tab-panel" id="panel-tech" style="padding: 0; overflow: hidden;">
+                <div class="tech-wrap" id="wrap">
+                    
+                    <div class="interactive-area" id="interactive-area">
+                        <img class="device-img" src="images/urban_imp.png" alt="Hardware Setup">
+                        <div class="image-overlay"></div> <div class="hotspot" style="top:38%;left:22%" data-id="stm32">
+                            <div class="hotspot-ring"></div><div class="hotspot-dot"></div>
+                        </div>
+                        <div class="hotspot" style="top:45%;left:42%" data-id="mic">
+                            <div class="hotspot-ring" style="animation-delay:0.4s"></div><div class="hotspot-dot"></div>
+                        </div>
+                        <div class="hotspot" style="top:40%;left:53%" data-id="tft">
+                            <div class="hotspot-ring" style="animation-delay:0.8s"></div><div class="hotspot-dot"></div>
+                        </div>
+                        <div class="hotspot" style="top:42%;left:37%" data-id="esp32">
+                            <div class="hotspot-ring" style="animation-delay:1.2s"></div><div class="hotspot-dot"></div>
+                        </div>
+                        <div class="hotspot" style="top:55%;left:15%" data-id="switch">
+                            <div class="hotspot-ring" style="animation-delay:1.6s"></div><div class="hotspot-dot"></div>
+                        </div>
+                        <div class="hotspot" style="top: 38%; left: 45%;" data-id="servo">
+                            <div class="hotspot-ring" style="animation-delay: 2.0s; "></div>
+                            <div class="hotspot-dot"></div>
+                        </div>
+                        <div class="hotspot" style="top: 50%; left: 75%;" data-id="Arduino">
+                            <div class="hotspot-ring" style="animation-delay: 2.0s; "></div>
+                            <div class="hotspot-dot"></div>
+                        </div>
+
+                        </div>
+
+                    <div class="info-card" id="card"></div>
+                    <div class="tech-legend" style="z-index: 10;">Hover components to explore</div>
+                </div>
+            </div>
+
+
+            <!-- TAB 4: DEPLOYMENT -->
+            <div class="tab-panel" id="panel-deployment">
+                
+                <div class="deployment-grid">
+                    
+                    <div class="bg-shape">
+                        <img src="images/urban_d_02.png" alt="Background Environment">
+                    </div>
+
+                    <div class="important-numbers">
+                        <div class="num-val">76.7<span>%</span></div>
+                        <div class="num-label">In-Situ Accuracy</div>
+                        <div class="num-val" style="margin-top: 2vh;">16<span>kHz</span></div>
+                        <div class="num-label">Acoustic Sampling</div>
+                    </div>
+
+                    <div class="img-group group-1">
+                        <img src="images/urban_d_03.HEIC.png" alt="Deployment 1" class="main-img">
+                        <img src="images/urban_d_031.png" alt="Detail 1" class="hover-img">
+                    </div>
+
+                    <div class="img-group group-2">
+                        <img src="images/urban_d_04.png" alt="Deployment 2" class="main-img">
+                        <img src="images/urban_d_041.png" alt="Detail 2" class="hover-img">
+                    </div>
+
+                    <div class="img-group group-3">
+                        <img src="images/urban_d_05.png" alt="Deployment 3" class="main-img">
+                        <img src="images/urban_d_051.png" alt="Detail 3" class="hover-img">
+                    </div>
+
+                    <div class="info-list">
+                        <div class="info-title">MODULE SPECS</div>
+                        <div class="info-item">ESP32 Image Server</div>
+                        <div class="info-item">STM32 Audio Acquisition</div>
+                        <div class="info-item">Arduino Display Unit</div>
+                        <div class="info-item">Battery-powered Enclosure</div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="glass-title">Field Notes</div>
+                        <div class="glass-desc">
+                            The validated fusion architecture is translated into a compact, battery-powered sensing unit capable of autonomous audio-visual data collection in authentic urban environments — actual ghost town locations.
+                        </div>
+                    </div>
+
+                </div> 
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('panel-' + id).classList.add('active');
+            const detailEl = document.getElementById('detail');
+            const rect = detailEl.getBoundingClientRect();
+            if (rect.top > 5) {
+                detailEl.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 鼠标唤醒导航栏逻辑
+        const topNav = document.getElementById('main-nav');
+        let hideNavTimer;
+
+        if (topNav) {
+            document.addEventListener('mousemove', () => {
+                topNav.classList.remove('idle');
+                clearTimeout(hideNavTimer);
+                hideNavTimer = setTimeout(() => {
+                    topNav.classList.add('idle');
+                }, 1500);
+            });
+        }
+
+       
+        // HOTSPOT INTERACTION LOGIC (TECH TAB)
+        // 卡片内容
+        const hotspotData = {
+            stm32: { label: "Audio Capture", title: "STM32 — Audio Acquisition", body: "Samples audio at 16kHz via INMP441. Transmits raw 24-bit data to Python host at 2Mbps baud — zero buffering delay." },
+            mic: { label: "Sensor", title: "INMP441 Microphone", body: "I²S digital MEMS microphone. Captures ambient sound signatures used to detect urban acoustic vitality patterns." },
+            tft: { label: "Display", title: "TFT Screen", body: "128×128 pixel display. Renders processed classification results pixel-by-pixel — awaiting Python inference output." },
+            esp32: { label: "Image Capture", title: "ESP32-CAM", body: "Passive HTTP image server. Returns a JPEG snapshot only when Python requests /capture — no continuous streaming." },
+            switch: { label: "Control", title: "Physical Switch", body: "Triggers servo motor between 0° and 180°. Opens and closes the camera housing to preserve privacy by default." },
+            servo: { label: "Control", title: "Servo", body: "Controls the esp32 cam" },
+            Arduino: {label: "Control", title: "Arduino Uno", body:"Controls switch, servo, and TFT"}
+        };
+
+        const infoCard = document.getElementById('card');
+        const techHotspots = document.querySelectorAll('.hotspot');
+        const techWrap = document.getElementById('interactive-area');
+
+        techHotspots.forEach(h => {
+            h.addEventListener('mouseenter', () => {
+                const id = h.dataset.id;
+                const d = hotspotData[id];
+                infoCard.innerHTML = `<div class="card-label">${d.label}</div><div class="card-title">${d.title}</div><div class="card-body">${d.body}</div>`;
+
+                // 只有在鼠标悬停时才计算位置，完美兼容 Tab 切换带来的隐藏状态
+                const wRect = techWrap.getBoundingClientRect();
+                const hRect = h.getBoundingClientRect();
+                const relX = hRect.left - wRect.left;
+                const relY = hRect.top - wRect.top;
+                
+                //card位置
+                let left = relX -10;
+                let top = relY -200;
+                
+                // 防止卡片超出右侧或底部边界
+                if (left + 240 > wRect.width - 10) left = relX - 250;
+                if (top + 130 > wRect.height - 10) top = wRect.height - 140;
+                if (top < 8) top = 8;
+
+                infoCard.style.left = left + 'px';
+                infoCard.style.top = top + 'px';
+                infoCard.classList.add('visible');
+                h.classList.add('active');
+            });
+            h.addEventListener('mouseleave', () => {
+                infoCard.classList.remove('visible');
+                h.classList.remove('active');
+            });
+        });
+
+        // --- Strategy V3: Card Stack Switcher ---
+        let currentStratStep = 0;
+        let isAnimating = false;
+
+        // 根据 depth 返回对应的 transform 和 box-shadow（与 CSS 保持一致）
+        const DEPTH_STYLES = [
+            { transform: 'translateX(0)',                    zIndex: 10, shadow: '6px 0 20px rgba(26,21,16,0.14), 0 8px 32px rgba(26,21,16,0.12), 0 2px 6px rgba(26,21,16,0.06)' },
+            { transform: 'translateX(calc(100% + 0rem))',    zIndex: 9,  shadow: 'inset 4px 0 14px rgba(26,21,16,0.09), 0 6px 24px rgba(26,21,16,0.08)' },
+            { transform: 'translateX(calc(100% + 1.4rem))',  zIndex: 8,  shadow: 'inset 4px 0 10px rgba(26,21,16,0.06), 0 4px 16px rgba(26,21,16,0.06)' },
+            { transform: 'translateX(calc(100% + 2.5rem))',  zIndex: 7,  shadow: 'inset 4px 0 8px rgba(26,21,16,0.04), 0 3px 10px rgba(26,21,16,0.04)'  },
+            { transform: 'translateX(calc(100% + 3.3rem))',  zIndex: 6,  shadow: 'inset 4px 0 6px rgba(26,21,16,0.03), 0 2px 6px rgba(26,21,16,0.03)'   },
+        ];
+        const TRANSITION = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.55s ease';
+        const OFF_LEFT   = 'translateX(-110%)';
+
+        function applyStyle(card, transform, zIndex, shadow, animated) {
+            card.style.transition = animated ? TRANSITION : 'none';
+            card.style.transform  = transform;
+            card.style.zIndex     = zIndex;
+            card.style.boxShadow  = shadow;
+        }
+
+        function switchStrategyV3(targetStep, btn) {
+            if (targetStep === currentStratStep || isAnimating) return;
+            isAnimating = true;
+
+            const cards = Array.from(document.querySelectorAll('.strat-card'));
+            const goingForward = targetStep > currentStratStep;
+
+            // 更新侧边栏按钮
+            document.querySelectorAll('.strat-nav-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // ── 在同一帧内同时设置所有卡片的目标状态，CSS transition 负责动画 ──
+            cards.forEach((card, i) => {
+                const depth = i - targetStep; // 负数 = 已翻过，0 = 新顶层，正数 = 后面的卡
+
+                if (depth < 0) {
+                    // 已翻过的卡片 → 移到左边
+                    if (goingForward && i === currentStratStep) {
+                        // 当前顶层卡：有动画地滑出左侧
+                        applyStyle(card, OFF_LEFT, 1, 'none', true);
+                    } else {
+                        // 其他已翻过的卡：瞬移到左边（不可见，不需要动画）
+                        applyStyle(card, OFF_LEFT, 1, 'none', false);
+                    }
+                    card.setAttribute('data-depth', '99');
+                } else {
+                    // 当前顶层及后续卡片 → 按 depth 就位
+                    const d = Math.min(depth, DEPTH_STYLES.length - 1);
+                    const s = DEPTH_STYLES[d];
+                    card.setAttribute('data-depth', d);
+                    applyStyle(card, s.transform, s.zIndex, s.shadow, true);
+                }
+            });
+
+            currentStratStep = targetStep;
+
+            // 动画结束后解锁
+            setTimeout(() => { isAnimating = false; }, 580);
+        }
+
+        // Init on load（无动画瞬间就位）
+        (function initCards() {
+            const cards = Array.from(document.querySelectorAll('.strat-card'));
+            cards.forEach((card, i) => {
+                const d = Math.min(i, DEPTH_STYLES.length - 1);
+                const s = DEPTH_STYLES[d];
+                card.setAttribute('data-depth', d);
+                applyStyle(card, s.transform, s.zIndex, s.shadow, false);
+            });
+        })();
+
+        // --- 1. 数据准备 ---
+        const audioChartData = {
+            epochs: Array.from({length: 87}, (_, i) => i),
+            acc: [0.367, 0.434, 0.478, 0.498, 0.512, 0.528, 0.536, 0.547, 0.553, 0.564, 0.57, 0.575, 0.584, 0.59, 0.595, 0.601, 0.606, 0.611, 0.617, 0.622, 0.623, 0.628, 0.63, 0.635, 0.635, 0.638, 0.641, 0.643, 0.647, 0.647, 0.647, 0.651, 0.652, 0.653, 0.654, 0.655, 0.655, 0.656, 0.655, 0.658, 0.658, 0.659, 0.658, 0.66, 0.66, 0.661, 0.662, 0.663, 0.661, 0.663, 0.664, 0.664, 0.664, 0.663, 0.664, 0.664, 0.665, 0.664, 0.665, 0.665, 0.665, 0.665, 0.665, 0.665, 0.666, 0.666, 0.667, 0.665, 0.666, 0.665, 0.666, 0.666, 0.665, 0.665, 0.665, 0.666, 0.665, 0.665, 0.665, 0.665, 0.665, 0.664, 0.664, 0.664, 0.665, 0.666, 0.666],
+            val_acc: [0.403, 0.467, 0.49, 0.497, 0.509, 0.525, 0.537, 0.548, 0.559, 0.551, 0.558, 0.576, 0.576, 0.58, 0.596, 0.594, 0.597, 0.602, 0.612, 0.611, 0.615, 0.617, 0.617, 0.624, 0.618, 0.623, 0.631, 0.631, 0.628, 0.628, 0.633, 0.634, 0.636, 0.636, 0.634, 0.634, 0.636, 0.635, 0.635, 0.634, 0.634, 0.636, 0.636, 0.637, 0.636, 0.636, 0.636, 0.635, 0.636, 0.637, 0.637, 0.636, 0.635, 0.636, 0.636, 0.637, 0.636, 0.635, 0.635, 0.635, 0.634, 0.636, 0.637, 0.636, 0.636, 0.635, 0.634, 0.634, 0.634, 0.634, 0.635, 0.635, 0.635, 0.635, 0.634, 0.633, 0.634, 0.634, 0.634, 0.633, 0.634, 0.634, 0.634, 0.634, 0.634, 0.635, 0.635]
+        };
+
+        const imgChartData = {
+            epochs: Array.from({length: 51}, (_, i) => i),
+            acc: [0.348, 0.342, 0.367, 0.382, 0.39, 0.394, 0.407, 0.402, 0.413, 0.435, 0.444, 0.457, 0.466, 0.473, 0.493, 0.488, 0.506, 0.519, 0.53, 0.548, 0.535, 0.557, 0.564, 0.564, 0.584, 0.597, 0.603, 0.592, 0.612, 0.601, 0.621, 0.628, 0.63, 0.628, 0.643, 0.643, 0.648, 0.661, 0.654, 0.65, 0.659, 0.672, 0.657, 0.661, 0.661, 0.658, 0.658, 0.65, 0.653, 0.652, 0.661],
+            val_acc: [0.318, 0.318, 0.353, 0.371, 0.398, 0.398, 0.407, 0.398, 0.424, 0.424, 0.424, 0.433, 0.424, 0.469, 0.486, 0.477, 0.477, 0.53, 0.53, 0.539, 0.539, 0.53, 0.53, 0.557, 0.557, 0.566, 0.575, 0.575, 0.584, 0.575, 0.584, 0.584, 0.592, 0.575, 0.592, 0.592, 0.592, 0.601, 0.601, 0.592, 0.61, 0.61, 0.61, 0.61, 0.606, 0.606, 0.597, 0.597, 0.597, 0.615, 0.619]
+        };
+
+        // --- 2. 初始化函数 ---
+        let audioBaselineChart, imgBaselineChart;
+
+        function initBaselineCharts() {
+        // 通用配置：定义滑条和交互样式
+        const commonOption = {
+            grid: { 
+                top: 40, 
+                right: 20, 
+                bottom: 80, // 留出更多底部空间给滑条
+                left: 45 
+            },
+            legend: { 
+                top: 0, 
+                textStyle: { fontSize: 10, color: '#a89e92' } 
+            },
+            tooltip: { 
+                trigger: 'axis', 
+                backgroundColor: 'rgba(26,21,16,0.9)', 
+                textStyle: { color: '#fff', fontSize: 11 },
+                borderWidth: 0
+            },
+            // 🚀 这就是你最喜欢的滑条设计
+            dataZoom: [
+                {
+                    type: 'inside', // 允许在图表内直接用鼠标滚轮或触摸缩放
+                    start: 0,
+                    end: 100
+                },
+                {
+                    type: 'slider', // 底部显示的物理滑条
+                    height: 20,    // 滑条高度
+                    bottom: 10,    // 距离底部距离
+                    borderColor: 'transparent',
+                    backgroundColor: 'rgba(26,21,16,0.03)', // 浅色背景
+                    fillerColor: 'rgba(192,57,43,0.1)',     // 选中区域颜色（使用了你的 --accent）
+                    handleIcon: 'path://M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                    handleSize: '80%',
+                    handleStyle: {
+                        color: '#c0392b', // 手柄颜色
+                        shadowBlur: 3,
+                        shadowColor: 'rgba(0, 0, 0, 0.1)',
+                    },
+                    textStyle: { color: '#a89e92', fontSize: 9 }, // 左右两端数字颜色
+                    moveHandleStyle: { color: '#ede9e2' },
+                    brushSelect: false // 关闭框选功能，保持简洁
+                }
+            ],
+            xAxis: { 
+                type: 'category', 
+                axisLine: { lineStyle: { color: '#ede9e2' } },
+                axisLabel: { color: '#a89e92', fontSize: 10 }
+            },
+            yAxis: { 
+                type: 'value', 
+                min: 0.3, 
+                splitLine: { lineStyle: { color: '#ede9e2' } },
+                axisLabel: { color: '#a89e92', fontSize: 10 }
+            }
+        };
+
+        // 音频图表
+        audioBaselineChart = echarts.init(document.getElementById('audio-chart-baseline'));
+        audioBaselineChart.setOption({
+            ...commonOption,
+            title: { text: 'Audio Training Log', textStyle: { fontSize: 12, fontWeight: 400, color: '#6b6256' } },
+            xAxis: { ...commonOption.xAxis, data: audioChartData.epochs },
+            series: [
+                { name: 'Train Acc', type: 'line', data: audioChartData.acc, color: '#c0392b', smooth: true, symbol: 'none', lineStyle: { width: 1.5 } },
+                { name: 'Val Acc', type: 'line', data: audioChartData.val_acc, color: '#a89e92', smooth: true, symbol: 'none', lineStyle: { width: 1.5, type: 'dashed' } }
+            ]
+        });
+
+        // 图像图表
+        imgBaselineChart = echarts.init(document.getElementById('img-chart-baseline'));
+        imgBaselineChart.setOption({
+            ...commonOption,
+            title: { text: 'Image Training Log', textStyle: { fontSize: 12, fontWeight: 400, color: '#6b6256' } },
+            xAxis: { ...commonOption.xAxis, data: imgChartData.epochs },
+            series: [
+                { name: 'Train Acc', type: 'line', data: imgChartData.acc, color: '#c0392b', smooth: true, symbol: 'none', lineStyle: { width: 1.5 } },
+                { name: 'Val Acc', type: 'line', data: imgChartData.val_acc, color: '#a89e92', smooth: true, symbol: 'none', lineStyle: { width: 1.5, type: 'dashed' } }
+            ]
+        });
+    }
+        // 1. 矩阵数据
+        const matrixLabels = ['A1','A2','B1','B2','C1','C2'];
+        const dataM1 = [[34,5,4,2,4,1],[1,49,0,0,0,0],[4,0,43,0,0,3],[22,0,0,25,0,3],[2,0,0,0,44,4],[5,3,0,0,4,38]]; // A0.5
+        const dataM2 = [[87,6,2,0,5,0],[9,91,0,0,0,0],[8,3,87,1,1,0],[82,2,2,9,5,0],[46,2,6,1,44,1],[32,18,1,0,3,46]]; // A1
+        const dataM3 = [[6,5,8,4,16,11],[1,18,3,9,2,17],[2,0,20,1,10,17],[0,1,0,31,5,13],[0,0,0,0,39,11],[0,0,0,2,13,35]]; // I1
+
+        // 2. 核心渲染函数
+        function renderConfusionMatrix(id, mat) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const chart = echarts.init(el);
+            const maxVal = Math.max(...mat.flat());
+            const n = matrixLabels.length;
+            
+            const chartData = [];
+            for (let r = 0; r < n; r++) {
+                for (let c = 0; c < n; c++) {
+                    chartData.push({
+                        value: [c, n - 1 - r, mat[r][c]],
+                        trueLabel: matrixLabels[r],
+                        predLabel: matrixLabels[c],
+                        count: mat[r][c]
+                    });
+                }
+            }
+
+            const option = {
+                animation: true,
+                grid: { top: 10, right: 10, bottom: 40, left: 40 },
+                xAxis: { type: 'category', data: matrixLabels, axisLabel: { fontSize: 9 }, splitArea: { show: false } },
+                yAxis: { type: 'category', data: [...matrixLabels].reverse(), axisLabel: { fontSize: 9 }, splitArea: { show: false } },
+                visualMap: { min: 0, max: maxVal, show: false, inRange: { color: ['#e8f4f8', '#7aafd0', '#0a2454'] } },
+                series: [{
+                    type: 'heatmap',
+                    data: chartData,
+                    label: { 
+                        show: true, 
+                        formatter: p => p.value[2] > 0 ? p.value[2] : '',
+                        fontSize: 9,
+                        color: p => (p.value[2]/maxVal > 0.5) ? '#fff' : '#1a1510'
+                    }
+                }]
+            };
+
+            chart.setOption(option);
+
+            // Tooltip 交互
+            const tt = document.getElementById('matrix-tooltip');
+            chart.on('mouseover', p => {
+                tt.innerHTML = `<span style="color:#a89e92">true</span> ${p.data.trueLabel} &nbsp; <span style="color:#a89e92">pred</span> ${p.data.predLabel} &nbsp; <span class="tooltip-val">${p.data.count}</span>`;
+                tt.classList.add('visible');
+            });
+            chart.on('mouseout', () => tt.classList.remove('visible'));
+            el.addEventListener('mousemove', e => {
+                tt.style.left = (e.clientX + 15) + 'px';
+                tt.style.top = (e.clientY - 20) + 'px';
+            });
+
+            return chart;
+        }
+
+        // 3. 挂载到策略切换逻辑中
+        let matrixCharts = [];
+        const originalSwitchStrategy = window.switchStrategyV3;
+        window.switchStrategyV3 = function(targetStep, btn) {
+            originalSwitchStrategy(targetStep, btn);
+            
+            if (targetStep === 2) { // 切换到 Fusion 卡片时渲染
+                setTimeout(() => {
+                    if (matrixCharts.length === 0) {
+                        matrixCharts.push(renderConfusionMatrix('m-fusion-main', dataM1));
+                        matrixCharts.push(renderConfusionMatrix('m-audio-only', dataM2));
+                        matrixCharts.push(renderConfusionMatrix('m-image-only', dataM3));
+                    } else {
+                        matrixCharts.forEach(c => c.resize());
+                    }
+                }, 600);
+            }
+        };
+
+        // --- 3. 关键修正：处理隐藏 Tab 下的图表渲染问题 ---
+        // 因为 Baseline 卡片在 Tab 切换时可能处于隐藏状态，ECharts 无法获取宽度。
+        // 我们需要在切换到 Research Tab 或 Baseline Step 时触发重绘。
+
+        const originalSwitchTab = window.switchTab;
+        window.switchTab = function(id, btn) {
+            originalSwitchTab(id, btn);
+            if (id === 'strategy' || id === 'research') {
+                setTimeout(() => {
+                    audioBaselineChart?.resize();
+                    imgBaselineChart?.resize();
+                }, 300);
+            }
+        };
+
+       
+
+        // 页面加载完成后初始化
+        window.addEventListener('load', initBaselineCharts);
+
+        const weights = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+        const accs    = [53.7, 55.7, 60.0, 67.3, 75.0, 76.67, 72.0, 67.3, 64.0, 62.3, 60.0];
+        const peakIdx = 5;
+
+        const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+        const lineColor   = isDark ? '#7aafd0' : '#185FA5';
+        const peakColor   = isDark ? '#f09595' : '#A32D2D';
+        const gridColor   = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+        const labelColor  = isDark ? '#b4b2a9' : '#5f5e5a';
+        const tooltipBg   = isDark ? '#2c2c2a' : '#ffffff';
+        const tooltipText = isDark ? '#f1efe8' : '#1a1510';
+
+        const pointColors = weights.map((_,i) => i === peakIdx ? peakColor : lineColor);
+        const pointRadius = weights.map((_,i) => i === peakIdx ? 7 : 4);
+        const pointBorder = weights.map((_,i) => i === peakIdx ? peakColor : lineColor);
+
+        const peakPlugin = {
+        id: 'peakAnnotation',
+        afterDraw(chart) {
+            const {ctx, scales: {x, y}} = chart;
+            const px = x.getPixelForValue(peakIdx);
+            const py = y.getPixelForValue(76.67);
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(px, py - 14);
+            ctx.lineTo(px - 6, py - 26);
+            ctx.lineTo(px + 6, py - 26);
+            ctx.closePath();
+            ctx.fillStyle = peakColor;
+            ctx.fill();
+
+            ctx.font = '500 11px sans-serif';
+            ctx.fillStyle = peakColor;
+            ctx.textAlign = 'center';
+            ctx.fillText('best: 76.67% (α=0.5)', px, py - 32);
+            ctx.restore();
+        }
+        };
+
+        const hoverHighlight = {
+        id: 'hoverHighlight',
+        afterDraw(chart) {
+            const active = chart._active;
+            if (!active || !active.length) return;
+            const idx = active[0].index;
+            ['th','td'].forEach(pfx => {
+            for (let i = 0; i <= 10; i++) {
+                const el = document.getElementById(pfx + i);
+                if (!el) return;
+                el.style.background = i === idx
+                ? (isDark ? 'rgba(120,175,210,0.15)' : 'rgba(24,95,165,0.07)')
+                : '';
+            }
+            });
+        }
+        };
+
+        new Chart(document.getElementById('sensitivityChart'), {
+        type: 'line',
+        plugins: [peakPlugin, hoverHighlight],
+        data: {
+            labels: weights.map(w => w.toFixed(1)),
+            datasets: [{
+            data: accs,
+            borderColor: lineColor,
+            borderWidth: 2,
+            pointBackgroundColor: pointColors,
+            pointBorderColor: pointBorder,
+            pointRadius: pointRadius,
+            pointHoverRadius: 7,
+            tension: 0.18,
+            fill: {
+                target: 'origin',
+                above: isDark ? 'rgba(120,175,210,0.08)' : 'rgba(24,95,165,0.06)'
+            }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: tooltipBg,
+                titleColor: tooltipText,
+                bodyColor: labelColor,
+                borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)',
+                borderWidth: 0.5,
+                padding: 10,
+                callbacks: {
+                title: (items) => `Audio weight: ${items[0].label}`,
+                label: (item) => `Accuracy: ${item.raw}%`
+                }
+            }
+            },
+            scales: {
+            x: {
+                title: {
+                display: true,
+                text: 'Audio weight  (image weight = 1 − α)',
+                color: labelColor,
+                font: { size: 12 }
+                },
+                grid: { color: gridColor },
+                ticks: { color: labelColor, font: { size: 11 }, autoSkip: false }
+            },
+            y: {
+                title: {
+                display: true,
+                text: 'Fusion accuracy (%)',
+                color: labelColor,
+                font: { size: 12 }
+                },
+                grid: { color: gridColor },
+                ticks: {
+                color: labelColor,
+                font: { size: 11 },
+                callback: v => v + '%'
+                },
+                min: 50,
+                max: 82,
+                suggestedMin: 50
+            }
+            },
+            onHover(_, elements) {
+            if (!elements.length) {
+                for (let i = 0; i <= 10; i++) {
+                ['th','td'].forEach(p => {
+                    const el = document.getElementById(p + i);
+                    if (el) el.style.background = '';
+                });
+                }
+            }
+            }
+        }
+        });
+
+        (function() {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed; bottom: 16px; left: 16px; z-index: 99999;
+                background: rgba(20,20,20,0.92); color: #e8e8e8;
+                font: 12px/1.6 'DM Mono', monospace; padding: 8px 12px;
+                border-radius: 4px; pointer-events: none; max-width: 480px;
+                border-left: 2px solid #c0392b; display: none;
+            `;
+            document.body.appendChild(overlay);
+
+            function getPath(el) {
+                const parts = [];
+                while (el && el !== document.body) {
+                let sel = el.tagName.toLowerCase();
+                if (el.id) sel += '#' + el.id;
+                else if (el.className) {
+                    const cls = [...el.classList].slice(0,2).join('.');
+                    if (cls) sel += '.' + cls;
+                }
+                parts.unshift(sel);
+                el = el.parentElement;
+                }
+                return parts.join(' › ');
+            }
+
+            document.addEventListener('mouseover', e => {
+                if (!e.altKey) return;
+                const el = e.target;
+                overlay.style.display = 'block';
+                overlay.innerHTML = `
+                <div style="color:#c0392b;margin-bottom:2px;">${el.tagName.toLowerCase()}${el.id ? '#'+el.id : ''}</div>
+                <div style="color:#a89e92;font-size:11px;">${getPath(el)}</div>
+                ${el.className ? `<div style="color:#6b9;font-size:11px;">.${[...el.classList].join(' .')}</div>` : ''}
+                `;
+            });
+
+            document.addEventListener('mouseout', e => {
+                if (!e.altKey) return;
+                overlay.style.display = 'none';
+            });
+
+            document.addEventListener('keyup', e => {
+                if (e.key === 'Alt') overlay.style.display = 'none';
+            });
+            })();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Signal | Chen Zai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg2: #111111;
+            --bg3: #1a1a1a;
+            --text: #f0f0f0;
+            --text2: #888888;
+            --text3: #555555;
+            --accent: #7c6aff;
+            --accent2: #c084fc;
+            --border: rgba(255,255,255,0.08);
+            --border2: rgba(255,255,255,0.04);
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 1.25rem 2.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            /* 让导航栏本身的背景、边框和毛玻璃效果可以平滑过渡 */
+            transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+        }
+        
+        /* 新增：鼠标静止时的 idle（空闲）状态 */
+        nav.idle {
+            background: transparent;
+            border-bottom-color: transparent;
+            backdrop-filter: blur(0px); /* 去掉毛玻璃，让背景完全通透 */
+        }
+
+        .nav-back {
+            display: flex; align-items: center; gap: 0.5rem;
+            color: var(--text2); text-decoration: none;
+            font-size: 0.8125rem; letter-spacing: 0.05em;
+            /* 增加了 opacity 的过渡动画 */
+            transition: opacity 0.4s ease, color 0.2s;
+        }
+
+        /* 关键：在 idle 状态下，让左右两侧的按钮变透明且不可点击 */
+        nav.idle .nav-back {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav-back:hover { color: var(--text); }
+        .nav-back svg { transition: transform 0.2s; }
+        .nav-back:hover svg { transform: translateX(-3px); }
+        #nav-next:hover svg { transform: translateX(3px); }
+        
+        .nav-title {
+            font-family: 'Newsreader', serif;
+            font-size: 1rem; font-weight: 400;
+            color: var(--text2);
+            letter-spacing: 0.02em;
+            /* 标题由于没有加 opacity 设置，会一直保持显示 */
+        }
+        .nav-index {
+            font-size: 0.75rem; color: var(--text3);
+            letter-spacing: 0.1em;
+        }
+
+        /* ── SECTION BASE ── */
+        section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            min-height: 100vh;
+        }
+
+        /* ══════════════════════════════
+           SECTION 1 — HERO (全屏背景，文字位置绝对不变)
+        ══════════════════════════════ */
+        .hero {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 关键：保留您最初的左右 50% 网格 */
+            min-height: 100vh;
+            padding-top: 72px; /* 保持原样 */
+            overflow: hidden; 
+        }
+
+        /* 底层：图片脱离网格，绝对定位铺满全屏 */
+        .hero-image {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            background: var(--bg2);
+        }
+
+        /* 渐变遮罩：因为文字在右侧，必须改为【从右向左】渐变 */
+        .hero-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            /* ⚠️ 同样记得替换这里的 RGB 值为对应页面的背景色 */
+            background: linear-gradient(to left, rgba(10,10,10, 1) 0%, rgba(10,10,10, 0.85) 55%, transparent 100%);
+            pointer-events: none; 
+        }
+
+        .hero-image-placeholder {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 1rem;
+        }
+        .hero-image-placeholder .img-label {
+            font-size: 0.7rem; letter-spacing: 0.2em;
+            color: rgba(128,128,128,0.5); text-transform: uppercase;
+        }
+
+        .hero-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: left center; /* 关键：因为文字在右，图片好看的部分应尽量靠左 */
+            display: block;
+        }
+
+        /* 探索按钮恢复原位 */
+        .scroll-cue {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem; /* 恢复到屏幕左下角 */
+            display: flex; flex-direction: row; align-items: center; gap: 0.6rem;
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text2); cursor: pointer;
+            background: rgba(128,128,128,0.15); backdrop-filter: blur(8px);
+            padding: 0.65rem 1rem; border: 1px solid var(--border); border-radius: 3px;
+            transition: color 0.2s, background 0.2s; z-index: 10;
+            animation: scrollPulse 2.5s ease-in-out infinite;
+        }
+        .scroll-cue:hover { color: var(--text); background: rgba(128,128,128,0.3); }
+        @keyframes scrollPulse { 0%,100%{opacity:.6;transform:translateY(0)} 50%{opacity:1;transform:translateY(3px)} }
+
+        /* 顶层：文字区域强制定位在右侧，内边距一字不改 */
+        .hero-text {
+            grid-column: 2; /* 关键：强制停留在右侧网格 */
+            position: relative;
+            z-index: 1;
+            padding: 5rem 4rem 4rem 5rem; /* 完全恢复您最初的 padding 留白！ */
+            display: flex; flex-direction: column; justify-content: center;
+            background: transparent; 
+            border-left: none; /* 仅去掉中间的生硬边框 */
+        }
+
+        .project-number {
+            font-size: 0.7rem; letter-spacing: 0.25em;
+            color: var(--text3); text-transform: uppercase;
+            margin-bottom: 2.5rem;
+        }
+
+        .project-title {
+            font-family: 'Newsreader', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 300;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .project-rule {
+            width: 2.5rem; height: 2px;
+            background: var(--accent);
+            margin: 1.5rem 0;
+        }
+
+        .project-subtitle {
+            font-family: 'Newsreader', serif;
+            font-style: italic;
+            font-size: 1rem;
+            color: var(--text2);
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            max-width: 420px;
+        }
+
+        .project-meta {
+            display: flex; flex-direction: column; gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        .meta-row {
+            display: flex; align-items: flex-start; gap: 1.5rem;
+        }
+        .meta-label {
+            font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--text3); min-width: 80px; padding-top: 2px;
+        }
+        .meta-value {
+            font-size: 0.8125rem; color: var(--text2); line-height: 1.5;
+        }
+        .meta-tag {
+            display: inline-block;
+            font-size: 0.65rem; letter-spacing: 0.08em;
+            border: 1px solid var(--border);
+            color: var(--text3);
+            padding: 0.2rem 0.6rem;
+            border-radius: 2px;
+            margin-right: 0.4rem; margin-bottom: 0.3rem;
+        }
+
+        .project-vision {
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--accent);
+            background: rgba(124,106,255,0.04);
+        }
+        .vision-label {
+            font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 0.75rem;
+        }
+        .vision-text {
+            font-size: 0.8125rem; line-height: 1.75;
+            color: var(--text2);
+        }
+
+        .scroll-cue {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            display: flex; flex-direction: row; align-items: center; gap: 0.6rem;
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(8px);
+            padding: 0.65rem 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 3px;
+            transition: color 0.2s, background 0.2s;
+            z-index: 10;
+            animation: scrollPulse 2.5s ease-in-out infinite;
+        }
+        .scroll-cue:hover {
+            color: rgba(255,255,255,0.9);
+            background: rgba(0,0,0,0.55);
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.6; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(3px); }
+        }
+
+        /* ══════════════════════════════
+           SECTION 2 — DETAIL TABS
+        ══════════════════════════════ */
+        .detail {
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            padding-top: 72px;
+            background: var(--bg);
+        }
+
+        /* Tab bar */
+        .tab-bar {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            width: 100%;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+            font-weight: 500;
+            color: var(--text3);
+            background: none; border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative; bottom: -1px;
+        }
+        .tab-btn:hover { color: var(--text2); }
+        .tab-btn.active {
+            color: var(--text);
+            border-bottom-color: var(--accent);
+        }
+
+        /* Tab panels */
+        .tab-panels {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .tab-panel {
+            position: absolute; inset: 0;
+            overflow-y: auto;
+            padding: 3.5rem 4rem;
+            opacity: 0;
+            transform: translateY(12px);
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .tab-panel.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            position: relative;
+        }
+
+        /* Content blocks inside panels */
+        .panel-intro {
+            max-width: 680px;
+            margin-bottom: 3.5rem;
+        }
+        .panel-intro h3 {
+            font-family: 'Newsreader', serif;
+            font-size: 1.75rem; font-weight: 300;
+            margin-bottom: 1rem; color: var(--text);
+        }
+        .panel-intro p {
+            font-size: 0.875rem; line-height: 1.85;
+            color: var(--text2);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            margin-bottom: 2.5rem;
+        }
+        .content-cell {
+            background: var(--bg);
+            padding: 2rem;
+        }
+        .cell-label {
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text3); margin-bottom: 0.75rem;
+        }
+        .cell-title {
+            font-size: 1rem; font-weight: 500;
+            color: var(--text); margin-bottom: 0.5rem;
+        }
+        .cell-body {
+            font-size: 0.8rem; line-height: 1.75;
+            color: var(--text2);
+        }
+
+        .stat-row {
+            display: flex; gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+        }
+        .stat {
+            flex: 1; padding: 2rem;
+            background: var(--bg);
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .stat-value {
+            font-family: 'Newsreader', serif;
+            font-size: 2.5rem; font-weight: 300;
+            color: var(--text);
+            line-height: 1;
+        }
+        .stat-value span { color: var(--accent); }
+        .stat-desc {
+            font-size: 0.75rem; line-height: 1.6;
+            color: var(--text3);
+        }
+
+        .img-block {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            padding: 4rem 2rem;
+            margin-bottom: 2.5rem;
+            min-height: 280px;
+            position: relative;
+            overflow: hidden;
+        }
+        .img-block-label {
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text3); text-align: center;
+        }
+        /* Real image: <img src="..." style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"> */
+
+        .flow-steps {
+            display: flex; gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            margin-bottom: 2.5rem;
+        }
+        .flow-step {
+            flex: 1; padding: 1.5rem;
+            background: var(--bg);
+            position: relative;
+        }
+        .flow-step::after {
+            content: '→';
+            position: absolute; right: -0.75rem; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text3); font-size: 0.8rem;
+            z-index: 1;
+        }
+        .flow-step:last-child::after { display: none; }
+        .step-num {
+            font-size: 0.65rem; letter-spacing: 0.15em; color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .step-title {
+            font-size: 0.8125rem; font-weight: 600; color: var(--text);
+            margin-bottom: 0.4rem;
+        }
+        .step-body {
+            font-size: 0.75rem; line-height: 1.65; color: var(--text2);
+        }
+
+        .quote-block {
+            padding: 2rem 2.5rem;
+            border-left: 2px solid var(--accent);
+            background: rgba(124,106,255,0.04);
+            margin-bottom: 2.5rem;
+        }
+        .quote-text {
+            font-family: 'Newsreader', serif;
+            font-style: italic; font-size: 1.125rem;
+            color: var(--text); line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        .quote-source {
+            font-size: 0.7rem; letter-spacing: 0.1em;
+            color: var(--text3);
+        }
+
+        .two-col {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 2rem; margin-bottom: 2.5rem;
+        }
+
+        h4.section-sub {
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text3); margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        ul.detail-list {
+            list-style: none; display: flex; flex-direction: column; gap: 0.6rem;
+            margin-bottom: 2rem;
+        }
+        ul.detail-list li {
+            font-size: 0.8125rem; line-height: 1.65; color: var(--text2);
+            padding-left: 1.25rem; position: relative;
+        }
+        ul.detail-list li::before {
+            content: '—';
+            position: absolute; left: 0;
+            color: var(--text3);
+        }
+
+        /* scrollbar */
+        .tab-panel::-webkit-scrollbar { width: 4px; }
+        .tab-panel::-webkit-scrollbar-track { background: transparent; }
+        .tab-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        /* responsive */
+        @media (max-width: 900px) {
+            .hero { display: flex; flex-direction: column; justify-content: flex-end; }
+            /* 手机端背景从下往上渐变 */
+            .hero-image::after { background: linear-gradient(to top, rgba(10,10,10, 1) 0%, rgba(10,10,10, 0.85) 60%, transparent 100%); }
+            .hero-text { 
+                padding: 3rem 2rem 4rem 2rem; /* 恢复您原本手机端的左右边距 */
+            }
+            .scroll-cue { left: 2rem; }
+            .tab-panel { padding: 2.5rem 1.5rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .stat-row { flex-direction: column; }
+            .flow-steps { flex-direction: column; }
+            .flow-step::after { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="main-nav" class="idle">
+        <a href="index (3).html#projects" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 13L5 8L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+        </a>
+        <span class="nav-title">Silent Signal</span>
+        <a href="p_pet.html" class="nav-back" id="nav-next">
+            Next
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </nav>
+
+
+    <section class="hero" id="top">
+
+        <div class="hero-image">
+            <img src="images/silent.png" class="hero-img" alt="Silent Signal">
+            <div class="hero-image-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <rect x="1" y="1" width="38" height="38" rx="2" stroke="#333" stroke-width="1"/>
+                    <path d="M8 28L16 18L22 24L28 16L36 28H8Z" fill="#222"/>
+                    <circle cx="12" cy="14" r="3" fill="#222"/>
+                </svg>
+                <span class="img-label">Image Placeholder</span>
+            </div>
+
+            <div class="scroll-cue" onclick="document.getElementById('detail').scrollIntoView({behavior:'smooth'})">
+                <span>Explore</span>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 3V13M8 13L12 9M8 13L4 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="scroll-cue" style="display:none"></div>
+
+        <div class="hero-text">
+            <div class="project-number">Project 04</div>
+
+            <h1 class="project-title">Silent Signal</h1>
+            <div class="project-rule"></div>
+
+            <p class="project-subtitle">
+                A Passive Biometric Monitoring System for Early Stroke Detection via Bilateral Facial EMG Asymmetry Analysis.
+            </p>
+
+            <div class="project-meta">
+                <div class="meta-row">
+                    <span class="meta-label">Type</span>
+                    <span class="meta-value">Healthcare Design · Physical Computing</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Tech</span>
+                    <div>
+                        <span class="meta-tag">Machine Learning</span>
+                        <span class="meta-tag">EMG Sensors</span>
+                        <span class="meta-tag">Python</span>
+                        <span class="meta-tag">Random Forest</span>
+                    </div>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Duration</span>
+                    <span class="meta-value">2025</span>
+                </div>
+            </div>
+
+            <div class="project-vision">
+                <div class="vision-label">Project Vision</div>
+                <p class="vision-text">By leveraging non-invasive daily physiological monitoring, the critical window for stroke detection extends beyond emergency rooms into home environments — establishing an invisible lifeline for high-risk individuals living alone.</p>
+            </div>
+        </div>
+
+        <div class="scroll-cue" onclick="document.getElementById('detail').scrollIntoView({behavior:'smooth'})">
+            <span>Explore</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 3V13M8 13L12 9M8 13L4 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+        </div>
+    </section>
+
+
+    <section class="detail" id="detail">
+
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('research', this)">User Research</button>
+            <button class="tab-btn" onclick="switchTab('strategy', this)">Strategy</button>
+            <button class="tab-btn" onclick="switchTab('tech', this)">Technical Implementation</button>
+            <button class="tab-btn" onclick="switchTab('deployment', this)">Deployment</button>
+        </div>
+
+        <div class="tab-panels">
+
+            <div class="tab-panel active" id="panel-research">
+                <div class="panel-intro">
+                    <h3>Research Background</h3>
+                    <p>Against the backdrop of an aging society, millions of vulnerable individuals living alone face immense survival challenges. This research investigates the critical gap between stroke onset and medical intervention — a window determined by the speed of detection.</p>
+                </div>
+
+                <div class="stat-row">
+                    <div class="stat">
+                        <div class="stat-value">4.5<span>h</span></div>
+                        <div class="stat-desc">Golden treatment window — 70–80% of patients miss this window after symptom onset</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">1.9<span>M</span></div>
+                        <div class="stat-desc">Neurons lost for every minute of delay in acute ischemic stroke treatment</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">97<span>%</span></div>
+                        <div class="stat-desc">ML model training accuracy on bilateral EMG asymmetry classification</div>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div>
+                        <h4 class="section-sub">User Profiles</h4>
+                        <div class="quote-block">
+                            <p class="quote-text">"I don't want to wear a tag. I'll just hang it by my bedside. If something really happens, I can reach it."</p>
+                            <p class="quote-source">— 78-year-old retired teacher, high blood pressure, lives alone</p>
+                        </div>
+                        <div class="quote-block" style="border-left-color: var(--accent2);">
+                            <p class="quote-text">"It's okay, why can't I get up... someone needs to help me call for help."</p>
+                            <p class="quote-source">— 82-year-old grandfather, in bathroom, just finished showering</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="section-sub">Key Pain Points</h4>
+                        <ul class="detail-list">
+                            <li>Proactive testing devices require conscious action at the moment of crisis — impossible during stroke onset with cognitive impairment</li>
+                            <li>Smart watches focus on heart rate and step counts, lacking specificity for neurovascular events</li>
+                            <li>Existing home care services are fragmented and high-cost, inaccessible to solitary elderly residents</li>
+                            <li>FAST principle awareness is low among high-risk populations — facial asymmetry is the earliest, most prominent sign</li>
+                        </ul>
+                        <h4 class="section-sub">Insight</h4>
+                        <p style="font-size:0.8125rem; color: var(--text2); line-height: 1.75;">Proactive testing has become a mandatory requirement — passive biometric sensing that continuously monitors without user awareness or effort is the only viable solution for this population.</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="tab-panel" id="panel-strategy">
+                <div class="panel-intro">
+                    <h3>Design Strategy</h3>
+                    <p>The core design question: how do we create a monitoring system that is invisible to the user, yet precise enough to catch early stroke signals? The answer lies in reframing surveillance as companionship — and presence as protection.</p>
+                </div>
+
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="step-num">01</div>
+                        <div class="step-title">Passive Sensing</div>
+                        <div class="step-body">No buttons. No screens. Dual-channel EMG electrodes attached bilaterally to zygomaticus major — the muscle activated by all facial expressions.</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">02</div>
+                        <div class="step-title">Continuous Baseline</div>
+                        <div class="step-body">System learns each user's personal symmetry baseline over 72 hours, adapting to natural variations in facial muscle activation patterns.</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">03</div>
+                        <div class="step-title">Asymmetry Detection</div>
+                        <div class="step-body">CNN-LSTM model compares bilateral signals in real time. Significant deviation from baseline triggers a cascading alert response.</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">04</div>
+                        <div class="step-title">Silent Alert</div>
+                        <div class="step-body">Automatic notification to caregivers and emergency contacts within 100ms of detection — no user action required.</div>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-cell">
+                        <div class="cell-label">vs. Smart Watch</div>
+                        <div class="cell-title">Specificity Gap</div>
+                        <p class="cell-body">Apple Watch achieves broad cardiovascular monitoring but no specificity for neurovascular events. Our EMG approach targets the exact biological marker of stroke onset.</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">vs. PERS Button</div>
+                        <div class="cell-title">Activation Barrier</div>
+                        <p class="cell-body">Personal Emergency Response Systems require conscious, physical activation — impossible when stroke causes motor and cognitive impairment simultaneously.</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">vs. Voice Assistant</div>
+                        <div class="cell-title">Aphasia Problem</div>
+                        <p class="cell-body">Stroke commonly causes aphasia — loss of speech. Voice-activated systems fail at precisely the moment they are needed most.</p>
+                    </div>
+                </div>
+
+                <div class="img-block">
+                    <span class="img-block-label">Design Path Diagram — Placeholder</span>
+                </div>
+            </div>
+
+
+            <div class="tab-panel" id="panel-tech">
+                <div class="panel-intro">
+                    <h3>Technical Implementation</h3>
+                    <p>A dual-path machine learning architecture processes simultaneous audio and visual signals from bilateral facial EMG channels, achieving 94.2% real-time accuracy through a validated CNN-LSTM neural network.</p>
+                </div>
+
+                <div class="stat-row">
+                    <div class="stat">
+                        <div class="stat-value">94<span>%</span></div>
+                        <div class="stat-desc">Weighted accuracy — real-time CNN-LSTM stroke detection model</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">100<span>ms</span></div>
+                        <div class="stat-desc">Alert latency from detection to caregiver notification</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">16<span>kHz</span></div>
+                        <div class="stat-desc">EMG signal sampling rate via STM32 with serial transmission at 2Mbps</div>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div>
+                        <h4 class="section-sub">Hardware Stack</h4>
+                        <ul class="detail-list">
+                            <li>Arduino Uno — signal acquisition controller + TFT display output</li>
+                            <li>Dual analog inputs A0/A1 — bilateral EMG electrode channels</li>
+                            <li>STM32 — 16kHz audio acquisition at 2Mbps baud rate serial transmission</li>
+                            <li>Servo motor — physical button control switching 0° to 180°</li>
+                            <li>Red/Green/Yellow electrode placement: zygomaticus major (positive/negative) + ear grounding</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="section-sub">ML Architecture</h4>
+                        <ul class="detail-list">
+                            <li>22-dimensional feature space capturing bilateral EMG asymmetry characteristics</li>
+                            <li>CNN path: image-based spatial feature extraction from signal spectrograms</li>
+                            <li>LSTM path: temporal sequence modeling for activity pattern recognition</li>
+                            <li>Adaptive noise filtering — 20Hz notch filter + 35Hz Butterworth bandpass</li>
+                            <li>Training set accuracy 97.5% · Resting state detection 98.8%</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4 class="section-sub">3-Path System Architecture</h4>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="step-num">Path A</div>
+                        <div class="step-title">Data Collection</div>
+                        <div class="step-body">Serial port connection → signal acquisition → visualization → preprocessing → feature extraction</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">Path B</div>
+                        <div class="step-title">Model Training</div>
+                        <div class="step-body">Training set → data validation → model training process → model storage → validation complete</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-num">Path C</div>
+                        <div class="step-title">Live Detection</div>
+                        <div class="step-body">System init → serial connect → live data acquisition → AI analysis → anomaly detection → alert trigger</div>
+                    </div>
+                </div>
+
+                <div class="img-block">
+                    <span class="img-block-label">EMG Signal Waveform + Confusion Matrix — Placeholder</span>
+                </div>
+            </div>
+
+
+            <div class="tab-panel" id="panel-deployment">
+                <div class="panel-intro">
+                    <h3>Installation & Deployment</h3>
+                    <p>The validated fusion architecture is translated into a compact, battery-powered sensing unit — a portable device integrating synchronized image capture and acoustic recording with onboard preprocessing for authentic field deployment.</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-cell">
+                        <div class="cell-label">Form Factor</div>
+                        <div class="cell-title">Wearable Headset</div>
+                        <p class="cell-body">Lightweight bilateral electrode headset designed for passive wear during sleep and stationary activity periods. No active management required by the user after initial calibration.</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Electrode Placement</div>
+                        <div class="cell-title">Zygomaticus Protocol</div>
+                        <p class="cell-body">Electroencephalography testing identified zygomaticus major as the most effective location. Red electrode on positive, green on negative, yellow behind ear as grounding reference.</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Alert System</div>
+                        <div class="cell-title">Multi-Channel Notification</div>
+                        <p class="cell-body">Simultaneous alert dispatch to registered caregivers, family contacts, and emergency services with location data and detection confidence score.</p>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div>
+                        <h4 class="section-sub">Validation Results</h4>
+                        <ul class="detail-list">
+                            <li>Resting state detection: 98.8% accuracy</li>
+                            <li>Normal facial movements: 93.8% accuracy</li>
+                            <li>Left-side muscle exertion: 96.4% accuracy</li>
+                            <li>Right-side muscle exertion: 84.2% accuracy</li>
+                            <li>Clinical specificity: 93.3% · Sensitivity: 92.8%</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="section-sub">Application Scenarios</h4>
+                        <ul class="detail-list">
+                            <li>Home monitoring for high-risk individuals living alone</li>
+                            <li>Post-stroke rehabilitation progress assessment</li>
+                            <li>Emergency supplementary measures for community and institutional elderly care</li>
+                            <li>Portable health monitoring terminal integration</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="img-block" style="min-height:360px">
+                    <span class="img-block-label">Hardware Prototype + Deployment Photography — Placeholder</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('panel-' + id).classList.add('active');
+            const detailEl = document.getElementById('detail');
+            const rect = detailEl.getBoundingClientRect();
+            if (rect.top > 5) {
+                detailEl.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // --- 鼠标唤醒导航栏逻辑 ---
+        const topNav = document.getElementById('main-nav'); 
+        let hideNavTimer;
+
+        if (topNav) {
+            document.addEventListener('mousemove', () => {
+                // 鼠标移动，移除 idle，背景变暗，按钮浮现
+                topNav.classList.remove('idle');
+                clearTimeout(hideNavTimer);
+                
+                // 鼠标停下 1.5 秒后，进入 idle，背景变透明，按钮消失
+                hideNavTimer = setTimeout(() => {
+                    topNav.classList.add('idle');
+                }, 1500); 
+            });
+        }
+    </script>
+
+</body>
+</html>

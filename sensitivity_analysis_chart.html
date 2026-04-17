@@ -1,0 +1,201 @@
+
+<div style="padding: 1.5rem 0 0.5rem;">
+
+<div style="display: flex; gap: 12px; margin-bottom: 1.5rem; flex-wrap: wrap;">
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; flex: 1; min-width: 120px;">
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">Best accuracy</p>
+    <p style="font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary);">76.67%</p>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; flex: 1; min-width: 120px;">
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">Optimal audio weight</p>
+    <p style="font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary);">α = 0.5</p>
+  </div>
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; flex: 1; min-width: 120px;">
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">Image weight</p>
+    <p style="font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary);">1 − α = 0.5</p>
+  </div>
+</div>
+
+<div style="position: relative; width: 100%; height: 320px;">
+  <canvas id="sensitivityChart"></canvas>
+</div>
+
+<div style="margin-top: 1.25rem; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); overflow: auto;">
+  <table id="dataTable" style="width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed;">
+    <thead>
+      <tr style="border-bottom: 0.5px solid var(--color-border-tertiary);">
+        <td style="padding: 8px 12px; color: var(--color-text-secondary); font-weight: 500; width: 100px;">Audio weight</td>
+        <td id="th0"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">0.0</td>
+        <td id="th1"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">0.1</td>
+        <td id="th2"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">0.2</td>
+        <td id="th3"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">0.3</td>
+        <td id="th4"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">0.4</td>
+        <td id="th5"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary); font-weight: 500;">0.5</td>
+        <td id="th6"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">0.6</td>
+        <td id="th7"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">0.7</td>
+        <td id="th8"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">0.8</td>
+        <td id="th9"  style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">0.9</td>
+        <td id="th10" style="padding: 8px 8px; text-align: center; color: var(--color-text-secondary);">1.0</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 8px 12px; color: var(--color-text-secondary);">Accuracy</td>
+        <td id="td0"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">53.7%</td>
+        <td id="td1"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">55.7%</td>
+        <td id="td2"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">60.0%</td>
+        <td id="td3"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">67.3%</td>
+        <td id="td4"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">75.0%</td>
+        <td id="td5"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary); font-weight: 500;">76.67%</td>
+        <td id="td6"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">72.0%</td>
+        <td id="td7"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">67.3%</td>
+        <td id="td8"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">64.0%</td>
+        <td id="td9"  style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">62.3%</td>
+        <td id="td10" style="padding: 8px 8px; text-align: center; color: var(--color-text-primary);">60.0%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const weights = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+const accs    = [53.7, 55.7, 60.0, 67.3, 75.0, 76.67, 72.0, 67.3, 64.0, 62.3, 60.0];
+const peakIdx = 5;
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const lineColor   = isDark ? '#7aafd0' : '#185FA5';
+const peakColor   = isDark ? '#f09595' : '#A32D2D';
+const gridColor   = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+const labelColor  = isDark ? '#b4b2a9' : '#5f5e5a';
+const tooltipBg   = isDark ? '#2c2c2a' : '#ffffff';
+const tooltipText = isDark ? '#f1efe8' : '#1a1510';
+
+const pointColors = weights.map((_,i) => i === peakIdx ? peakColor : lineColor);
+const pointRadius = weights.map((_,i) => i === peakIdx ? 7 : 4);
+const pointBorder = weights.map((_,i) => i === peakIdx ? peakColor : lineColor);
+
+const peakPlugin = {
+  id: 'peakAnnotation',
+  afterDraw(chart) {
+    const {ctx, scales: {x, y}} = chart;
+    const px = x.getPixelForValue(peakIdx);
+    const py = y.getPixelForValue(76.67);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(px, py - 14);
+    ctx.lineTo(px - 6, py - 26);
+    ctx.lineTo(px + 6, py - 26);
+    ctx.closePath();
+    ctx.fillStyle = peakColor;
+    ctx.fill();
+
+    ctx.font = '500 11px sans-serif';
+    ctx.fillStyle = peakColor;
+    ctx.textAlign = 'center';
+    ctx.fillText('best: 76.67% (α=0.5)', px, py - 32);
+    ctx.restore();
+  }
+};
+
+const hoverHighlight = {
+  id: 'hoverHighlight',
+  afterDraw(chart) {
+    const active = chart._active;
+    if (!active || !active.length) return;
+    const idx = active[0].index;
+    ['th','td'].forEach(pfx => {
+      for (let i = 0; i <= 10; i++) {
+        const el = document.getElementById(pfx + i);
+        if (!el) return;
+        el.style.background = i === idx
+          ? (isDark ? 'rgba(120,175,210,0.15)' : 'rgba(24,95,165,0.07)')
+          : '';
+      }
+    });
+  }
+};
+
+new Chart(document.getElementById('sensitivityChart'), {
+  type: 'line',
+  plugins: [peakPlugin, hoverHighlight],
+  data: {
+    labels: weights.map(w => w.toFixed(1)),
+    datasets: [{
+      data: accs,
+      borderColor: lineColor,
+      borderWidth: 2,
+      pointBackgroundColor: pointColors,
+      pointBorderColor: pointBorder,
+      pointRadius: pointRadius,
+      pointHoverRadius: 7,
+      tension: 0.18,
+      fill: {
+        target: 'origin',
+        above: isDark ? 'rgba(120,175,210,0.08)' : 'rgba(24,95,165,0.06)'
+      }
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: tooltipBg,
+        titleColor: tooltipText,
+        bodyColor: labelColor,
+        borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)',
+        borderWidth: 0.5,
+        padding: 10,
+        callbacks: {
+          title: (items) => `Audio weight: ${items[0].label}`,
+          label: (item) => `Accuracy: ${item.raw}%`
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Audio weight  (image weight = 1 − α)',
+          color: labelColor,
+          font: { size: 12 }
+        },
+        grid: { color: gridColor },
+        ticks: { color: labelColor, font: { size: 11 }, autoSkip: false }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Fusion accuracy (%)',
+          color: labelColor,
+          font: { size: 12 }
+        },
+        grid: { color: gridColor },
+        ticks: {
+          color: labelColor,
+          font: { size: 11 },
+          callback: v => v + '%'
+        },
+        min: 50,
+        max: 82,
+        suggestedMin: 50
+      }
+    },
+    onHover(_, elements) {
+      if (!elements.length) {
+        for (let i = 0; i <= 10; i++) {
+          ['th','td'].forEach(p => {
+            const el = document.getElementById(p + i);
+            if (el) el.style.background = '';
+          });
+        }
+      }
+    }
+  }
+});
+</script>

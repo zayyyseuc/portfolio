@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future Is Ours - Portfolio</title>
+    <style>
+        :root {
+            /* 将原本的 #d1d2ce 转换为 rgba，末尾的 1 代表完全不透明 */
+            --bg-color: rgba(209, 210, 206, 1);
+            --text-color: #111;
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* 强制单屏，禁止滚动 */
+            background-color: #000;
+        }
+
+        .wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* --- 左侧全屏背景图图层 --- */
+        .bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* 【核心修改】铺满全屏，右侧面板会自然盖住它，永不露馅 */
+            width: 100vw; 
+            height: 100vh;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .bg-layer::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            background:
+                linear-gradient(90deg, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.34) 34%, rgba(0, 0, 0, 0.08) 62%),
+                linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 46%);
+            pointer-events: none;
+        }
+
+        .bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            filter: grayscale(60%) contrast(1.2) brightness(0.8); /* 营造图一那种阴郁电影感 */
+        }
+
+        .bg-img.active {
+            opacity: 1;
+        }
+
+        .project-info-panel {
+            position: absolute;
+            left: clamp(28px, 6vw, 86px);
+            bottom: clamp(34px, 9vh, 96px);
+            z-index: 3;
+            width: min(520px, 52vw);
+            color: #f3f3ef;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.42s ease, transform 0.42s ease;
+            pointer-events: none;
+        }
+
+        .wrapper.info-visible .project-info-panel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .info-kicker {
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(243, 243, 239, 0.68);
+            margin-bottom: 0.85rem;
+        }
+
+        .info-title {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: clamp(2.2rem, 5vw, 5.6rem);
+            font-weight: 800;
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            max-width: 680px;
+            margin-bottom: 1.2rem;
+        }
+
+        .info-summary {
+            font-size: clamp(0.92rem, 1.12vw, 1.08rem);
+            line-height: 1.65;
+            max-width: 520px;
+            color: rgba(243, 243, 239, 0.86);
+            margin-bottom: 1.4rem;
+        }
+
+        .info-meta {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.45rem 1rem;
+            max-width: 520px;
+            margin-bottom: 1.3rem;
+            font-size: 0.72rem;
+            line-height: 1.45;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .meta-label {
+            color: rgba(243, 243, 239, 0.48);
+            font-weight: 800;
+        }
+
+        .meta-value {
+            color: rgba(243, 243, 239, 0.76);
+            font-weight: 700;
+        }
+
+        .info-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .info-tag {
+            border: 1px solid rgba(243, 243, 239, 0.36);
+            border-radius: 999px;
+            padding: 0.34rem 0.62rem;
+            font-size: 0.68rem;
+            line-height: 1;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(243, 243, 239, 0.78);
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.16);
+        }
+
+        /* --- 右侧固定的纯色区域 --- */
+        .right-panel {
+            position: absolute;
+            top: 0;
+            /* 向右移，隐藏倾斜后露出的右侧边缘 */
+            right: -30vw; 
+            /* 增加宽度以维持视觉比例 */
+            width: 50vw; 
+            height: 100vh;
+            background-color: var(--bg-color);
+            z-index: 2;
+            /* 【核心】让整面墙向左倾斜 10 度 */
+            transform: skewX(5deg);
+            transform-origin: bottom right; /* 以右下角为基准点 */
+        }
+
+        /* --- 核心：参差不齐的列表容器 --- */
+        .schedule-shell {
+            position: absolute;
+            top: 25vh; /* 列表起始位置 */
+            left: 0;
+            width: 100%;
+            overflow: visible;
+            /* 删除了之前的 transform 属性 */
+        }
+
+        .schedule-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            /* 删除了之前的 transform 属性 */
+        }
+
+        /* 每一个横条（缺口） */
+        .tooth {
+            position: relative;
+            background-color: var(--bg-color);
+            margin-left: calc(-1 * var(--extend, 0px));
+            width: calc(100% + var(--extend, 0px));
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            
+            /* 【核心】反向倾斜 10 度，抵消父元素的倾斜 */
+            transform: skewX(-5deg);
+            /* 锚定左侧端点，确保缺口的伸出长度（--extend）在视觉上不会偏移 */
+            transform-origin: left center; 
+        }
+
+        /* 空白横条，仅用于制造不规则边缘 */
+        .tooth.empty {
+            height: var(--h, 20px);
+        }
+
+        /* 包含项目的横条 */
+        .tooth.item {
+            height: 35px;
+            cursor: pointer;
+        }
+
+        /* 悬停动效：向左再推出 40px */
+        .tooth.item:hover {
+            margin-left: calc(-1 * (var(--extend, 0px) + 40px));
+            width: calc(100% + var(--extend, 0px) + 40px);
+        }
+
+        /* 复刻极其小巧、紧凑的排版 */
+        .item-index {
+            font-weight: 800;
+            font-size: 0.75rem;
+            margin-right: 15px;
+            letter-spacing: 1px;
+            transition: opacity 0.4s ease;
+        }
+
+        .item-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: opacity 0.4s ease;
+        }
+
+        /* 1. 当悬停在任意一个项目上时，让【所有】项目的文字透明度降为 0.2（即 80% 透明） */
+        .wrapper:has(.tooth.item:hover) .tooth.item .item-index,
+        .wrapper:has(.tooth.item:hover) .tooth.item .item-title {
+            opacity: 0.2; 
+        }
+
+        /* 2. 把【当前正在被悬停】的那个项目的文字，强制拉回 100% 不透明 */
+        .tooth.item:hover .item-index,
+        .tooth.item:hover .item-title {
+            opacity: 1 !important; 
+        }
+
+        @media (max-width: 760px) {
+            .project-info-panel {
+                width: calc(100vw - 40px);
+                left: 20px;
+                bottom: 34px;
+            }
+
+            .info-title {
+                font-size: clamp(2rem, 14vw, 3.6rem);
+            }
+
+            .info-summary {
+                font-size: 0.88rem;
+                line-height: 1.55;
+            }
+
+            .right-panel {
+                right: -44vw;
+                width: 70vw;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="bg-layer">
+        <img src="images/urban.png" class="bg-img active" id="img1" alt="Urban Mirage">
+        <img src="images/vr.png" class="bg-img" id="img2" alt="CUBIK">
+        <img src="images/forest.png" class="bg-img" id="img3" alt="Fragments of the Forest">
+        <img src="images/silent.png" class="bg-img" id="img4" alt="Silent Signal">
+        <img src="images/pet.png" class="bg-img" id="img5" alt="Pet Space">
+
+        <article class="project-info-panel" aria-live="polite">
+            <div class="info-kicker" id="info-kicker">Project 01</div>
+            <h1 class="info-title" id="info-title">Urban Mirage</h1>
+            <p class="info-summary" id="info-summary"></p>
+            <div class="info-meta">
+                <span class="meta-label">Type</span>
+                <span class="meta-value" id="info-type"></span>
+                <span class="meta-label">Focus</span>
+                <span class="meta-value" id="info-focus"></span>
+                <span class="meta-label">Time</span>
+                <span class="meta-value" id="info-time"></span>
+            </div>
+            <div class="info-tags" id="info-tags"></div>
+        </article>
+    </div>
+
+    <div class="right-panel">
+        
+        <div class="schedule-shell">
+            <div class="schedule-list">
+                <div class="tooth empty" style="--extend: 100px; --h: 24px;"></div>
+                <div class="tooth empty" style="--extend: 50px; --h: 12px;"></div>
+                <div class="tooth empty" style="--extend: 200px; --h: 30px;"></div>
+                <div class="tooth empty" style="--extend: 90px; --h: 18px;"></div>
+
+                <div class="tooth item" style="--extend: 150px;" data-target="img1">
+                    <span class="item-index">01</span>
+                    <span class="item-title">URBAN MIRAGE</span>
+                </div>
+                
+                <div class="tooth empty" style="--extend: 80px; --h: 15px;"></div>
+                
+                <div class="tooth item" style="--extend: 190px;" data-target="img2">
+                    <span class="item-index">02</span>
+                    <span class="item-title">CUBIK</span>
+                </div>
+
+                <div class="tooth empty" style="--extend: 250px; --h: 22px;"></div>
+                <div class="tooth empty" style="--extend: 110px; --h: 14px;"></div>
+
+                <div class="tooth item" style="--extend: 170px;" data-target="img3">
+                    <span class="item-index">03</span>
+                    <span class="item-title">FRAGMENTS OF THE FOREST</span>
+                </div>
+                
+                <div class="tooth item" style="--extend: 130px;" data-target="img4">
+                    <span class="item-index">04</span>
+                    <span class="item-title">SILENT SIGNAL</span>
+                </div>
+
+                <div class="tooth empty" style="--extend: 240px; --h: 13px;"></div>
+
+                <div class="tooth item" style="--extend: 220px;" data-target="img5">
+                    <span class="item-index">05</span>
+                    <span class="item-title">PET SPACE</span>
+                </div>
+
+                <div class="tooth empty" style="--extend: 200px; --h: 26px;"></div>
+                <div class="tooth empty" style="--extend: 90px; --h: 16px;"></div>
+                <div class="tooth empty" style="--extend: 140px; --h: 24px;"></div>
+                <div class="tooth empty" style="--extend: 190px; --h: 15px;"></div>
+                <div class="tooth empty" style="--extend: 170px; --h: 20px;"></div>
+                <div class="tooth empty" style="--extend: 80px; --h: 35px;"></div>
+                <div class="tooth empty" style="--extend: 100px; --h: 25px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const items = document.querySelectorAll('.tooth.item');
+    const images = document.querySelectorAll('.bg-img');
+    const wrapper = document.querySelector('.wrapper');
+    const scheduleList = document.querySelector('.schedule-list');
+    const infoEls = {
+        kicker: document.getElementById('info-kicker'),
+        title: document.getElementById('info-title'),
+        summary: document.getElementById('info-summary'),
+        type: document.getElementById('info-type'),
+        focus: document.getElementById('info-focus'),
+        time: document.getElementById('info-time'),
+        tags: document.getElementById('info-tags')
+    };
+
+    const projectData = {
+        img1: {
+            kicker: 'Project 01',
+            title: 'Urban Mirage',
+            summary: 'A multimodal perception system that detects pseudo-urbanization by combining street-level visual scenes with acoustic signatures. It treats urban vitality as something sensed through both image and sound.',
+            type: 'Interactive Installation / Research Prototype',
+            focus: 'Pseudo-urbanization, multimodal sensing, urban vitality',
+            time: '2025 / 04 - 09',
+            tags: ['Machine Learning', 'CNN', 'Audio-Visual Fusion', 'ESP32', 'Python']
+        },
+        img2: {
+            kicker: 'Project 02',
+            title: 'CUBIK',
+            summary: 'A gravity-adaptive spatial file system for VR workflows. CUBIK turns folders and commands into embodied spatial actions, allowing users to organize and retrieve digital work through orientation, surfaces, and movement.',
+            type: 'VR Interaction System / Personal Project',
+            focus: 'Spatial computing, file systems, embodied interaction',
+            time: '2025 / 09 - 11',
+            tags: ['Unreal Engine 5', 'VR', 'Blueprint', 'Meta Quest']
+        },
+        img3: {
+            kicker: 'Project 03',
+            title: 'Fragments of the Forest',
+            summary: 'A serious game that teaches habitat connectivity through exploration rather than instruction. Players shift between human, squirrel, and ant perspectives to experience ecological corridors at multiple scales.',
+            type: 'Serious Game Design / Personal Project',
+            focus: 'Ecological education, habitat corridors, multi-scale POV',
+            time: '2025 / 09 - 11',
+            tags: ['Unreal Engine 5', 'Blueprint', 'Ecology', 'Procedural Systems']
+        },
+        img4: {
+            kicker: 'Project 04',
+            title: 'Silent Signal',
+            summary: 'A passive biometric monitoring system for early stroke detection using bilateral facial EMG asymmetry. It reframes health surveillance as an invisible lifeline for high-risk people living alone.',
+            type: 'Healthcare Design / Physical Computing',
+            focus: 'Stroke detection, facial EMG, passive monitoring',
+            time: '2025',
+            tags: ['Machine Learning', 'EMG Sensors', 'Python', 'Random Forest']
+        },
+        img5: {
+            kicker: 'Project 05',
+            title: 'Pet Space',
+            summary: 'A non-intrusive remote companionship system for pet owners under work pressure. Instead of turning the home into a surveillance feed, it translates a pet\'s presence into ambient, emotionally supportive signals.',
+            type: 'Product / Service / Interaction Design',
+            focus: 'Remote companionship, distributed sensing, ambient interaction',
+            time: '2025 / 10',
+            tags: ['ESP32-C3', 'Radar Sensor', 'PIR Sensor', 'Arduino', 'Audio Interaction']
+        }
+    };
+
+    function renderProjectInfo(targetId) {
+        const data = projectData[targetId];
+        if (!data) return;
+
+        infoEls.kicker.textContent = data.kicker;
+        infoEls.title.textContent = data.title;
+        infoEls.summary.textContent = data.summary;
+        infoEls.type.textContent = data.type;
+        infoEls.focus.textContent = data.focus;
+        infoEls.time.textContent = data.time;
+        infoEls.tags.innerHTML = data.tags.map(tag => `<span class="info-tag">${tag}</span>`).join('');
+    }
+
+    items.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            const targetId = item.getAttribute('data-target');
+            
+            images.forEach(img => img.classList.remove('active'));
+            
+            const targetImg = document.getElementById(targetId);
+            if(targetImg) {
+                targetImg.classList.add('active');
+            }
+
+            renderProjectInfo(targetId);
+            wrapper.classList.add('info-visible');
+        });
+
+        item.addEventListener('focus', () => {
+            const targetId = item.getAttribute('data-target');
+            renderProjectInfo(targetId);
+            wrapper.classList.add('info-visible');
+        });
+
+        item.addEventListener('click', () => {
+            const targetId = item.getAttribute('data-target');
+            renderProjectInfo(targetId);
+            wrapper.classList.add('info-visible');
+        });
+    });
+
+    scheduleList.addEventListener('mouseleave', () => {
+        wrapper.classList.remove('info-visible');
+    });
+
+    renderProjectInfo('img1');
+</script>
+
+</body>
+</html>

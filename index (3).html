@@ -7,6 +7,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         /* --- 基础设置保持不变 --- */
+        @font-face {
+            font-family: 'MonoMatrix';
+            src: url('fonts/MonoMatrix.ttf') format('truetype');
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Cubic 11';
+            src: url('fonts/Cubic_11.ttf') format('truetype');
+            font-display: swap;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-primary: #ffffff;
@@ -123,6 +135,85 @@
             color: var(--text-primary);
             /* 加一点白色发光，防止粒子经过文字后面时看不清 */
             text-shadow: 0 0 30px rgba(255,255,255,0.8);
+        }
+
+        .typewriter-title {
+            min-height: 1.12em;
+            white-space: nowrap;
+            letter-spacing: 0;
+            overflow: visible;
+            text-align: center;
+        }
+
+        .typewriter-title.is-latin {
+            font-family: 'MonoMatrix', 'Cubic 11', 'Newsreader', serif;
+            font-size: clamp(3.5rem, 11vw, 6.2rem);
+            font-weight: 400;
+        }
+
+        .typewriter-title.is-cjk {
+            font-family: 'Cubic 11', 'Newsreader', serif;
+            font-size: clamp(3.55rem, 10.6vw, 6.15rem);
+            font-weight: 400;
+            letter-spacing: 0.12em;
+        }
+
+        .typewriter-current {
+            display: inline-block;
+            position: relative;
+            transition: opacity 0.36s cubic-bezier(0.2, 0.85, 0.2, 1),
+                        transform 0.36s cubic-bezier(0.2, 0.85, 0.2, 1);
+        }
+
+        .typewriter-title.is-exiting .typewriter-current {
+            opacity: 0;
+            transform: translateY(-1.05em);
+        }
+
+        .typewriter-text {
+            display: inline-block;
+        }
+
+        .typewriter-text::after {
+            content: "";
+            position: absolute;
+            left: calc(100% + 0.08em);
+            top: 0.09em;
+            display: block;
+            width: 0.06em;
+            height: 0.88em;
+            background: currentColor;
+            animation: cursorBlink 1s steps(1, end) infinite;
+        }
+
+        .typewriter-enter {
+            position: absolute;
+            left: calc(100% + 0.22em);
+            top: 0.34em;
+            display: block;
+            font-size: 0.42em;
+            line-height: 1;
+            color: #8a8a8a;
+            opacity: 0;
+            transition: opacity 0.18s ease;
+        }
+
+        .typewriter-title.show-enter .typewriter-text::after {
+            opacity: 0;
+        }
+
+        .typewriter-title.show-enter .typewriter-enter {
+            opacity: 1;
+        }
+
+        @keyframes cursorBlink {
+            0%, 48% { opacity: 1; }
+            49%, 100% { opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .typewriter-current { transition: none; }
+            .typewriter-text::after { animation: none; }
         }
 
         .hero-subtitle {
@@ -951,7 +1042,11 @@
         <canvas id="hero-graph"></canvas>
 
         <div class="hero-content">
-            <h1 class="hero-title">Chen Zai</h1>
+            <h1 class="hero-title typewriter-title is-latin" aria-label="Chen Zai, 陈在, chen apostrophe to 陈, zai to 在">
+                <span class="typewriter-current" aria-hidden="true">
+                    <span class="typewriter-text"></span><span class="typewriter-enter">↵</span>
+                </span>
+            </h1>
             <p class="hero-subtitle"></p>
             
             <div class="language-switcher">
@@ -1233,6 +1328,90 @@
     </footer>
 
     <script>
+        // Hero name typewriter
+        const typewriterTitle = document.querySelector('.typewriter-title');
+        const typewriterText = document.querySelector('.typewriter-text');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function setHeroTitleScript(script) {
+            if (!typewriterTitle) return;
+            typewriterTitle.classList.toggle('is-latin', script === 'latin');
+            typewriterTitle.classList.toggle('is-cjk', script === 'cjk');
+        }
+
+        async function runNameTypewriter() {
+            if (!typewriterText) return;
+
+            const names = ['Chen Zai', '陈在'];
+            const pinyinSteps = [
+                { input: "chen'", output: '陈' },
+                { input: 'zai', output: '在' }
+            ];
+            const typeDelay = 145;
+            const holdDelay = 1400;
+            const enterDelay = 280;
+            const exitDelay = 380;
+            const nextDelay = 170;
+            const conversionDelay = 520;
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+            async function typeText(text) {
+                for (const char of text) {
+                    typewriterText.textContent += char;
+                    await sleep(typeDelay);
+                }
+            }
+
+            async function lineBreakOut() {
+                typewriterTitle.classList.add('show-enter');
+                await sleep(enterDelay);
+                typewriterTitle.classList.add('is-exiting');
+                await sleep(exitDelay);
+                typewriterText.textContent = '';
+                typewriterTitle.classList.remove('show-enter', 'is-exiting');
+                await sleep(nextDelay);
+            }
+
+            if (reduceMotion) {
+                setHeroTitleScript('latin');
+                typewriterText.textContent = names[0];
+                return;
+            }
+
+            while (true) {
+                for (const name of names) {
+                    setHeroTitleScript(name === 'Chen Zai' ? 'latin' : 'cjk');
+                    typewriterText.textContent = '';
+                    await typeText(name);
+
+                    await sleep(holdDelay);
+                    await lineBreakOut();
+                }
+
+                let confirmedText = '';
+                setHeroTitleScript('latin');
+                typewriterText.textContent = '';
+
+                for (const step of pinyinSteps) {
+                    setHeroTitleScript(confirmedText ? 'cjk' : 'latin');
+                    typewriterText.textContent = confirmedText;
+                    setHeroTitleScript('latin');
+                    await typeText(step.input);
+
+                    await sleep(conversionDelay);
+                    confirmedText += step.output;
+                    setHeroTitleScript('cjk');
+                    typewriterText.textContent = confirmedText;
+                    await sleep(nextDelay);
+                }
+
+                await sleep(holdDelay);
+                await lineBreakOut();
+            }
+        }
+
+        runNameTypewriter();
+
         // Projects hover interaction
         const projectsExpWrapper = document.querySelector('.projects-exp-wrapper');
         const projectsExpItems = document.querySelectorAll('.projects-exp-tooth.item');

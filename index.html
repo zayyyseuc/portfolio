@@ -314,15 +314,21 @@
             margin-bottom: 4rem;
             padding-bottom: 4rem;
             border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 2.5rem;
+            min-height: 33.5rem;
+            align-content: start;
         }
         .cv-biography p {
-            font-size: 1.0625rem;
-            line-height: 1.85;
+            font-family: 'Newsreader', serif;
+            font-size: 1.25rem;
+            line-height: 1.68;
+            font-weight: 300;
             color: var(--text-primary);
-            margin-bottom: 1.5rem;
-            text-align: justify;
+            margin-bottom: 0;
+            text-align: left;
         }
-        .cv-biography p:last-child { margin-bottom: 0; }
         .cv-entries { display: flex; flex-direction: column; gap: 0; }
         .cv-entry-group {
             padding: 2.5rem 0;
@@ -513,6 +519,11 @@
             .cv-col-left { display: none; }
             .cv-col-right { position: relative; top: 0; height: auto; border-left: none; border-top: 1px solid var(--border); padding: 2.5rem 2rem; }
             .cv-col-main { padding: 2.5rem 2rem 4rem; }
+            .cv-biography {
+                grid-template-columns: 1fr;
+                min-height: auto;
+                gap: 1.5rem;
+            }
             .cv-entry-group { grid-template-columns: 1fr; gap: 0.5rem; }
         }
 
@@ -610,6 +621,7 @@
         .projects-exp-wrapper.info-visible .projects-exp-info {
             opacity: 1;
             transform: translateY(0);
+            pointer-events: auto;
         }
 
         .projects-exp-kicker {
@@ -630,6 +642,53 @@
             text-transform: uppercase;
             max-width: 680px;
             margin-bottom: 1.2rem;
+        }
+
+        .projects-exp-github {
+            width: 2.2rem;
+            height: 2.2rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin-left: 0.8rem;
+            vertical-align: 0.15em;
+            border: 1px solid var(--projects-exp-tag-border);
+            border-radius: 999px;
+            background: var(--projects-exp-tag-bg);
+            color: var(--projects-exp-text);
+            text-decoration: none;
+            opacity: 0.9;
+            transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .projects-exp-github.is-visible {
+            display: inline-flex;
+        }
+
+        .projects-exp-github:hover {
+            opacity: 1;
+            border-color: var(--projects-exp-text);
+            background: rgba(255,255,255,0.34);
+            transform: translateY(-1px);
+        }
+
+        .projects-exp-github svg {
+            width: 1.15rem;
+            height: 1.15rem;
+            fill: currentColor;
+            display: block;
+        }
+
+        .projects-exp-github .youtube-icon {
+            display: none;
+        }
+
+        .projects-exp-github.is-youtube .github-icon {
+            display: none;
+        }
+
+        .projects-exp-github.is-youtube .youtube-icon {
+            display: block;
         }
 
         .projects-exp-summary {
@@ -1123,10 +1182,9 @@
 
         <div class="cv-col-main">
             <div class="cv-biography">
-                <p>Chen Zai (b. 2004, China) is an environmental designer and interdisciplinary researcher currently pursuing a Bachelor of Arts at Nankai University, with an expected graduation in 2026. Her practice operates at the intersection of spatial design, human-computer interaction, and ecological systems thinking — asking how designed environments can listen, respond, and adapt to the people and ecologies that inhabit them.</p>
-                <p>Her work spans a broad range of media and methods: from data-driven urban analysis and VR spatial interfaces to physical computing installations and community co-creation processes. What connects these projects is a sustained interest in thresholds — the edges where the digital meets the material, where individual experience meets collective memory, and where design can quietly shift how people perceive their surroundings.</p>
-                <p>Chen Zai has been recognized with a National Second Prize for her Tianjin Salt Field Street Design, and her exhibition work has been permanently adopted by the Tianjin Science Museum. She has studied at the University of California, Berkeley (Summer 2024, GPA 3.9), where she deepened her engagement with HCI methodologies and participatory design frameworks.</p>
-                <p>She is currently open to graduate program opportunities and collaborative research projects in the fields of environmental design, spatial computing, and ecological interaction design.</p>
+                <p>I'm an environmental designer trained to think across scales — from a room's materiality to a regional ecosystem. I'm completing a B.A. at Nankai University and joining the MDes program at UC Berkeley in Fall 2026.</p>
+                <p>My work spans ML sensing, VR spatial interfaces, and physical computing. The common thread is a question about gaps: between how a space is designed to function and how it is actually inhabited. My thesis takes this to a non-human extreme — a UE5 prototype that models habitat cognition from the perspectives of deer, squirrel, and ant.</p>
+                <p>I'm moving toward healthcare environments for aging populations, where that gap tends to matter most.</p>
             </div>
 
             <div class="cv-tabs">
@@ -1241,7 +1299,17 @@
 
                     <article class="projects-exp-info" aria-live="polite">
                         <div class="projects-exp-kicker" id="projects-exp-kicker">Project 01</div>
-                        <h3 class="projects-exp-title" id="projects-exp-title">Urban Mirage</h3>
+                        <h3 class="projects-exp-title">
+                            <span id="projects-exp-title">Urban Mirage</span>
+                            <a class="projects-exp-github" id="projects-exp-github" href="https://github.com/zayyyseuc/GhostTown" target="_blank" rel="noopener noreferrer" aria-label="Open project GitHub repository">
+                                <svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.54 2.87 8.39 6.84 9.75.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.33 9.33 0 0 1 12 7.02c.85 0 1.7.12 2.5.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.19 10.19 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/>
+                                </svg>
+                                <svg class="youtube-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.55 3.58 12 3.58 12 3.58s-7.55 0-9.4.5A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.85.5 9.4.5 9.4.5s7.55 0 9.4-.5a3 3 0 0 0 2.1-2.12A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8ZM9.55 15.56V8.44L15.82 12l-6.27 3.56Z"/>
+                                </svg>
+                            </a>
+                        </h3>
                         <p class="projects-exp-summary" id="projects-exp-summary"></p>
                         <div class="projects-exp-meta">
                             <span class="projects-exp-meta-label">Type</span>
@@ -1498,6 +1566,7 @@
         const projectsExpInfo = {
             kicker: document.getElementById('projects-exp-kicker'),
             title: document.getElementById('projects-exp-title'),
+            github: document.getElementById('projects-exp-github'),
             summary: document.getElementById('projects-exp-summary'),
             type: document.getElementById('projects-exp-type'),
             focus: document.getElementById('projects-exp-focus'),
@@ -1514,6 +1583,7 @@
                 focus: 'Pseudo-urbanization, multimodal sensing, urban vitality',
                 time: '2025 / 04 - 09',
                 tags: ['Machine Learning', 'CNN', 'Audio-Visual Fusion', 'ESP32', 'Python'],
+                github: 'https://github.com/zayyyseuc/GhostTown',
                 theme: {
                     wall: 'rgb(245, 242, 237)',
                     overlayLeft: 'rgba(245, 242, 237, 0.94)',
@@ -1538,6 +1608,7 @@
                 focus: 'Spatial computing, file systems, embodied interaction',
                 time: '2025 / 09 - 11',
                 tags: ['Unreal Engine 5', 'VR', 'Blueprint', 'Meta Quest'],
+                youtube: 'https://youtu.be/b-2tPi6qjgw?si=ow5n0_Oh9G6mjEOC',
                 theme: {
                     wall: 'rgb(13, 15, 20)',
                     overlayLeft: 'rgba(13, 15, 20, 0.92)',
@@ -1562,6 +1633,7 @@
                 focus: 'Ecological education, habitat corridors, multi-scale POV',
                 time: '2025 / 09 - 11',
                 tags: ['Unreal Engine 5', 'Blueprint', 'Ecology', 'Procedural Systems'],
+                youtube: 'https://youtu.be/g1a72B5N_NY?si=d2Vw93urJMayUSJm',
                 theme: {
                     wall: 'rgb(247, 244, 238)',
                     overlayLeft: 'rgba(247, 244, 238, 0.94)',
@@ -1586,6 +1658,7 @@
                 focus: 'Stroke detection, facial EMG, passive monitoring',
                 time: '2025',
                 tags: ['Machine Learning', 'EMG Sensors', 'Python', 'Random Forest'],
+                github: 'https://github.com/zayyyseuc/Facial-EMG-Stroke-Monitor',
                 theme: {
                     wall: 'rgb(10, 10, 10)',
                     overlayLeft: 'rgba(10, 10, 10, 0.92)',
@@ -1610,6 +1683,7 @@
                 focus: 'Remote companionship, distributed sensing, ambient interaction',
                 time: '2025 / 10',
                 tags: ['ESP32-C3', 'Radar Sensor', 'PIR Sensor', 'Arduino', 'Audio Interaction'],
+                github: 'https://github.com/zayyyseuc/PetSpace',
                 theme: {
                     wall: 'rgb(246, 247, 251)',
                     overlayLeft: 'rgba(246, 247, 251, 0.94)',
@@ -1657,6 +1731,18 @@
 
             projectsExpInfo.kicker.textContent = data.kicker;
             projectsExpInfo.title.textContent = data.title;
+            const projectLink = data.github || data.youtube;
+            if (projectLink) {
+                projectsExpInfo.github.href = projectLink;
+                projectsExpInfo.github.setAttribute('aria-label', `${data.title} ${data.youtube ? 'YouTube video' : 'GitHub repository'}`);
+                projectsExpInfo.github.classList.toggle('is-youtube', Boolean(data.youtube));
+                projectsExpInfo.github.classList.add('is-visible');
+            } else {
+                projectsExpInfo.github.removeAttribute('href');
+                projectsExpInfo.github.setAttribute('aria-label', 'No external link for this project');
+                projectsExpInfo.github.classList.remove('is-youtube');
+                projectsExpInfo.github.classList.remove('is-visible');
+            }
             projectsExpInfo.summary.textContent = data.summary;
             projectsExpInfo.type.textContent = data.type;
             projectsExpInfo.focus.textContent = data.focus;

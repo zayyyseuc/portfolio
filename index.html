@@ -66,10 +66,10 @@
         .education-item h3 { font-size: 1.125rem; margin-bottom: 0.5rem; font-weight: 600; }
         .education-item p { color: var(--text-secondary); font-size: 0.9375rem; }
         .education-item .gpa { margin-top: 0.5rem; font-weight: 500; color: var(--accent); }
-        .language-switcher { margin-top: 2rem; font-size: 0.875rem; color: var(--text-secondary); }
-        .language-switcher a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease; }
+        .language-switcher { margin-top: 1.35rem; font-size: 0.78rem; color: rgba(26, 26, 26, 0.38); letter-spacing: 0.04em; }
+        .language-switcher a { color: rgba(26, 26, 26, 0.42); text-decoration: none; transition: color 0.3s ease; font-weight: 400; }
         .language-switcher a:hover { color: var(--accent); }
-        .language-switcher .active { color: var(--accent); font-weight: 600; }
+        .language-switcher .active { color: rgba(26, 26, 26, 0.58); font-weight: 500; }
         .scroll-hint {
             position: absolute;
             bottom: 2rem;
@@ -117,6 +117,9 @@
         .hero-content {
             position: relative;
             z-index: 2; /* 放在画布之上 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
             max-width: 900px;
             /* 关键：让鼠标穿透文字层，这样你才能玩背景的粒子 */
@@ -130,7 +133,7 @@
             font-size: clamp(4rem, 12vw, 7rem); 
             font-weight: 400; /* 更细更精致 */
             letter-spacing: -0.02em;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0;
             line-height: 1.1;
             color: var(--text-primary);
             /* 加一点白色发光，防止粒子经过文字后面时看不清 */
@@ -146,16 +149,18 @@
         }
 
         .typewriter-title.is-latin {
-            font-family: 'MonoMatrix', 'Cubic 11', 'Newsreader', serif;
+            font-family: 'Newsreader', serif;
             font-size: clamp(3.5rem, 11vw, 6.2rem);
             font-weight: 400;
+            line-height: 1.1;
         }
 
         .typewriter-title.is-cjk {
-            font-family: 'Cubic 11', 'Newsreader', serif;
-            font-size: clamp(3.55rem, 10.6vw, 6.15rem);
+            font-family: 'LiSong Pro', '儷宋 Pro', 'Songti SC', 'Noto Serif CJK TC', 'Noto Serif CJK SC', 'Source Han Serif TC', 'Source Han Serif SC', 'STSong', 'SimSun', serif;
+            font-size: clamp(3.48rem, 10.35vw, 6rem);
             font-weight: 400;
-            letter-spacing: 0.12em;
+            line-height: 1.1;
+            letter-spacing: 0.18em;
         }
 
         .typewriter-current {
@@ -214,6 +219,7 @@
         @media (prefers-reduced-motion: reduce) {
             .typewriter-current { transition: none; }
             .typewriter-text::after { animation: none; }
+            .hero-tagline-text::after { display: none; }
         }
 
         .hero-subtitle {
@@ -225,6 +231,39 @@
             letter-spacing: 0.1em;
         }
 
+        .hero-tagline {
+            min-height: 1.6em;
+            margin: 0.7rem auto 0;
+            font-family: 'Newsreader', serif;
+            font-size: clamp(0.95rem, 2.2vw, 1.18rem);
+            font-weight: 400;
+            line-height: 1.6;
+            color: rgba(26, 26, 26, 0.72);
+            letter-spacing: 0.02em;
+            text-shadow: 0 0 24px rgba(255, 255, 255, 0.78);
+        }
+
+        .hero-tagline-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-tagline-text::after {
+            content: "";
+            position: absolute;
+            left: calc(100% + 0.16em);
+            top: 0.22em;
+            width: 1px;
+            height: 1.05em;
+            background: currentColor;
+            animation: cursorBlink 1.1s steps(1, end) infinite;
+        }
+
+        .hero-tagline.is-complete .hero-tagline-text::after {
+            opacity: 0;
+            animation: none;
+        }
+
         .language-switcher {
             pointer-events: auto; /* 让语言切换器可以被点击 */
             position: relative;   /* 保持相对定位 */
@@ -232,9 +271,10 @@
 
         /* 语言切换器微调 */
         .language-switcher {
-            margin-top: 4rem; /* 稍微拉开点距离 */
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+            margin-top: 1.35rem;
+            font-size: 0.78rem;
+            color: rgba(26, 26, 26, 0.38);
+            letter-spacing: 0.04em;
         }
 
         /* --- CV Section — Three Column --- */
@@ -1023,6 +1063,16 @@
         .hero {
             scroll-snap-align: start;
         }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        footer p {
+            color: #999999;
+            font-size: 0.8125rem;
+        }
     </style>
 </head>
 <body>
@@ -1042,12 +1092,15 @@
         <canvas id="hero-graph"></canvas>
 
         <div class="hero-content">
-            <h1 class="hero-title typewriter-title is-latin" aria-label="Chen Zai, 陈在, chen apostrophe to 陈, zai to 在">
+            <h1 class="hero-title typewriter-title is-latin" aria-label="Chen Zai, 陳在, chen apostrophe to 陳, zai to 在">
                 <span class="typewriter-current" aria-hidden="true">
                     <span class="typewriter-text"></span><span class="typewriter-enter">↵</span>
                 </span>
             </h1>
             <p class="hero-subtitle"></p>
+            <p class="hero-tagline" aria-label="Ideas begin where disciplines meet in motion.">
+                <span class="hero-tagline-text" aria-hidden="true"></span>
+            </p>
             
             <div class="language-switcher">
                 <a href="#" class="active">English</a> | <a href="#">中文</a>
@@ -1342,9 +1395,9 @@
         async function runNameTypewriter() {
             if (!typewriterText) return;
 
-            const names = ['Chen Zai', '陈在'];
+            const names = ['Chen Zai', '陳在'];
             const pinyinSteps = [
-                { input: "chen'", output: '陈' },
+                { input: "chen'", output: '陳' },
                 { input: 'zai', output: '在' }
             ];
             const typeDelay = 145;
@@ -1411,6 +1464,32 @@
         }
 
         runNameTypewriter();
+
+        async function runTaglineTypewriter() {
+            const tagline = document.querySelector('.hero-tagline');
+            const taglineText = document.querySelector('.hero-tagline-text');
+            const text = 'Ideas begin where disciplines meet in motion.';
+            if (!tagline || !taglineText) return;
+
+            if (reduceMotion) {
+                taglineText.textContent = text;
+                tagline.classList.add('is-complete');
+                return;
+            }
+
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+            await sleep(620);
+
+            for (const char of text) {
+                taglineText.textContent += char;
+                await sleep(char === ' ' ? 42 : 82);
+            }
+
+            await sleep(460);
+            tagline.classList.add('is-complete');
+        }
+
+        runTaglineTypewriter();
 
         // Projects hover interaction
         const projectsExpWrapper = document.querySelector('.projects-exp-wrapper');
@@ -1630,12 +1709,15 @@
         
         // --- 技能关键词  ---
         const keywords = [
-            "Spatial Computing", "HCI", "Ecological Restoration", 
-            "Unreal Engine 5", "Data Viz", "Interactive Narrative", 
-            "Physical Computing", "Arduino", "Research", 
-            "Generative Art", "VR/XR", "Python",
-            "Bio-design", "Machine Learning", "Sensors", "Unity",
-            "Projection Mapping", "Sustainability", "UX/UI", "Digital Twin"
+            "Environmental Design", "Spatial Computing", "HCI",
+            "VR Interaction", "Unreal Engine 5", "Blueprint",
+            "Machine Learning", "CNN-LSTM", "Random Forest",
+            "Audio-Visual Fusion", "Python", "Data-Driven Urban Analysis",
+            "Physical Computing", "Arduino", "ESP32-C3",
+            "EMG Sensors", "Radar Sensor", "PIR Sensor",
+            "Ecological Corridors", "Procedural Systems", "Serious Games",
+            "Product-Service Design", "Ambient Interaction", "Participatory Design",
+            "Figma", "Rhino", "Blender"
         ];
 
         const mouse = { x: null, y: null };

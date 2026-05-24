@@ -390,7 +390,7 @@
             padding: 0;
             position: relative;
             overflow: hidden;
-            background: #000;
+            background: #d1d2ce;
         }
 
         .projects-exp-heading {
@@ -406,7 +406,20 @@
             position: relative;
             width: 100%;
             height: 100%;
-            --projects-exp-bg: rgba(209, 210, 206, 1);
+            --projects-exp-bg: rgb(245, 242, 237);
+            --projects-overlay-left: rgba(245, 242, 237, 0.94);
+            --projects-overlay-mid: rgba(245, 242, 237, 0.76);
+            --projects-overlay-fade: rgba(245, 242, 237, 0.08);
+            --projects-overlay-bottom: rgba(237, 233, 226, 0.72);
+            --projects-overlay-top: rgba(245, 242, 237, 0.05);
+            --projects-exp-text: #1a1510;
+            --projects-exp-text-soft: rgba(26, 21, 16, 0.72);
+            --projects-exp-text-muted: rgba(26, 21, 16, 0.46);
+            --projects-exp-tag-bg: rgba(255, 255, 255, 0.26);
+            --projects-exp-tag-border: rgba(26, 21, 16, 0.18);
+            --projects-exp-tooth-text: #111111;
+            --projects-exp-filter: grayscale(18%) contrast(1.04) brightness(1) saturate(0.94);
+            transition: background-color 0.45s ease;
         }
 
         .projects-exp-bg-layer {
@@ -422,9 +435,16 @@
             inset: 0;
             z-index: 2;
             background:
-                linear-gradient(90deg, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.34) 34%, rgba(0, 0, 0, 0.08) 62%),
-                linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 46%);
+                linear-gradient(90deg, var(--projects-overlay-left) 0%, var(--projects-overlay-mid) 38%, var(--projects-overlay-fade) 68%),
+                linear-gradient(0deg, var(--projects-overlay-bottom) 0%, transparent 46%),
+                linear-gradient(180deg, var(--projects-overlay-top) 0%, transparent 35%);
+            opacity: 0;
             pointer-events: none;
+            transition: background 0.45s ease, opacity 0.32s ease;
+        }
+
+        .projects-exp-wrapper.info-visible .projects-exp-bg-layer::after {
+            opacity: 1;
         }
 
         .projects-exp-bg-img {
@@ -436,7 +456,7 @@
             object-position: center center;
             opacity: 0;
             transition: opacity 0.6s ease-in-out;
-            filter: grayscale(60%) contrast(1.2) brightness(0.8);
+            filter: var(--projects-exp-filter);
         }
 
         .projects-exp-bg-img.active {
@@ -449,10 +469,10 @@
             bottom: clamp(34px, 9vh, 96px);
             z-index: 3;
             width: min(520px, 52vw);
-            color: #f3f3ef;
+            color: var(--projects-exp-text);
             opacity: 0;
             transform: translateY(16px);
-            transition: opacity 0.42s ease, transform 0.42s ease;
+            transition: opacity 0.42s ease, transform 0.42s ease, color 0.45s ease;
             pointer-events: none;
         }
 
@@ -466,7 +486,7 @@
             font-weight: 800;
             letter-spacing: 0.22em;
             text-transform: uppercase;
-            color: rgba(243, 243, 239, 0.68);
+            color: var(--projects-exp-text-muted);
             margin-bottom: 0.85rem;
         }
 
@@ -485,7 +505,7 @@
             font-size: 1rem;
             line-height: 1.65;
             max-width: 520px;
-            color: rgba(243, 243, 239, 0.86);
+            color: var(--projects-exp-text-soft);
             margin-bottom: 1.4rem;
         }
 
@@ -502,12 +522,12 @@
         }
 
         .projects-exp-meta-label {
-            color: rgba(243, 243, 239, 0.48);
+            color: var(--projects-exp-text-muted);
             font-weight: 800;
         }
 
         .projects-exp-meta-value {
-            color: rgba(243, 243, 239, 0.76);
+            color: var(--projects-exp-text-soft);
             font-weight: 700;
         }
 
@@ -518,16 +538,16 @@
         }
 
         .projects-exp-tag {
-            border: 1px solid rgba(243, 243, 239, 0.36);
+            border: 1px solid var(--projects-exp-tag-border);
             border-radius: 999px;
             padding: 0.34rem 0.62rem;
             font-size: 0.68rem;
             line-height: 1;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: rgba(243, 243, 239, 0.78);
+            color: var(--projects-exp-text-soft);
             backdrop-filter: blur(8px);
-            background: rgba(0, 0, 0, 0.16);
+            background: var(--projects-exp-tag-bg);
         }
 
         .projects-exp-wall {
@@ -576,7 +596,7 @@
         .projects-exp-tooth.item {
             height: 35px;
             cursor: pointer;
-            color: #111;
+            color: var(--projects-exp-tooth-text);
             text-decoration: none;
         }
 
@@ -1217,7 +1237,6 @@
         const projectsExpWrapper = document.querySelector('.projects-exp-wrapper');
         const projectsExpItems = document.querySelectorAll('.projects-exp-tooth.item');
         const projectsExpImages = document.querySelectorAll('.projects-exp-bg-img');
-        const projectsExpList = document.querySelector('.projects-exp-list');
         const projectsExpInfo = {
             kicker: document.getElementById('projects-exp-kicker'),
             title: document.getElementById('projects-exp-title'),
@@ -1236,7 +1255,22 @@
                 type: 'Interactive Installation / Research Prototype',
                 focus: 'Pseudo-urbanization, multimodal sensing, urban vitality',
                 time: '2025 / 04 - 09',
-                tags: ['Machine Learning', 'CNN', 'Audio-Visual Fusion', 'ESP32', 'Python']
+                tags: ['Machine Learning', 'CNN', 'Audio-Visual Fusion', 'ESP32', 'Python'],
+                theme: {
+                    wall: 'rgb(245, 242, 237)',
+                    overlayLeft: 'rgba(245, 242, 237, 0.94)',
+                    overlayMid: 'rgba(245, 242, 237, 0.76)',
+                    overlayFade: 'rgba(245, 242, 237, 0.08)',
+                    overlayBottom: 'rgba(237, 233, 226, 0.72)',
+                    overlayTop: 'rgba(192, 57, 43, 0.08)',
+                    text: '#1a1510',
+                    textSoft: 'rgba(26, 21, 16, 0.72)',
+                    textMuted: 'rgba(26, 21, 16, 0.46)',
+                    tagBg: 'rgba(255, 255, 255, 0.26)',
+                    tagBorder: 'rgba(26, 21, 16, 0.18)',
+                    toothText: '#111111',
+                    filter: 'grayscale(18%) contrast(1.04) brightness(1) saturate(0.94)'
+                }
             },
             'project-img-2': {
                 kicker: 'Project 02',
@@ -1245,7 +1279,22 @@
                 type: 'VR Interaction System / Personal Project',
                 focus: 'Spatial computing, file systems, embodied interaction',
                 time: '2025 / 09 - 11',
-                tags: ['Unreal Engine 5', 'VR', 'Blueprint', 'Meta Quest']
+                tags: ['Unreal Engine 5', 'VR', 'Blueprint', 'Meta Quest'],
+                theme: {
+                    wall: 'rgb(13, 15, 20)',
+                    overlayLeft: 'rgba(13, 15, 20, 0.92)',
+                    overlayMid: 'rgba(13, 15, 20, 0.72)',
+                    overlayFade: 'rgba(13, 15, 20, 0.08)',
+                    overlayBottom: 'rgba(13, 15, 20, 0.70)',
+                    overlayTop: 'rgba(79, 124, 255, 0.12)',
+                    text: '#e8eaf0',
+                    textSoft: 'rgba(232, 234, 240, 0.78)',
+                    textMuted: 'rgba(136, 146, 170, 0.82)',
+                    tagBg: 'rgba(79, 124, 255, 0.11)',
+                    tagBorder: 'rgba(160, 180, 255, 0.28)',
+                    toothText: '#e8eaf0',
+                    filter: 'grayscale(28%) contrast(1.12) brightness(0.86) saturate(0.9)'
+                }
             },
             'project-img-3': {
                 kicker: 'Project 03',
@@ -1254,7 +1303,22 @@
                 type: 'Serious Game Design / Personal Project',
                 focus: 'Ecological education, habitat corridors, multi-scale POV',
                 time: '2025 / 09 - 11',
-                tags: ['Unreal Engine 5', 'Blueprint', 'Ecology', 'Procedural Systems']
+                tags: ['Unreal Engine 5', 'Blueprint', 'Ecology', 'Procedural Systems'],
+                theme: {
+                    wall: 'rgb(247, 244, 238)',
+                    overlayLeft: 'rgba(247, 244, 238, 0.94)',
+                    overlayMid: 'rgba(247, 244, 238, 0.76)',
+                    overlayFade: 'rgba(247, 244, 238, 0.08)',
+                    overlayBottom: 'rgba(239, 233, 220, 0.72)',
+                    overlayTop: 'rgba(58, 125, 68, 0.08)',
+                    text: '#1e1a12',
+                    textSoft: 'rgba(30, 26, 18, 0.72)',
+                    textMuted: 'rgba(107, 96, 64, 0.70)',
+                    tagBg: 'rgba(255, 255, 255, 0.24)',
+                    tagBorder: 'rgba(58, 125, 68, 0.22)',
+                    toothText: '#1e1a12',
+                    filter: 'grayscale(16%) contrast(1.04) brightness(1) saturate(0.96)'
+                }
             },
             'project-img-4': {
                 kicker: 'Project 04',
@@ -1263,7 +1327,22 @@
                 type: 'Healthcare Design / Physical Computing',
                 focus: 'Stroke detection, facial EMG, passive monitoring',
                 time: '2025',
-                tags: ['Machine Learning', 'EMG Sensors', 'Python', 'Random Forest']
+                tags: ['Machine Learning', 'EMG Sensors', 'Python', 'Random Forest'],
+                theme: {
+                    wall: 'rgb(10, 10, 10)',
+                    overlayLeft: 'rgba(10, 10, 10, 0.92)',
+                    overlayMid: 'rgba(10, 10, 10, 0.74)',
+                    overlayFade: 'rgba(10, 10, 10, 0.08)',
+                    overlayBottom: 'rgba(10, 10, 10, 0.72)',
+                    overlayTop: 'rgba(124, 106, 255, 0.14)',
+                    text: '#f0f0f0',
+                    textSoft: 'rgba(240, 240, 240, 0.76)',
+                    textMuted: 'rgba(136, 136, 136, 0.88)',
+                    tagBg: 'rgba(124, 106, 255, 0.12)',
+                    tagBorder: 'rgba(192, 132, 252, 0.28)',
+                    toothText: '#f0f0f0',
+                    filter: 'grayscale(34%) contrast(1.14) brightness(0.84) saturate(0.86)'
+                }
             },
             'project-img-5': {
                 kicker: 'Project 05',
@@ -1272,14 +1351,48 @@
                 type: 'Product / Service / Interaction Design',
                 focus: 'Remote companionship, distributed sensing, ambient interaction',
                 time: '2025 / 10',
-                tags: ['ESP32-C3', 'Radar Sensor', 'PIR Sensor', 'Arduino', 'Audio Interaction']
+                tags: ['ESP32-C3', 'Radar Sensor', 'PIR Sensor', 'Arduino', 'Audio Interaction'],
+                theme: {
+                    wall: 'rgb(246, 247, 251)',
+                    overlayLeft: 'rgba(246, 247, 251, 0.94)',
+                    overlayMid: 'rgba(246, 247, 251, 0.78)',
+                    overlayFade: 'rgba(246, 247, 251, 0.12)',
+                    overlayBottom: 'rgba(238, 242, 255, 0.74)',
+                    overlayTop: 'rgba(31, 73, 224, 0.08)',
+                    text: '#10162b',
+                    textSoft: 'rgba(16, 22, 43, 0.72)',
+                    textMuted: 'rgba(94, 103, 133, 0.74)',
+                    tagBg: 'rgba(255, 255, 255, 0.32)',
+                    tagBorder: 'rgba(31, 73, 224, 0.20)',
+                    toothText: '#10162b',
+                    filter: 'grayscale(12%) contrast(1.02) brightness(1) saturate(0.96)'
+                }
             }
         };
+
+        function applyProjectsExpTheme(theme) {
+            if (!theme) return;
+
+            projectsExpWrapper.style.setProperty('--projects-exp-bg', theme.wall);
+            projectsExpWrapper.style.setProperty('--projects-overlay-left', theme.overlayLeft);
+            projectsExpWrapper.style.setProperty('--projects-overlay-mid', theme.overlayMid);
+            projectsExpWrapper.style.setProperty('--projects-overlay-fade', theme.overlayFade);
+            projectsExpWrapper.style.setProperty('--projects-overlay-bottom', theme.overlayBottom);
+            projectsExpWrapper.style.setProperty('--projects-overlay-top', theme.overlayTop);
+            projectsExpWrapper.style.setProperty('--projects-exp-text', theme.text);
+            projectsExpWrapper.style.setProperty('--projects-exp-text-soft', theme.textSoft);
+            projectsExpWrapper.style.setProperty('--projects-exp-text-muted', theme.textMuted);
+            projectsExpWrapper.style.setProperty('--projects-exp-tag-bg', theme.tagBg);
+            projectsExpWrapper.style.setProperty('--projects-exp-tag-border', theme.tagBorder);
+            projectsExpWrapper.style.setProperty('--projects-exp-tooth-text', theme.toothText);
+            projectsExpWrapper.style.setProperty('--projects-exp-filter', theme.filter);
+        }
 
         function renderProjectsExpInfo(targetId) {
             const data = projectsExpData[targetId];
             if (!data) return;
 
+            applyProjectsExpTheme(data.theme);
             projectsExpImages.forEach(img => img.classList.remove('active'));
             const targetImage = document.getElementById(targetId);
             if (targetImage) targetImage.classList.add('active');
@@ -1304,7 +1417,7 @@
             });
         });
 
-        projectsExpList.addEventListener('mouseleave', () => {
+        projectsExpWrapper.addEventListener('mouseleave', () => {
             projectsExpWrapper.classList.remove('info-visible');
         });
 

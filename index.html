@@ -743,12 +743,12 @@
         .projects-exp-wall {
             position: absolute;
             top: 0;
-            right: -30vw;
+            right: -38vw;
             width: 50vw;
             height: 100vh;
             background-color: var(--projects-exp-bg);
             z-index: 2;
-            transform: skewX(5deg);
+            transform: none;
             transform-origin: bottom right;
         }
 
@@ -775,7 +775,7 @@
             align-items: center;
             padding-left: 20px;
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            transform: skewX(-5deg);
+            transform: none;
             transform-origin: left center;
         }
 
@@ -791,7 +791,8 @@
         }
 
         .projects-exp-tooth.item:hover,
-        .projects-exp-tooth.item:focus {
+        .projects-exp-tooth.item:focus,
+        .projects-exp-tooth.item.is-active {
             margin-left: calc(-1 * (var(--extend, 0px) + 40px));
             width: calc(100% + var(--extend, 0px) + 40px);
             outline: none;
@@ -816,14 +817,18 @@
         .projects-exp-wrapper:has(.projects-exp-tooth.item:hover) .projects-exp-tooth.item .projects-exp-index,
         .projects-exp-wrapper:has(.projects-exp-tooth.item:hover) .projects-exp-tooth.item .projects-exp-item-title,
         .projects-exp-wrapper:has(.projects-exp-tooth.item:focus) .projects-exp-tooth.item .projects-exp-index,
-        .projects-exp-wrapper:has(.projects-exp-tooth.item:focus) .projects-exp-tooth.item .projects-exp-item-title {
+        .projects-exp-wrapper:has(.projects-exp-tooth.item:focus) .projects-exp-tooth.item .projects-exp-item-title,
+        .projects-exp-wrapper.has-active-project .projects-exp-tooth.item .projects-exp-index,
+        .projects-exp-wrapper.has-active-project .projects-exp-tooth.item .projects-exp-item-title {
             opacity: 0.2;
         }
 
         .projects-exp-tooth.item:hover .projects-exp-index,
         .projects-exp-tooth.item:hover .projects-exp-item-title,
         .projects-exp-tooth.item:focus .projects-exp-index,
-        .projects-exp-tooth.item:focus .projects-exp-item-title {
+        .projects-exp-tooth.item:focus .projects-exp-item-title,
+        .projects-exp-tooth.item.is-active .projects-exp-index,
+        .projects-exp-tooth.item.is-active .projects-exp-item-title {
             opacity: 1 !important;
         }
 
@@ -904,20 +909,59 @@
 
         /* --- 占位图与渐变色 --- */
         .lab-card-placeholder {
+            position: relative;
             width: 100%;
             height: 100%;
+            overflow: hidden;
             transition: transform 0.5s ease;
         }
         .lab-card:hover .lab-card-placeholder { transform: scale(1.05); }
 
-        /* 渐变色 */
-        .lab-card:nth-child(1) .lab-card-placeholder { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
-        .lab-card:nth-child(2) .lab-card-placeholder { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
-        .lab-card:nth-child(3) .lab-card-placeholder { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); }
-        .lab-card:nth-child(4) .lab-card-placeholder { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .lab-card:nth-child(5) .lab-card-placeholder { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .lab-card:nth-child(6) .lab-card-placeholder { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        .lab-card:nth-child(7) .lab-card-placeholder { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        /* Design Lab filler studies */
+        .lab-card:nth-child(1) .lab-card-placeholder { background: #111827; }
+        .lab-card:nth-child(2) .lab-card-placeholder {
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.76), transparent 48%),
+                repeating-linear-gradient(90deg, rgba(24, 24, 24, 0.055) 0 1px, transparent 1px 24px),
+                linear-gradient(145deg, #fbfaf7 0%, #eeeae2 100%);
+        }
+        .lab-card:nth-child(3) .lab-card-placeholder {
+            background:
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.42) 0 1px, transparent 1px 18px),
+                linear-gradient(135deg, #edf1f2 0%, #d5dddf 58%, #b9c5c7 100%);
+        }
+        .lab-card:nth-child(4) .lab-card-placeholder {
+            background:
+                linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 100%),
+                linear-gradient(135deg, #111111 0%, #242424 58%, #4a4a4a 100%);
+            background-size: 84px 100%, auto;
+        }
+        .lab-card:nth-child(5) .lab-card-placeholder {
+            background:
+                repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.38) 0 1px, transparent 1px 16px),
+                linear-gradient(135deg, #f4f5f2 0%, #dfe5df 52%, #c8d1c8 100%);
+        }
+        .lab-card:nth-child(6) .lab-card-placeholder {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 52%),
+                repeating-linear-gradient(90deg, transparent 0 18px, rgba(18, 24, 30, 0.06) 18px 19px),
+                linear-gradient(135deg, #f6f7f7 0%, #e4e8ea 52%, #cdd4d8 100%);
+        }
+        .lab-card:nth-child(7) .lab-card-placeholder {
+            background:
+                linear-gradient(120deg, rgba(255, 255, 255, 0.72) 0 28%, transparent 28% 100%),
+                repeating-linear-gradient(0deg, rgba(27, 24, 20, 0.045) 0 1px, transparent 1px 26px),
+                linear-gradient(135deg, #fbfaf6 0%, #eee8dc 55%, #ddd5c8 100%);
+        }
+
+        .lab-card:nth-child(n+2) .lab-card-placeholder::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            box-shadow: inset 0 0 0 1px rgba(26, 26, 26, 0.08);
+            pointer-events: none;
+        }
 
         .lab-card:nth-child(1) .brain-mom-preview {
             position: relative;
@@ -1065,7 +1109,7 @@
             }
 
             .projects-exp-wall {
-                right: -36vw;
+                right: -44vw;
                 width: 58vw;
             }
 
@@ -1074,6 +1118,10 @@
         }
 
         @media (max-width: 760px) {
+            .projects-exp-wrapper {
+                touch-action: pan-y;
+            }
+
             .projects-exp-info {
                 width: calc(100vw - 40px);
                 left: 20px;
@@ -1090,7 +1138,7 @@
             }
 
             .projects-exp-wall {
-                right: -44vw;
+                right: -52vw;
                 width: 70vw;
             }
         }
@@ -1751,22 +1799,53 @@
             projectsExpWrapper.classList.add('info-visible');
         }
 
+        const mobileProjectsQuery = window.matchMedia('(max-width: 760px), (hover: none), (pointer: coarse)');
+
+        function setActiveProjectItem(activeItem) {
+            projectsExpItems.forEach(item => item.classList.toggle('is-active', item === activeItem));
+            projectsExpWrapper.classList.toggle('has-active-project', Boolean(activeItem));
+        }
+
         projectsExpItems.forEach(item => {
             item.addEventListener('mouseenter', () => {
+                setActiveProjectItem(null);
                 renderProjectsExpInfo(item.getAttribute('data-target'));
             });
 
             item.addEventListener('focus', () => {
                 renderProjectsExpInfo(item.getAttribute('data-target'));
             });
+
+            item.addEventListener('click', (event) => {
+                if (!mobileProjectsQuery.matches) return;
+
+                event.preventDefault();
+                setActiveProjectItem(item);
+                renderProjectsExpInfo(item.getAttribute('data-target'));
+            });
         });
 
         projectsExpWrapper.addEventListener('mouseleave', () => {
+            setActiveProjectItem(null);
             projectsExpWrapper.classList.remove('info-visible');
         });
 
         renderProjectsExpInfo('project-img-1');
-        projectsExpWrapper.classList.remove('info-visible');
+        if (mobileProjectsQuery.matches) {
+            setActiveProjectItem(projectsExpItems[0]);
+        } else {
+            projectsExpWrapper.classList.remove('info-visible');
+        }
+
+        mobileProjectsQuery.addEventListener('change', (event) => {
+            if (event.matches) {
+                setActiveProjectItem(projectsExpItems[0]);
+                renderProjectsExpInfo('project-img-1');
+            } else {
+                setActiveProjectItem(null);
+                projectsExpWrapper.classList.remove('info-visible');
+            }
+        });
 
         // Smooth scroll — 配合 scroll-snap 使用 scrollIntoView
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

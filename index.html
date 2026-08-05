@@ -392,7 +392,7 @@
         .cv-contact-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .cv-contact-item {
             display: block;
-            font-size: 0.875rem;
+            font-size: 0.78rem;
             color: var(--text-primary);
             text-decoration: none;
             line-height: 1.5;
@@ -403,7 +403,7 @@
         a.cv-contact-item:hover { opacity: 0.5; }
         .cv-contact-label {
             display: block;
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -444,22 +444,20 @@
             cursor: default;
             pointer-events: none;
         }
-        .cv-divider {
-            display: block;
-            font-size: 1rem;
-            color: var(--border);
-            margin: 0 0 1rem;
+        .cv-download-options {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
-        .cv-download { margin-top: auto; padding-top: 2rem; }
-        .cv-download a {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+        .cv-download-options a {
+            font-size: 0.78rem;
+            color: var(--text-primary);
             text-decoration: none;
             border-bottom: 1px solid var(--border);
             padding-bottom: 2px;
             transition: all 0.2s ease;
         }
-        .cv-download a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+        .cv-download-options a:hover { color: var(--accent); border-bottom-color: var(--accent); }
         @media (max-width: 900px) {
             .cv-section { grid-template-columns: 1fr; }
             .cv-col-left { display: none; }
@@ -1368,10 +1366,6 @@
                 max-width: 100%;
             }
 
-            .cv-divider {
-                display: none;
-            }
-
             .projects-section {
                 height: auto;
                 min-height: 100svh;
@@ -1791,13 +1785,11 @@
                  <a href="mailto:zai_seuc@berkeley.edu" class="cv-contact-item">zai_seuc@berkeley.edu</a>
                  <a href="mailto:chen_seuc@qq.com" class="cv-contact-item">chen_seuc@qq.com</a>  
             </div>
-            <span class="cv-divider">—</span>
 
             <div class="cv-contact-block">
                 <span class="cv-contact-label">Phone</span>
                 <span class="cv-contact-item">+86 187 8027 1110</span>
             </div>
-            <span class="cv-divider">—</span>
 
             <div class="cv-contact-block">
                 <span class="cv-contact-label">Find me at</span>
@@ -1823,11 +1815,17 @@
                 </div>
             </div>
 
-            <span class="cv-divider">—</span>
-
             <div class="cv-contact-block">
                 <span class="cv-contact-label">Based in</span>
-                <span class="cv-contact-item">Tianjin·Chengdu, China</span>
+                <span class="cv-contact-item">San Francisco · Berkeley, CA</span>
+            </div>
+
+            <div class="cv-contact-block">
+                <span class="cv-contact-label">Download CV</span>
+                <div class="cv-download-options">
+                    <a href="files/ChenZai_CV_EN.pdf" download>English PDF</a>
+                    <a href="files/ChenZai_CV_CN.pdf" download>中文 PDF</a>
+                </div>
             </div>
 
         </div>

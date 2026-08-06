@@ -29,7 +29,7 @@
             --border: #e0e0e0;
         }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
             color: var(--text-primary);
             background: var(--bg-primary);
             line-height: 1.6;
@@ -45,7 +45,7 @@
         }
         nav.scrolled { box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05); }
         .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .nav-logo { font-family: 'Newsreader', serif; font-size: 1.5rem; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+        .nav-logo { font-family: 'Newsreader', 'Songti SC', 'Noto Serif CJK SC', serif; font-size: 1.5rem; font-weight: 600; color: var(--text-primary); text-decoration: none; }
         .nav-links { display: flex; gap: 2.5rem; list-style: none; }
         .nav-links a { color: #aaaaaa; text-decoration: none; font-size: 0.9375rem; font-weight: 600; transition: color 0.3s ease; position: relative; }
         .nav-links a:hover { color: var(--accent); }
@@ -179,7 +179,7 @@
         .hero-tagline {
             min-height: 1.6em;
             margin: 0.7rem auto 0;
-            font-family: 'Newsreader', serif;
+            font-family: 'Newsreader', 'Songti SC', 'Noto Serif CJK SC', serif;
             font-size: clamp(0.95rem, 2.2vw, 1.18rem);
             font-weight: 400;
             line-height: 1.6;
@@ -266,7 +266,7 @@
             align-content: start;
         }
         .cv-biography p {
-            font-family: 'Newsreader', serif;
+            font-family: 'Newsreader', 'Songti SC', 'Noto Serif CJK SC', serif;
             font-size: 1.25rem;
             line-height: 1.68;
             font-weight: 300;
@@ -298,7 +298,7 @@
             border: none;
             border-right: 1px solid var(--border);
             padding: 1.1rem 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
@@ -579,7 +579,7 @@
             }
 
         .projects-exp-title {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
             font-size: 4.8rem;
             font-weight: 800;
             line-height: 0.92;
@@ -1252,12 +1252,26 @@
             }
 
             .hero-tagline {
-                max-width: min(28rem, 88vw);
-                font-size: 0.98rem;
+                max-width: min(17rem, calc(100vw - 4rem));
+                font-size: 0.92rem;
                 line-height: 1.55;
                 overflow-wrap: anywhere;
+                word-break: normal;
+                white-space: normal;
                 width: 100%;
                 box-sizing: border-box;
+            }
+
+            .hero-tagline-text {
+                display: block;
+                white-space: normal;
+                overflow-wrap: anywhere;
+                word-break: normal;
+                max-width: 100%;
+            }
+
+            .hero-tagline-text::after {
+                display: none;
             }
 
             .language-switcher {
@@ -1309,9 +1323,15 @@
             }
 
             .cv-biography p {
-                font-size: 1.08rem;
+                font-size: 1rem;
                 line-height: 1.62;
                 margin-bottom: 1.1rem;
+                display: block;
+                width: 100%;
+                max-width: min(20rem, calc(100vw - 2.5rem));
+                min-width: 0;
+                overflow-wrap: anywhere;
+                word-break: break-word;
             }
 
             .cv-entry-title,
@@ -1438,24 +1458,32 @@
             }
 
             .projects-exp-title {
-                font-size: clamp(2.15rem, 12vw, 3.2rem);
-                line-height: 0.98;
+                font-size: clamp(1.9rem, 10vw, 2.7rem);
+                line-height: 1.02;
                 margin-bottom: 1rem;
                 overflow-wrap: anywhere;
+                word-break: normal;
                 max-width: 100%;
                 width: 100%;
+            }
+
+            #projects-exp-title {
+                display: block;
+                overflow-wrap: anywhere;
+                word-break: normal;
             }
 
             .projects-exp-github {
                 width: 2rem;
                 height: 2rem;
-                margin-left: 0.45rem;
+                margin-left: 0;
+                margin-top: 0.65rem;
                 flex: 0 0 auto;
                 vertical-align: middle;
             }
 
             .projects-exp-summary {
-                max-width: none;
+                max-width: min(21rem, calc(100vw - 2.5rem));
                 font-size: 0.9rem;
                 line-height: 1.58;
                 margin-bottom: 1rem;
@@ -1464,11 +1492,18 @@
             }
 
             .projects-exp-meta {
-                max-width: none;
-                gap: 0.4rem 0.75rem;
+                grid-template-columns: 1fr;
+                max-width: min(21rem, calc(100vw - 2.5rem));
+                gap: 0.28rem;
                 font-size: 0.68rem;
                 min-width: 0;
                 width: 100%;
+            }
+
+            .projects-exp-meta-value {
+                max-width: 100%;
+                overflow-wrap: anywhere;
+                word-break: break-word;
             }
 
             .projects-exp-tags {
@@ -1661,6 +1696,10 @@
                 width: 100%;
                 box-sizing: border-box;
             }
+
+            .brain-mom-caption {
+                display: none;
+            }
         }
 
         @media (max-width: 420px) {
@@ -1703,7 +1742,7 @@
             </p>
             
             <div class="language-switcher">
-                <a href="#" class="active">English</a> | <a href="#">中文</a>
+                <a href="#" class="active" data-lang="en">English</a> | <a href="#" data-lang="zh">中文</a>
             </div>
         </div>
         
@@ -1723,7 +1762,7 @@
 
         <div class="cv-col-main">
             <div class="cv-biography">
-                <p>I’m Chen Zai, a designer working across environmental design, computational design, and interactive systems. My work often begins with conditions that are difficult to perceive directly: cities that appear dense yet lack lived vitality, bodily risks that cannot always be actively reported, emotional distance in remote companionship, ecological relationships that are hard to explain, and information structures waiting to be reimagined in immersive space.</p>
+                <p>I am a designer exploring spatial computing. My work often begins with conditions that are difficult to perceive directly: cities that appear dense yet lack lived vitality, bodily risks that cannot always be actively reported, emotional distance in remote companionship, ecological relationships that are hard to explain, and information structures waiting to be reimagined in immersive space.</p>
                 <p>I’m interested in how technology can extend the ways we sense, interpret, and respond to the world. Over the past few years, I have developed projects across machine learning, IoT, VR, Unreal Engine, and multimodal sensing: using facial EMG to explore passive early stroke detection, combining sound and image data to read urban vitality, rethinking file systems through spatial interaction in VR, and translating ecological knowledge and emotional presence into experiential systems.</p>
                 <p>For me, design is a framework for asking questions, sensing reality, and shaping responsive experiences. I hope to work between computational methods and humanistic concerns, creating systems that help algorithms engage with richer contexts and allow interaction to carry the complexity of bodies, cities, emotions, and environments.</p>
             </div>
@@ -1876,14 +1915,14 @@
                             <div class="projects-exp-tooth empty" style="--extend: 200px; --h: 30px;"></div>
                             <div class="projects-exp-tooth empty" style="--extend: 90px; --h: 18px;"></div>
 
-                            <a href="p_urban.html" class="projects-exp-tooth item" style="--extend: 150px;" data-target="project-img-1">
+                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 150px;" data-target="project-img-1">
                                 <span class="projects-exp-index">01</span>
                                 <span class="projects-exp-item-title">URBAN MIRAGE</span>
                             </a>
                             
                             <div class="projects-exp-tooth empty" style="--extend: 80px; --h: 15px;"></div>
                             
-                            <a href="p_cubik.html" class="projects-exp-tooth item" style="--extend: 190px;" data-target="project-img-2">
+                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 190px;" data-target="project-img-2">
                                 <span class="projects-exp-index">02</span>
                                 <span class="projects-exp-item-title">CUBIK</span>
                             </a>
@@ -1891,19 +1930,19 @@
                             <div class="projects-exp-tooth empty" style="--extend: 250px; --h: 22px;"></div>
                             <div class="projects-exp-tooth empty" style="--extend: 110px; --h: 14px;"></div>
 
-                            <a href="p_forest.html" class="projects-exp-tooth item" style="--extend: 170px;" data-target="project-img-3">
+                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 170px;" data-target="project-img-3">
                                 <span class="projects-exp-index">03</span>
                                 <span class="projects-exp-item-title">FRAGMENTS OF THE FOREST</span>
                             </a>
                             
-                            <a href="p_silent.html" class="projects-exp-tooth item" style="--extend: 130px;" data-target="project-img-4">
+                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 130px;" data-target="project-img-4">
                                 <span class="projects-exp-index">04</span>
                                 <span class="projects-exp-item-title">SILENT SIGNAL</span>
                             </a>
 
                             <div class="projects-exp-tooth empty" style="--extend: 240px; --h: 13px;"></div>
 
-                            <a href="p_pet.html" class="projects-exp-tooth item" style="--extend: 220px;" data-target="project-img-5">
+                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 220px;" data-target="project-img-5">
                                 <span class="projects-exp-index">05</span>
                                 <span class="projects-exp-item-title">PET SPACE</span>
                             </a>
@@ -2037,15 +2076,15 @@
             tags: document.getElementById('projects-exp-tags')
         };
 
-        const projectsExpData = {
+        const projectsExpDataZh = {
             'project-img-1': {
-                kicker: 'Project 01',
+                kicker: '项目 01',
                 title: 'Urban Mirage',
-                summary: 'A multimodal perception system that detects pseudo-urbanization by combining street-level visual scenes with acoustic signatures. It treats urban vitality as something sensed through both image and sound.',
-                type: 'Interactive Installation / Research Prototype',
-                focus: 'Pseudo-urbanization, multimodal sensing, urban vitality',
+                summary: '一个通过街道视觉场景与声学特征识别伪城市化的多模态感知系统。它将城市活力视为一种同时经由图像与声音被感知的状态。',
+                type: '交互装置 / 研究原型',
+                focus: '伪城市化、多模态感知、城市活力',
                 time: '2025 / 04 - 09',
-                tags: ['Machine Learning', 'CNN', 'Audio-Visual Fusion', 'ESP32', 'Python'],
+                tags: ['机器学习', 'CNN', '音视频融合', 'ESP32', 'Python'],
                 github: 'https://github.com/zayyyseuc/GhostTown',
                 theme: {
                     wall: 'rgb(245, 242, 237)',
@@ -2064,11 +2103,11 @@
                 }
             },
             'project-img-2': {
-                kicker: 'Project 02',
+                kicker: '项目 02',
                 title: 'CUBIK',
-                summary: 'A gravity-adaptive spatial file system for VR workflows. CUBIK turns folders and commands into embodied spatial actions, allowing users to organize and retrieve digital work through orientation, surfaces, and movement.',
-                type: 'VR Interaction System / Personal Project',
-                focus: 'Spatial computing, file systems, embodied interaction',
+                summary: '一个面向 VR 工作流的重力自适应空间文件系统。CUBIK 将文件夹与命令转化为具身的空间动作，让用户通过方向、表面与移动来组织和取回数字内容。',
+                type: 'VR 交互系统 / 个人项目',
+                focus: '空间计算、文件系统、具身交互',
                 time: '2025 / 09 - 11',
                 tags: ['Unreal Engine 5', 'VR', 'Blueprint', 'Meta Quest'],
                 youtube: 'https://youtu.be/b-2tPi6qjgw?si=ow5n0_Oh9G6mjEOC',
@@ -2089,13 +2128,13 @@
                 }
             },
             'project-img-3': {
-                kicker: 'Project 03',
+                kicker: '项目 03',
                 title: 'Fragments of the Forest',
-                summary: 'A serious game that teaches habitat connectivity through exploration rather than instruction. Players shift between human, squirrel, and ant perspectives to experience ecological corridors at multiple scales.',
-                type: 'Serious Game Design / Personal Project',
-                focus: 'Ecological education, habitat corridors, multi-scale POV',
+                summary: '一个通过探索而非说教来讲述栖息地连通性的严肃游戏。玩家在人的视角、松鼠视角与蚂蚁视角之间切换，以多尺度体验生态廊道。',
+                type: '严肃游戏设计 / 个人项目',
+                focus: '生态教育、栖息地廊道、多尺度视角',
                 time: '2025 / 09 - 11',
-                tags: ['Unreal Engine 5', 'Blueprint', 'Ecology', 'Procedural Systems'],
+                tags: ['Unreal Engine 5', 'Blueprint', '生态学', '程序化系统'],
                 youtube: 'https://youtu.be/g1a72B5N_NY?si=d2Vw93urJMayUSJm',
                 theme: {
                     wall: 'rgb(247, 244, 238)',
@@ -2114,13 +2153,13 @@
                 }
             },
             'project-img-4': {
-                kicker: 'Project 04',
+                kicker: '项目 04',
                 title: 'Silent Signal',
-                summary: 'A passive biometric monitoring system for early stroke detection using bilateral facial EMG asymmetry. It reframes health surveillance as an invisible lifeline for high-risk people living alone.',
-                type: 'Healthcare Design / Physical Computing',
-                focus: 'Stroke detection, facial EMG, passive monitoring',
+                summary: '一个利用双侧面部 EMG 不对称性进行中风早期检测的被动式生物监测系统。它将健康监护重新定义为独居高风险人群身边不可见的生命线。',
+                type: '医疗健康设计 / 物理计算',
+                focus: '中风检测、面部 EMG、被动监测',
                 time: '2025',
-                tags: ['Machine Learning', 'EMG Sensors', 'Python', 'Random Forest'],
+                tags: ['机器学习', 'EMG 传感器', 'Python', '随机森林'],
                 github: 'https://github.com/zayyyseuc/Facial-EMG-Stroke-Monitor',
                 theme: {
                     wall: 'rgb(10, 10, 10)',
@@ -2139,13 +2178,13 @@
                 }
             },
             'project-img-5': {
-                kicker: 'Project 05',
+                kicker: '项目 05',
                 title: 'Pet Space',
-                summary: "A non-intrusive remote companionship system for pet owners under work pressure. Instead of turning the home into a surveillance feed, it translates a pet's presence into ambient, emotionally supportive signals.",
-                type: 'Product / Service / Interaction Design',
-                focus: 'Remote companionship, distributed sensing, ambient interaction',
+                summary: "一个面向高工作压力宠物主人的非侵入式远程陪伴系统。它不把家变成监控画面，而是将宠物的存在转译为环境化、具有情感支持感的信号。",
+                type: '产品 / 服务 / 交互设计',
+                focus: '远程陪伴、分布式感知、环境化交互',
                 time: '2025 / 10',
-                tags: ['ESP32-C3', 'Radar Sensor', 'PIR Sensor', 'Arduino', 'Audio Interaction'],
+                tags: ['ESP32-C3', '雷达传感器', 'PIR 传感器', 'Arduino', '声音交互'],
                 github: 'https://github.com/zayyyseuc/PetSpace',
                 theme: {
                     wall: 'rgb(246, 247, 251)',
@@ -2164,6 +2203,175 @@
                 }
             }
         };
+
+        const projectsExpDataEn = {
+            'project-img-1': {
+                ...projectsExpDataZh['project-img-1'],
+                kicker: 'Project 01',
+                summary: 'A multimodal perception system that detects pseudo-urbanization by combining street-level visual scenes with acoustic signatures. It treats urban vitality as something sensed through both image and sound.',
+                type: 'Interactive Installation / Research Prototype',
+                focus: 'Pseudo-urbanization, multimodal sensing, urban vitality',
+                tags: ['Machine Learning', 'CNN', 'Audio-Visual Fusion', 'ESP32', 'Python']
+            },
+            'project-img-2': {
+                ...projectsExpDataZh['project-img-2'],
+                kicker: 'Project 02',
+                summary: 'A gravity-adaptive spatial file system for VR workflows. CUBIK turns folders and commands into embodied spatial actions, allowing users to organize and retrieve digital work through orientation, surfaces, and movement.',
+                type: 'VR Interaction System / Personal Project',
+                focus: 'Spatial computing, file systems, embodied interaction',
+                tags: ['Unreal Engine 5', 'VR', 'Blueprint', 'Meta Quest']
+            },
+            'project-img-3': {
+                ...projectsExpDataZh['project-img-3'],
+                kicker: 'Project 03',
+                summary: 'A serious game that teaches habitat connectivity through exploration rather than instruction. Players shift between human, squirrel, and ant perspectives to experience ecological corridors at multiple scales.',
+                type: 'Serious Game Design / Personal Project',
+                focus: 'Ecological education, habitat corridors, multi-scale POV',
+                tags: ['Unreal Engine 5', 'Blueprint', 'Ecology', 'Procedural Systems']
+            },
+            'project-img-4': {
+                ...projectsExpDataZh['project-img-4'],
+                kicker: 'Project 04',
+                summary: 'A passive biometric monitoring system for early stroke detection using bilateral facial EMG asymmetry. It reframes health surveillance as an invisible lifeline for high-risk people living alone.',
+                type: 'Healthcare Design / Physical Computing',
+                focus: 'Stroke detection, facial EMG, passive monitoring',
+                tags: ['Machine Learning', 'EMG Sensors', 'Python', 'Random Forest']
+            },
+            'project-img-5': {
+                ...projectsExpDataZh['project-img-5'],
+                kicker: 'Project 05',
+                summary: "A non-intrusive remote companionship system for pet owners under work pressure. Instead of turning the home into a surveillance feed, it translates a pet's presence into ambient, emotionally supportive signals.",
+                type: 'Product / Service / Interaction Design',
+                focus: 'Remote companionship, distributed sensing, ambient interaction',
+                tags: ['ESP32-C3', 'Radar Sensor', 'PIR Sensor', 'Arduino', 'Audio Interaction']
+            }
+        };
+
+        const uiText = {
+            en: {
+                pageTitle: 'Zai\'s portfolio',
+                lang: 'en',
+                navToggle: 'Toggle navigation',
+                nav: ['Home', 'CV', 'Projects', 'Lab'],
+                cvVertical: 'CV',
+                bio: [
+                    'I am a designer exploring spatial computing. My work often begins with conditions that are difficult to perceive directly: cities that appear dense yet lack lived vitality, bodily risks that cannot always be actively reported, emotional distance in remote companionship, ecological relationships that are hard to explain, and information structures waiting to be reimagined in immersive space.',
+                    'I’m interested in how technology can extend the ways we sense, interpret, and respond to the world. Over the past few years, I have developed projects across machine learning, IoT, VR, Unreal Engine, and multimodal sensing: using facial EMG to explore passive early stroke detection, combining sound and image data to read urban vitality, rethinking file systems through spatial interaction in VR, and translating ecological knowledge and emotional presence into experiential systems.',
+                    'For me, design is a framework for asking questions, sensing reality, and shaping responsive experiences. I hope to work between computational methods and humanistic concerns, creating systems that help algorithms engage with richer contexts and allow interaction to carry the complexity of bodies, cities, emotions, and environments.'
+                ],
+                tabs: ['Education', 'Awards', 'Skills'],
+                entries: {
+                    berkeley: ['University of California, Berkeley', 'Master of Design · Incoming Fall 2026'],
+                    nankai: ['Nankai University', 'B.A. Environmental Design · GPA 3.7 / 4.0 · rank 1'],
+                    summer: ['University of California, Berkeley', 'Summer Session D · GPA 3.9 / 4.0', 'Visual Thinking · VR in Psychological Therapy', 'Jul – Aug 2024'],
+                    award: ['National Second Prize', 'Tianjin Salt Field Scenic Street Design'],
+                    skills: ['Design', 'Programming', 'Languages', 'Python, Arduino, Microcontroller Programming', 'Chinese (Native) · English (IELTS 7.5)']
+                },
+                contact: ['Email', 'Phone', 'Find me at', 'Based in', 'Download CV'],
+                basedIn: 'San Francisco · Berkeley, CA',
+                cvPdf: 'English PDF',
+                xhsTitle: '小红书 (Coming soon)',
+                projectHeading: 'Projects',
+                projectMeta: ['Type', 'Focus', 'Time'],
+                externalLink: { github: 'GitHub repository', youtube: 'YouTube video', none: 'No external link for this project' },
+                labHeading: 'Design Lab',
+                labCaption: ['Contextual Sharing', 'AI-shaped exchange'],
+                labItems: ['AI Context Sharing', 'Material Test', 'Sketch', 'Concept Art', 'Icon', '3D Render', 'Photography'],
+                footer: '© 2026 Chen Zai. Designed with passion for interdisciplinary design.'
+            },
+            zh: {
+                pageTitle: 'Chen Zai 作品集',
+                lang: 'zh-CN',
+                navToggle: '切换导航',
+                nav: ['Home', '简历', '项目', '实验室'],
+                cvVertical: '简历',
+                bio: [
+                    '我是陈在，一名正在探索空间计算的设计师。我的创作常从那些难以被直接感知的状态出发：看似密集却缺少真实生活活力的城市、无法被主动报告的身体风险、远程陪伴中的情感距离、难以解释的生态关系，以及等待被重新想象的信息结构。',
+                    '我关注技术如何扩展我们感知、理解并回应世界的方式。过去几年里，我围绕机器学习、IoT、VR、Unreal Engine 与多模态感知展开项目实践：用面部 EMG 探索被动式中风早期检测，结合声音与图像读取城市活力，在 VR 中重构文件系统，并将生态知识与情感陪伴转译为可体验的系统。',
+                    '对我而言，设计是一种提出问题、感知现实并塑造响应式体验的方法。我希望在计算方法与人文关切之间工作，让算法能够进入更丰富的情境，也让交互承载身体、城市、情感与环境的复杂性。'
+                ],
+                tabs: ['教育', '奖项', '技能'],
+                entries: {
+                    berkeley: ['加州大学伯克利分校', '设计硕士 · 2026 秋季入学'],
+                    nankai: ['南开大学', '环境设计文学学士 · GPA 3.7 / 4.0 · 专业排名 1'],
+                    summer: ['加州大学伯克利分校', '暑期课程 D · GPA 3.9 / 4.0', '视觉思维 · 心理治疗中的 VR', '2024 年 7 月 - 8 月'],
+                    award: ['国家级二等奖', '天津盐场风景街区设计'],
+                    skills: ['设计', '编程', '语言', 'Python, Arduino, 单片机编程', '中文（母语） · 英语（IELTS 7.5）']
+                },
+                contact: ['邮箱', '电话', '找到我', '所在地', '下载简历'],
+                basedIn: '旧金山 · 伯克利，加州',
+                cvPdf: '英文 PDF',
+                xhsTitle: '小红书（即将开放）',
+                projectHeading: '项目',
+                projectMeta: ['类型', '关注', '时间'],
+                externalLink: { github: 'GitHub 仓库', youtube: 'YouTube 视频', none: '该项目暂无外部链接' },
+                labHeading: '设计实验室',
+                labCaption: ['情境化分享', '由 AI 塑形的交流'],
+                labItems: ['AI 语境分享', '材料测试', '草图', '概念图', '图标', '3D 渲染', '摄影'],
+                footer: '© 2026 Chen Zai. 为跨学科设计而作。'
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        function textAll(selector, values) {
+            document.querySelectorAll(selector).forEach((el, index) => {
+                if (values[index] !== undefined) el.textContent = values[index];
+            });
+        }
+
+        function applyLanguage(lang) {
+            currentLanguage = lang;
+            const text = uiText[lang];
+            document.documentElement.lang = text.lang;
+            document.title = text.pageTitle;
+            const navToggleButton = document.querySelector('.nav-toggle');
+            if (navToggleButton) navToggleButton.setAttribute('aria-label', text.navToggle);
+
+            textAll('.nav-links a', text.nav);
+            document.querySelector('.cv-vertical-label').textContent = text.cvVertical;
+            textAll('.cv-biography p', text.bio);
+            textAll('.cv-tab-btn', text.tabs);
+
+            const entries = document.querySelectorAll('.cv-entry');
+            entries[0].querySelector('.cv-entry-title').textContent = text.entries.berkeley[0];
+            entries[0].querySelector('.cv-entry-sub').textContent = text.entries.berkeley[1];
+            entries[1].querySelector('.cv-entry-title').textContent = text.entries.nankai[0];
+            entries[1].querySelector('.cv-entry-sub').textContent = text.entries.nankai[1];
+            entries[2].querySelector('.cv-entry-title').textContent = text.entries.summer[0];
+            entries[2].querySelector('.cv-entry-sub').textContent = text.entries.summer[1];
+            entries[2].querySelector('.cv-entry-courses').textContent = text.entries.summer[2];
+            entries[2].querySelector('.cv-entry-date').textContent = text.entries.summer[3];
+            entries[3].querySelector('.cv-entry-title').textContent = text.entries.award[0];
+            entries[3].querySelector('.cv-entry-sub').textContent = text.entries.award[1];
+            entries[4].querySelector('.cv-entry-title').textContent = text.entries.skills[0];
+            entries[5].querySelector('.cv-entry-title').textContent = text.entries.skills[1];
+            entries[5].querySelector('.cv-entry-sub').textContent = text.entries.skills[3];
+            entries[6].querySelector('.cv-entry-title').textContent = text.entries.skills[2];
+            entries[6].querySelector('.cv-entry-sub').textContent = text.entries.skills[4];
+
+            textAll('.cv-contact-label', text.contact);
+            document.querySelector('.cv-contact-block:nth-of-type(4) .cv-contact-item').textContent = text.basedIn;
+            document.querySelector('.cv-download-options a:first-child').textContent = text.cvPdf;
+            document.querySelector('.cv-icon-disabled').setAttribute('title', text.xhsTitle);
+            document.querySelector('.projects-exp-heading').textContent = text.projectHeading;
+            textAll('.projects-exp-meta-label', text.projectMeta);
+            document.querySelector('.lab-section .section-title').textContent = text.labHeading;
+            document.querySelector('.brain-mom-caption b').textContent = text.labCaption[0];
+            document.querySelector('.brain-mom-caption span').textContent = text.labCaption[1];
+            textAll('.lab-overlay span', text.labItems);
+            document.querySelector('footer p').textContent = text.footer;
+
+            document.querySelectorAll('.language-switcher a').forEach(link => {
+                link.classList.toggle('active', link.dataset.lang === lang);
+            });
+
+            const activeItem = document.querySelector('.projects-exp-tooth.item.is-active') || projectsExpItems[0];
+            renderProjectsExpInfo(activeItem.getAttribute('data-target'));
+            if (!mobileProjectsQuery.matches && !projectsExpWrapper.matches(':hover')) {
+                projectsExpWrapper.classList.remove('info-visible');
+            }
+        }
 
         function applyProjectsExpTheme(theme) {
             if (!theme) return;
@@ -2184,7 +2392,7 @@
         }
 
         function renderProjectsExpInfo(targetId) {
-            const data = projectsExpData[targetId];
+            const data = (currentLanguage === 'zh' ? projectsExpDataZh : projectsExpDataEn)[targetId];
             if (!data) return;
 
             applyProjectsExpTheme(data.theme);
@@ -2197,12 +2405,13 @@
             const projectLink = data.github || data.youtube;
             if (projectLink) {
                 projectsExpInfo.github.href = projectLink;
-                projectsExpInfo.github.setAttribute('aria-label', `${data.title} ${data.youtube ? 'YouTube video' : 'GitHub repository'}`);
+                const externalText = uiText[currentLanguage].externalLink;
+                projectsExpInfo.github.setAttribute('aria-label', `${data.title} ${data.youtube ? externalText.youtube : externalText.github}`);
                 projectsExpInfo.github.classList.toggle('is-youtube', Boolean(data.youtube));
                 projectsExpInfo.github.classList.add('is-visible');
             } else {
                 projectsExpInfo.github.removeAttribute('href');
-                projectsExpInfo.github.setAttribute('aria-label', 'No external link for this project');
+                projectsExpInfo.github.setAttribute('aria-label', uiText[currentLanguage].externalLink.none);
                 projectsExpInfo.github.classList.remove('is-youtube');
                 projectsExpInfo.github.classList.remove('is-visible');
             }
@@ -2215,6 +2424,13 @@
         }
 
         const mobileProjectsQuery = window.matchMedia('(max-width: 760px), (hover: none), (pointer: coarse)');
+
+        document.querySelectorAll('.language-switcher a').forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                applyLanguage(link.dataset.lang || 'en');
+            });
+        });
 
         function setActiveProjectItem(activeItem) {
             projectsExpItems.forEach(item => item.classList.toggle('is-active', item === activeItem));
@@ -2262,6 +2478,8 @@
                 projectsExpWrapper.classList.remove('info-visible');
             }
         });
+
+        applyLanguage('en');
 
         // Smooth scroll — 配合 scroll-snap 使用 scrollIntoView
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

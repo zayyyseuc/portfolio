@@ -1,0 +1,151 @@
+<title>Second Person Tile — Graphic Pass</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --page-bg: #f2efe9;
+    --page-ink: #17140f;
+    --page-muted: rgba(23,20,15,0.56);
+    --page-faint: rgba(23,20,15,0.34);
+    --rule: rgba(23,20,15,0.14);
+    --accent: #7a6b3f;
+
+    --tile-ink: #17140f;
+    --tile-muted: rgba(23,20,15,0.6);
+    --tile-faint: rgba(23,20,15,0.28);
+    --tile-mark: #3d3a30;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page-bg);
+    color: var(--page-ink);
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    padding: clamp(28px, 5vw, 64px) clamp(20px, 6vw, 72px) 100px;
+  }
+
+  .masthead { max-width: 720px; margin: 0 auto clamp(40px, 6vw, 60px); }
+  .masthead .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 0.9rem;
+  }
+  .masthead h1 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); font-weight: 700; line-height: 1.15; margin: 0 0 0.9rem; text-wrap: balance; }
+  .masthead p { font-size: 1rem; line-height: 1.62; color: var(--page-muted); max-width: 62ch; margin: 0; }
+
+  .options { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(48px, 7vw, 68px); }
+  .option { display: grid; gap: 1rem; }
+  .option-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1.5rem; border-bottom: 1px solid var(--rule); padding-bottom: 0.8rem; }
+  .option-head .name { display: flex; align-items: baseline; gap: 0.65rem; }
+  .option-head .letter { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--accent); }
+  .option-head h2 { font-size: 1.08rem; font-weight: 600; margin: 0; }
+  .option-head .note { font-size: 0.83rem; color: var(--page-faint); text-align: right; max-width: 34ch; line-height: 1.5; }
+
+  .tile-frame { background: #fff; border: 1px solid var(--rule); padding: clamp(10px, 2vw, 20px); }
+  .tile {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2.15 / 1;
+    overflow: hidden;
+    color: var(--tile-ink);
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(145deg, #fbfaf7 0%, #eeeae2 100%);
+  }
+  .tile::before, .tile::after {
+    content: ""; position: absolute; width: 13px; height: 13px; z-index: 3; pointer-events: none;
+  }
+  .tile::before { top: 10px; left: 10px; border-top: 1.5px solid rgba(23,20,15,0.45); border-left: 1.5px solid rgba(23,20,15,0.45); }
+  .tile::after { bottom: 10px; right: 10px; border-bottom: 1.5px solid rgba(23,20,15,0.45); border-right: 1.5px solid rgba(23,20,15,0.45); }
+
+  .tile-caption { position: absolute; left: clamp(18px,3vw,34px); bottom: clamp(16px,3vh,26px); z-index: 2; max-width: 44%; }
+  .tile-caption b { display: block; font-size: clamp(1rem, 1.9vw, 1.5rem); line-height: 1.12; font-weight: 600; color: var(--tile-ink); }
+  .tile-caption span { display: block; margin-top: 6px; color: var(--tile-muted); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em; line-height: 1.4; max-width: 24ch; }
+
+  svg.motif { position: absolute; top: 0; right: 0; height: 100%; width: 58%; }
+
+  /* shared bubble styling */
+  .bubble { fill: none; stroke: var(--tile-ink); stroke-width: 1.6; }
+  .bubble.ghost { stroke: var(--tile-faint); }
+  .dot { fill: var(--tile-mark); }
+  .dot.ghost { fill: var(--tile-faint); }
+
+  footer { max-width: 900px; margin: clamp(56px,8vw,80px) auto 0; padding-top: 1.3rem; border-top: 1px solid var(--rule); font-size: 0.82rem; color: var(--page-faint); }
+</style>
+
+<div class="masthead">
+  <p class="kicker">Lab Card — Second Person, Graphic Pass</p>
+  <h1>Read as "communication" in half a second</h1>
+  <p>The last two rounds were schematic enough to need a caption to explain themselves. These three lead with an actual speech-bubble motif — line-drawn, sharp-cornered to match the tick-mark treatment, but unmistakably a conversation at a glance.</p>
+</div>
+
+<div class="options">
+
+  <section class="option">
+    <div class="option-head">
+      <div class="name"><span class="letter">E</span><h2>Two bubbles, in dialogue</h2></div>
+      <div class="note">The universal two-party chat icon — one bubble overlapping another, each with a tail. Instantly reads as conversation.</div>
+    </div>
+    <div class="tile-frame">
+      <div class="tile">
+        <svg class="motif" viewBox="0 0 230 190" preserveAspectRatio="xMidYMid meet">
+          <path class="bubble ghost" d="M40 40 H170 V105 H90 L68 128 V105 H40 Z"/>
+          <path class="bubble" d="M65 75 H195 V140 H120 L98 163 V140 H65 Z"/>
+          <circle class="dot" cx="98" cy="107" r="3"/>
+          <circle class="dot" cx="113" cy="107" r="3"/>
+          <circle class="dot" cx="128" cy="107" r="3"/>
+        </svg>
+        <div class="tile-caption">
+          <b>Second Person</b>
+          <span>Turning a personal archive into a space for dialogue, reflection, and return.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="option">
+    <div class="option-head">
+      <div class="name"><span class="letter">F</span><h2>Self-loop bubble</h2></div>
+      <div class="note">One bubble, one arrow curving back into it — conceptually closer to the project: not two people talking, one person returning to their own record.</div>
+    </div>
+    <div class="tile-frame">
+      <div class="tile">
+        <svg class="motif" viewBox="0 0 230 190" preserveAspectRatio="xMidYMid meet">
+          <path class="bubble" d="M55 50 H195 V125 H130 L108 150 V125 H55 Z"/>
+          <circle class="dot" cx="95" cy="87" r="3"/>
+          <circle class="dot" cx="112" cy="87" r="3"/>
+          <circle class="dot" cx="129" cy="87" r="3"/>
+          <path class="bubble ghost" d="M50 150 C20 150 15 100 45 78" fill="none" stroke-dasharray="1 6" stroke-linecap="round"/>
+          <path class="bubble ghost" d="M45 78 L37 70 M45 78 L53 82" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="tile-caption">
+          <b>Second Person</b>
+          <span>Turning a personal archive into a space for dialogue, reflection, and return.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="option">
+    <div class="option-head">
+      <div class="name"><span class="letter">G</span><h2>Nested bubble</h2></div>
+      <div class="note">A smaller bubble sits inside a larger one — the archive's voice held inside the present conversation. Quietest of the three, still unmistakably a chat glyph.</div>
+    </div>
+    <div class="tile-frame">
+      <div class="tile">
+        <svg class="motif" viewBox="0 0 230 190" preserveAspectRatio="xMidYMid meet">
+          <path class="bubble" d="M40 45 H200 V135 H130 L105 163 V135 H40 Z"/>
+          <path class="bubble ghost" d="M75 75 H165 V110 H130 L118 124 V110 H75 Z"/>
+        </svg>
+        <div class="tile-caption">
+          <b>Second Person</b>
+          <span>Turning a personal archive into a space for dialogue, reflection, and return.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Pick a letter, or say which detail to pull from another round (e.g. E's bubbles on D's paper texture), and I'll apply it to the live card.</footer>

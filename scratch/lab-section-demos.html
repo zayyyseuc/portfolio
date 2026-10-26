@@ -1,0 +1,296 @@
+<title>Lab Grid Options</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f2efe9;
+    --surface: #ffffff;
+    --ink: #17140f;
+    --ink-soft: rgba(23, 20, 15, 0.58);
+    --ink-faint: rgba(23, 20, 15, 0.34);
+    --rule: rgba(23, 20, 15, 0.14);
+    --accent: #b23a2e;
+    --accent-ink: #fbf4ef;
+    --card-a: #111827;
+    --card-b1: #fbfaf7; --card-b2: #eeeae2;
+    --card-c1: #edf1f2; --card-c2: #d5dddf; --card-c3: #b9c5c7;
+    --card-d1: #111111; --card-d2: #242424; --card-d3: #4a4a4a;
+    --card-e1: #f4f5f2; --card-e2: #dfe5df; --card-e3: #c8d1c8;
+    --card-f1: #f6f7f7; --card-f2: #e4e8ea; --card-f3: #cdd4d8;
+    --card-g1: #fbfaf6; --card-g2: #eee8dc; --card-g3: #ddd5c8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121014;
+      --surface: #1a171b;
+      --ink: #f1ede6;
+      --ink-soft: rgba(241, 237, 230, 0.62);
+      --ink-faint: rgba(241, 237, 230, 0.36);
+      --rule: rgba(241, 237, 230, 0.16);
+      --accent: #e0665a;
+      --accent-ink: #1a100e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121014;
+    --surface: #1a171b;
+    --ink: #f1ede6;
+    --ink-soft: rgba(241, 237, 230, 0.62);
+    --ink-faint: rgba(241, 237, 230, 0.36);
+    --rule: rgba(241, 237, 230, 0.16);
+    --accent: #e0665a;
+    --accent-ink: #1a100e;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    padding: clamp(28px, 5vw, 64px) clamp(20px, 6vw, 72px) 100px;
+  }
+
+  .masthead {
+    max-width: 720px;
+    margin: 0 auto clamp(40px, 6vw, 64px);
+  }
+
+  .masthead .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.9rem;
+  }
+
+  .masthead h1 {
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.9rem;
+    text-wrap: balance;
+  }
+
+  .masthead p {
+    font-size: 1rem;
+    line-height: 1.62;
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .options {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(48px, 7vw, 76px);
+  }
+
+  .option {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.85rem;
+  }
+
+  .option-head .name {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+  }
+
+  .option-head .letter {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+  }
+
+  .option-head h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+
+  .option-head .note {
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    text-align: right;
+    max-width: 34ch;
+    line-height: 1.5;
+  }
+
+  /* ---- shared mock-grid scaffolding ---- */
+  .grid-frame {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: clamp(14px, 2.4vw, 28px);
+  }
+
+  .lab-grid {
+    width: 100%;
+    aspect-ratio: 16 / 7.4;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .lab-card {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+  }
+
+  .lab-card .overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: clamp(8px, 1.4vw, 18px);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(0.55rem, 1vw, 0.72rem);
+    letter-spacing: 0.02em;
+  }
+
+  .c1 { grid-column: span 4; background: var(--card-a); }
+  .c2 { grid-column: span 2; background: linear-gradient(135deg, rgba(255,255,255,.76), transparent 48%), repeating-linear-gradient(90deg, rgba(24,24,24,.055) 0 1px, transparent 1px 24px), linear-gradient(145deg, var(--card-b1) 0%, var(--card-b2) 100%); color: #17140f; }
+  .c3 { grid-column: span 2; background: repeating-linear-gradient(0deg, rgba(255,255,255,.42) 0 1px, transparent 1px 18px), linear-gradient(135deg, var(--card-c1) 0%, var(--card-c2) 58%, var(--card-c3) 100%); color: #17140f; }
+  .c4 { grid-column: span 5; background: linear-gradient(135deg, var(--card-d1) 0%, var(--card-d2) 58%, var(--card-d3) 100%); }
+  .c5 { grid-column: span 3; background: repeating-linear-gradient(135deg, rgba(255,255,255,.38) 0 1px, transparent 1px 16px), linear-gradient(135deg, var(--card-e1) 0%, var(--card-e2) 52%, var(--card-e3) 100%); color: #17140f; }
+  .c6 { grid-column: span 2; background: linear-gradient(180deg, rgba(255,255,255,.7), transparent 52%), repeating-linear-gradient(90deg, transparent 0 18px, rgba(18,24,30,.06) 18px 19px), linear-gradient(135deg, var(--card-f1) 0%, var(--card-f2) 52%, var(--card-f3) 100%); color: #17140f; }
+  .c7 { grid-column: span 6; background: linear-gradient(120deg, rgba(255,255,255,.72) 0 28%, transparent 28% 100%), repeating-linear-gradient(0deg, rgba(27,24,20,.045) 0 1px, transparent 1px 26px), linear-gradient(135deg, var(--card-g1) 0%, var(--card-g2) 55%, var(--card-g3) 100%); color: #17140f; }
+
+  /* ============ A — Hairline, sharp, edge-to-edge ============ */
+  .demo-a .lab-grid { gap: 1px; background: var(--rule); }
+  .demo-a .lab-card { border-radius: 0; }
+  .demo-a .overlay { background: linear-gradient(to top, rgba(0,0,0,.72), transparent); text-transform: uppercase; }
+  .demo-a .c2 .overlay, .demo-a .c3 .overlay, .demo-a .c5 .overlay, .demo-a .c6 .overlay, .demo-a .c7 .overlay { background: linear-gradient(to top, rgba(255,255,255,.86), transparent); color: #17140f; }
+
+  /* ============ B — Blueprint / technical corner ticks ============ */
+  .demo-b .lab-grid { gap: 10px; }
+  .demo-b .lab-card { border-radius: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,.22); }
+  .demo-b .lab-card::before, .demo-b .lab-card::after,
+  .demo-b .lab-card .tick-br, .demo-b .lab-card .tick-tl { content: ""; position: absolute; width: 9px; height: 9px; }
+  .demo-b .lab-card::before { top: 6px; left: 6px; border-top: 1.5px solid rgba(255,255,255,.85); border-left: 1.5px solid rgba(255,255,255,.85); }
+  .demo-b .lab-card::after { bottom: 6px; right: 6px; border-bottom: 1.5px solid rgba(255,255,255,.85); border-right: 1.5px solid rgba(255,255,255,.85); }
+  .demo-b .c2::before, .demo-b .c2::after, .demo-b .c3::before, .demo-b .c3::after,
+  .demo-b .c5::before, .demo-b .c5::after, .demo-b .c6::before, .demo-b .c6::after,
+  .demo-b .c7::before, .demo-b .c7::after { border-color: rgba(23,20,15,.5); }
+  .demo-b .overlay { background: linear-gradient(to top, rgba(0,0,0,.7), transparent); text-transform: uppercase; }
+  .demo-b .c2 .overlay, .demo-b .c3 .overlay, .demo-b .c5 .overlay, .demo-b .c6 .overlay, .demo-b .c7 .overlay { background: linear-gradient(to top, rgba(255,255,255,.86), transparent); color: #17140f; }
+
+  /* ============ C — Sharp corners, always-on label chip ============ */
+  .demo-c .lab-grid { gap: 6px; }
+  .demo-c .lab-card { border-radius: 0; }
+  .demo-c .overlay { position: absolute; inset: auto auto 8px 8px; background: rgba(17,15,12,.82); color: #f2efe9; padding: 4px 9px; font-size: clamp(0.5rem, .85vw, 0.62rem); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* ============ D — 2px soft-square, minimal gap ============ */
+  .demo-d .lab-grid { gap: 3px; }
+  .demo-d .lab-card { border-radius: 2px; }
+  .demo-d .overlay { background: linear-gradient(to top, rgba(0,0,0,.68), transparent); text-transform: uppercase; }
+  .demo-d .c2 .overlay, .demo-d .c3 .overlay, .demo-d .c5 .overlay, .demo-d .c6 .overlay, .demo-d .c7 .overlay { background: linear-gradient(to top, rgba(255,255,255,.86), transparent); color: #17140f; }
+
+  footer {
+    max-width: 1240px;
+    margin: clamp(56px, 8vw, 88px) auto 0;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+  }
+</style>
+
+<div class="masthead">
+  <p class="kicker">Design Lab — Grid Treatment</p>
+  <h1>Four ways to cut the corners</h1>
+  <p>Same seven tiles, same bento spans, same content — only the edge treatment changes. The current build uses a 16px radius on every tile, which is what's reading heavy. Each option below removes or rethinks that.</p>
+</div>
+
+<div class="options">
+
+  <section class="option demo-a">
+    <div class="option-head">
+      <div class="name"><span class="letter">A</span><h2>Hairline grid</h2></div>
+      <div class="note">Sharp corners, 1px gap doubling as a rule between every tile. No radius, no shadow — reads like a contact sheet.</div>
+    </div>
+    <div class="grid-frame">
+      <div class="lab-grid">
+        <div class="lab-card c1"><div class="overlay">AI Context Sharing</div></div>
+        <div class="lab-card c2"><div class="overlay">Material Test</div></div>
+        <div class="lab-card c3"><div class="overlay">Sketch</div></div>
+        <div class="lab-card c4"><div class="overlay">Concept Art</div></div>
+        <div class="lab-card c5"><div class="overlay">Icon</div></div>
+        <div class="lab-card c6"><div class="overlay">3D Render</div></div>
+        <div class="lab-card c7"><div class="overlay">Photography</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="option demo-b">
+    <div class="option-head">
+      <div class="name"><span class="letter">B</span><h2>Blueprint corners</h2></div>
+      <div class="note">Sharp corners with small open corner-ticks per tile, like a drafting sheet or camera focus frame — fits a "lab" without going soft.</div>
+    </div>
+    <div class="grid-frame">
+      <div class="lab-grid">
+        <div class="lab-card c1"><div class="overlay">AI Context Sharing</div></div>
+        <div class="lab-card c2"><div class="overlay">Material Test</div></div>
+        <div class="lab-card c3"><div class="overlay">Sketch</div></div>
+        <div class="lab-card c4"><div class="overlay">Concept Art</div></div>
+        <div class="lab-card c5"><div class="overlay">Icon</div></div>
+        <div class="lab-card c6"><div class="overlay">3D Render</div></div>
+        <div class="lab-card c7"><div class="overlay">Photography</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="option demo-c">
+    <div class="option-head">
+      <div class="name"><span class="letter">C</span><h2>Label chip, always on</h2></div>
+      <div class="note">Sharp corners, small gap. Labels sit in a fixed solid chip instead of a hover gradient wash — no dependency on hover to read the grid (also fixes it on touch devices).</div>
+    </div>
+    <div class="grid-frame">
+      <div class="lab-grid">
+        <div class="lab-card c1"><div class="overlay">AI Context Sharing</div></div>
+        <div class="lab-card c2"><div class="overlay">Material Test</div></div>
+        <div class="lab-card c3"><div class="overlay">Sketch</div></div>
+        <div class="lab-card c4"><div class="overlay">Concept Art</div></div>
+        <div class="lab-card c5"><div class="overlay">Icon</div></div>
+        <div class="lab-card c6"><div class="overlay">3D Render</div></div>
+        <div class="lab-card c7"><div class="overlay">Photography</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="option demo-d">
+    <div class="option-head">
+      <div class="name"><span class="letter">D</span><h2>2px soft-square</h2></div>
+      <div class="note">The safest departure — keeps a whisper of softness (2px vs. the current 16px) with a tight 3px gap, so it still feels like the same design language, just lighter.</div>
+    </div>
+    <div class="grid-frame">
+      <div class="lab-grid">
+        <div class="lab-card c1"><div class="overlay">AI Context Sharing</div></div>
+        <div class="lab-card c2"><div class="overlay">Material Test</div></div>
+        <div class="lab-card c3"><div class="overlay">Sketch</div></div>
+        <div class="lab-card c4"><div class="overlay">Concept Art</div></div>
+        <div class="lab-card c5"><div class="overlay">Icon</div></div>
+        <div class="lab-card c6"><div class="overlay">3D Render</div></div>
+        <div class="lab-card c7"><div class="overlay">Photography</div></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Tell me the letter (or mix pieces — e.g. B's corners with C's always-on label) and I'll apply it to the live <code>index.html</code>.</footer>

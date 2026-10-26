@@ -1,0 +1,199 @@
+<title>Second Person Tile — Light</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --page-bg: #f2efe9;
+    --page-ink: #17140f;
+    --page-muted: rgba(23,20,15,0.56);
+    --page-faint: rgba(23,20,15,0.34);
+    --rule: rgba(23,20,15,0.14);
+    --accent: #7a6b3f;
+
+    --tile-ink: #17140f;
+    --tile-muted: rgba(23,20,15,0.6);
+    --tile-faint: rgba(23,20,15,0.32);
+    --tile-line: rgba(23,20,15,0.14);
+    --tile-mark: #55503f;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page-bg);
+    color: var(--page-ink);
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    padding: clamp(28px, 5vw, 64px) clamp(20px, 6vw, 72px) 100px;
+  }
+
+  .masthead { max-width: 720px; margin: 0 auto clamp(40px, 6vw, 60px); }
+  .masthead .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 0.9rem;
+  }
+  .masthead h1 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); font-weight: 700; line-height: 1.15; margin: 0 0 0.9rem; text-wrap: balance; }
+  .masthead p { font-size: 1rem; line-height: 1.62; color: var(--page-muted); max-width: 62ch; margin: 0; }
+
+  .options { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(48px, 7vw, 68px); }
+  .option { display: grid; gap: 1rem; }
+  .option-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1.5rem; border-bottom: 1px solid var(--rule); padding-bottom: 0.8rem; }
+  .option-head .name { display: flex; align-items: baseline; gap: 0.65rem; }
+  .option-head .letter { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--accent); }
+  .option-head h2 { font-size: 1.08rem; font-weight: 600; margin: 0; }
+  .option-head .note { font-size: 0.83rem; color: var(--page-faint); text-align: right; max-width: 32ch; line-height: 1.5; }
+
+  .tile-frame { background: #fff; border: 1px solid var(--rule); padding: clamp(10px, 2vw, 20px); }
+  .tile {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2.15 / 1;
+    overflow: hidden;
+    color: var(--tile-ink);
+    font-family: 'Inter', sans-serif;
+  }
+  .tile::before, .tile::after {
+    content: ""; position: absolute; width: 13px; height: 13px; z-index: 3; pointer-events: none;
+  }
+  .tile::before { top: 10px; left: 10px; border-top: 1.5px solid rgba(23,20,15,0.45); border-left: 1.5px solid rgba(23,20,15,0.45); }
+  .tile::after { bottom: 10px; right: 10px; border-bottom: 1.5px solid rgba(23,20,15,0.45); border-right: 1.5px solid rgba(23,20,15,0.45); }
+
+  .tile-caption { position: absolute; left: clamp(18px,3vw,34px); bottom: clamp(16px,3vh,26px); z-index: 2; max-width: 48%; }
+  .tile-caption b { display: block; font-size: clamp(1rem, 1.9vw, 1.5rem); line-height: 1.12; font-weight: 600; color: var(--tile-ink); }
+  .tile-caption span { display: block; margin-top: 6px; color: var(--tile-muted); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em; line-height: 1.4; max-width: 24ch; }
+
+  /* ===== A — Flat typographic ===== */
+  .demo-a .tile { background: linear-gradient(145deg, #fbfaf7 0%, #eeeae2 100%); }
+
+  /* ===== B — Constellation (light) ===== */
+  .demo-b .tile { background: linear-gradient(135deg, #f4f5f0 0%, #e7e4d8 100%); }
+  .demo-b svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .demo-b .node { fill: var(--tile-faint); }
+  .demo-b .node.lit { fill: var(--tile-mark); }
+  .demo-b .edge { stroke: rgba(23,20,15,0.14); stroke-width: 1; }
+  .demo-b .edge.lit { stroke: rgba(23,20,15,0.4); }
+
+  /* ===== C — Ledger rail (light) ===== */
+  .demo-c .tile { background: linear-gradient(150deg, #f7f5ee 0%, #ece7d8 100%); }
+  .demo-c .ledger { position: absolute; top: clamp(16px,3vh,24px); left: clamp(18px,3vw,34px); width: 30%; display: grid; gap: 9px; }
+  .demo-c .ledger .row { height: 1px; background: rgba(23,20,15,0.22); position: relative; }
+  .demo-c .ledger .row::before { content:""; position:absolute; left:0; top:-2px; width:4px; height:4px; border-radius:50%; background: var(--tile-mark); }
+  .demo-c .ledger .row:nth-child(2) { width: 78%; }
+  .demo-c .ledger .row:nth-child(4) { width: 55%; }
+  .demo-c .ledger .row:nth-child(6) { width: 88%; }
+  .demo-c .spine { position: absolute; top: clamp(16px,3vh,24px); bottom: clamp(16px,3vh,24px); left: 38%; width: 1px; background: rgba(23,20,15,0.16); }
+  .demo-c .result { position: absolute; top: clamp(16px,3vh,24px); right: clamp(18px,3vw,34px); left: 44%; display: grid; gap: 8px; align-content: start; }
+  .demo-c .result .bar { height: 7px; border-radius: 999px; background: rgba(23,20,15,0.12); }
+  .demo-c .result .bar.wide { width: 88%; }
+  .demo-c .result .bar.mid { width: 62%; }
+  .demo-c .result .bar.short { width: 40%; background: var(--tile-mark); opacity: 0.7; }
+
+  /* ===== D — Paper stack (subtle ruled texture) ===== */
+  .demo-d .tile {
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.76), transparent 48%),
+      repeating-linear-gradient(90deg, rgba(23,20,15,0.05) 0 1px, transparent 1px 24px),
+      linear-gradient(145deg, #fbfaf7 0%, #eeeae2 100%);
+  }
+  .demo-d .tile-caption { max-width: 60%; }
+
+  footer { max-width: 900px; margin: clamp(56px,8vw,80px) auto 0; padding-top: 1.3rem; border-top: 1px solid var(--rule); font-size: 0.82rem; color: var(--page-faint); }
+</style>
+
+<div class="masthead">
+  <p class="kicker">Lab Card — Second Person, Light Pass</p>
+  <h1>Same ideas, off the dark ground</h1>
+  <p>Same three motifs as before, recolored onto the cream tone the rest of the Lab grid already uses — plus one new option (D) that borrows the exact paper-ruled texture the "Material Test" tile already has, so it reads as part of the same set rather than a new material.</p>
+</div>
+
+<div class="options">
+
+  <section class="option demo-a">
+    <div class="option-head">
+      <div class="name"><span class="letter">A</span><h2>Flat typographic</h2></div>
+      <div class="note">No illustration — just the caption on a plain warm gradient. Quietest option.</div>
+    </div>
+    <div class="tile-frame">
+      <div class="tile">
+        <div class="tile-caption">
+          <b>Second Person</b>
+          <span>Turning a personal archive into a space for dialogue, reflection, and return.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="option demo-b">
+    <div class="option-head">
+      <div class="name"><span class="letter">B</span><h2>Constellation</h2></div>
+      <div class="note">Scattered faint nodes (the archive) converge into one marked node (the present question).</div>
+    </div>
+    <div class="tile-frame">
+      <div class="tile">
+        <svg viewBox="0 0 400 190" preserveAspectRatio="none">
+          <line class="edge" x1="40" y1="30" x2="270" y2="95"/>
+          <line class="edge" x1="60" y1="80" x2="270" y2="95"/>
+          <line class="edge" x1="35" y1="120" x2="270" y2="95"/>
+          <line class="edge" x1="75" y1="150" x2="270" y2="95"/>
+          <line class="edge" x1="55" y1="55" x2="270" y2="95"/>
+          <line class="edge lit" x1="270" y1="95" x2="330" y2="95"/>
+          <circle class="node" cx="40" cy="30" r="2.5"/>
+          <circle class="node" cx="60" cy="80" r="2.5"/>
+          <circle class="node" cx="35" cy="120" r="2.5"/>
+          <circle class="node" cx="75" cy="150" r="2.5"/>
+          <circle class="node" cx="55" cy="55" r="2.5"/>
+          <circle class="node lit" cx="270" cy="95" r="4.5"/>
+          <circle class="node lit" cx="330" cy="95" r="3"/>
+        </svg>
+        <div class="tile-caption">
+          <b>Second Person</b>
+          <span>Turning a personal archive into a space for dialogue, reflection, and return.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="option demo-c">
+    <div class="option-head">
+      <div class="name"><span class="letter">C</span><h2>Ledger rail</h2></div>
+      <div class="note">An index of notes on the left resolving into a response on the right, split by a thin spine.</div>
+    </div>
+    <div class="tile-frame">
+      <div class="tile">
+        <div class="ledger">
+          <div class="row"></div><div class="row"></div><div class="row"></div>
+          <div class="row"></div><div class="row"></div><div class="row"></div>
+        </div>
+        <div class="spine"></div>
+        <div class="result">
+          <div class="bar wide"></div>
+          <div class="bar mid"></div>
+          <div class="bar short"></div>
+        </div>
+        <div class="tile-caption">
+          <b>Second Person</b>
+          <span>Turning a personal archive into a space for dialogue, reflection, and return.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="option demo-d">
+    <div class="option-head">
+      <div class="name"><span class="letter">D</span><h2>Paper stack</h2></div>
+      <div class="note">Same ruled-paper texture as the "Material Test" tile next to it — ties Second Person into the existing grid's material language instead of standing apart.</div>
+    </div>
+    <div class="tile-frame">
+      <div class="tile">
+        <div class="tile-caption">
+          <b>Second Person</b>
+          <span>Turning a personal archive into a space for dialogue, reflection, and return.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>Tell me the letter and I'll apply it to the live card — the Terminal motif (from the last round) stays on the Second Person subpage as a prototype demo.</footer>

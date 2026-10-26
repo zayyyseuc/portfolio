@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Person | Chen Zai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #ffffff;
+            --bg2: #f8f8f8;
+            --bg3: #efefef;
+            --text: #171410;
+            --text2: #6b6560;
+            --text3: #a39c8f;
+            --accent: #2d2d2d;
+            --accent2: #55504a;
+            --border: rgba(23,20,15,0.1);
+            --border2: rgba(23,20,15,0.05);
+            --nav-h: 68px;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        #main-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            height: var(--nav-h);
+            padding: 0 2.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-back { display: flex; align-items: center; gap: 0.5rem; color: var(--text2); text-decoration: none; font-size: 0.8125rem; letter-spacing: 0.05em; transition: color 0.2s; }
+        .nav-back:hover { color: var(--text); }
+        .nav-back svg { transition: transform 0.2s; }
+        .nav-back:hover svg { transform: translateX(-3px); }
+        #nav-next:hover svg { transform: translateX(3px); }
+        .nav-title { font-family: 'Newsreader', serif; font-size: 1rem; font-weight: 400; color: var(--text2); letter-spacing: 0.02em; }
+
+        /* ══════════════════════════════
+           PAGE SHELL — sidebar TOC + single scrolling column
+        ══════════════════════════════ */
+        .page-shell {
+            display: grid;
+            grid-template-columns: 210px minmax(0, 1fr);
+            gap: 4rem;
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: calc(var(--nav-h) + 3.5rem) 3rem 7rem;
+        }
+
+        .page-toc {
+            position: sticky;
+            top: calc(var(--nav-h) + 2.25rem);
+            align-self: start;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+        }
+        .page-toc a {
+            display: flex; align-items: baseline; gap: 0.65rem;
+            padding: 0.6rem 0 0.6rem 1rem;
+            font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase;
+            color: var(--text3); text-decoration: none;
+            border-left: 2px solid var(--border);
+            transition: color 0.2s ease, border-color 0.2s ease;
+            line-height: 1.4;
+        }
+        .page-toc a .toc-num { font-family: 'Newsreader', serif; font-style: italic; font-size: 0.72rem; color: inherit; flex-shrink: 0; }
+        .page-toc a:hover { color: var(--text2); }
+        .page-toc a.active { color: var(--text); border-left-color: var(--accent); }
+        .page-toc a.active .toc-num { color: var(--accent); }
+
+        .page-content { min-width: 0; }
+
+        .content-section { padding: 4rem 0; border-top: 1px solid var(--border); scroll-margin-top: calc(var(--nav-h) + 1.75rem); }
+        .content-section:first-of-type { padding-top: 0; border-top: none; }
+
+        /* ── Header block (first section) ── */
+        .page-eyebrow { font-size: 0.7rem; letter-spacing: 0.25em; color: var(--text3); text-transform: uppercase; margin-bottom: 1.5rem; }
+        .page-title { font-family: 'Newsreader', serif; font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+        .page-subtitle { font-family: 'Newsreader', serif; font-style: italic; font-size: 1.05rem; color: var(--text2); line-height: 1.6; max-width: 560px; margin-bottom: 1.5rem; }
+        .page-meta-line { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.75rem; }
+        .page-abstract { font-size: 0.9rem; line-height: 1.85; color: var(--text2); max-width: 640px; margin-bottom: 1.5rem; }
+        .repo-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8125rem; color: var(--text); border-bottom: 1px solid var(--accent); padding-bottom: 2px; }
+        .repo-link:hover { color: var(--accent2); }
+
+        /* ══════════════════════════════
+           TRACE SCENE — hero visualization
+           Present Self ⇄ AI-mediated retrieval ⇄ Accumulated Self
+        ══════════════════════════════ */
+        .trace-scene {
+            --cycle: 11s;
+            margin: 2.75rem 0 0.5rem;
+            display: grid;
+            grid-template-columns: 1fr 64px 1fr;
+            align-items: start;
+            gap: 0;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            padding: clamp(1.5rem, 3vw, 2.5rem);
+        }
+
+        .trace-col { display: flex; flex-direction: column; gap: 0.85rem; min-width: 0; }
+        .trace-col.trace-present { padding-right: 1.5rem; }
+        .trace-col.trace-archive { padding-left: 1.5rem; }
+
+        .trace-label {
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text3);
+        }
+        .trace-sublabel {
+            font-size: 0.72rem; color: var(--text3); margin-top: -0.5rem;
+        }
+
+        .trace-question {
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--accent);
+            background: var(--bg);
+            padding: 1rem 1.25rem;
+        }
+        .trace-question p {
+            font-family: 'Newsreader', serif; font-style: italic;
+            font-size: 0.98rem; line-height: 1.55; color: var(--text);
+        }
+
+        .trace-fragment {
+            border: 1px solid var(--border);
+            background: var(--bg);
+            padding: 0.85rem 1.1rem;
+            opacity: 0.55;
+            transition: opacity 0.4s ease, border-color 0.4s ease;
+        }
+        .trace-fragment.is-active { opacity: 1; border-color: var(--accent); }
+        .trace-fragment-meta {
+            font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--text3); margin-bottom: 0.4rem;
+        }
+        .trace-fragment p { font-size: 0.8125rem; line-height: 1.6; color: var(--text2); }
+
+        .trace-reflection {
+            margin-top: 0.35rem;
+            min-height: 3.6rem;
+            border-top: 1px solid var(--border);
+            padding-top: 0.85rem;
+        }
+        .trace-reflection-line {
+            font-family: 'Newsreader', serif; font-style: italic;
+            font-size: 0.85rem; line-height: 1.65; color: var(--text2);
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        .trace-reflection-line:first-child { color: var(--text); font-weight: 500; }
+
+        .trace-path {
+            position: relative;
+            align-self: stretch;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+        }
+        .trace-path::before {
+            content: "";
+            position: absolute;
+            top: 50%; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border2) 0%, var(--border) 50%, var(--border2) 100%);
+        }
+        .trace-dot {
+            position: absolute;
+            top: 50%; left: 0;
+            width: 6px; height: 6px;
+            margin-top: -3px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0;
+        }
+        .trace-path-label {
+            position: absolute;
+            bottom: -1.9rem;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--text3);
+            opacity: 0;
+        }
+
+        /* Static, fully-revealed state — the default, and the reduced-motion state */
+        .trace-question,
+        .trace-fragment.is-active,
+        .trace-path-label,
+        .trace-reflection-line { opacity: 1; }
+        .trace-reflection-line { transform: translateY(0); }
+        .trace-dot { opacity: 0.9; left: 100%; margin-left: -3px; }
+
+        /* Animated state — only when motion is not reduced */
+        @media (prefers-reduced-motion: no-preference) {
+            .trace-scene.is-animated .trace-question { animation: trace-question-pulse var(--cycle) ease-in-out infinite; }
+            .trace-scene.is-animated .trace-fragment[data-order="1"] { animation: trace-fragment-1 var(--cycle) ease-in-out infinite; }
+            .trace-scene.is-animated .trace-fragment[data-order="2"] { animation: trace-fragment-2 var(--cycle) ease-in-out infinite; }
+            .trace-scene.is-animated .trace-dot { left: 0; margin-left: 0; animation: trace-dot-travel var(--cycle) ease-in-out infinite; }
+            .trace-scene.is-animated .trace-path-label { animation: trace-label-fade var(--cycle) ease-in-out infinite; }
+            .trace-scene.is-animated .trace-reflection-line:nth-child(1) { animation: trace-reflection-1 var(--cycle) ease-in-out infinite; }
+            .trace-scene.is-animated .trace-reflection-line:nth-child(2) { animation: trace-reflection-2 var(--cycle) ease-in-out infinite; }
+
+            .trace-scene.is-animated.is-paused * { animation-play-state: paused !important; }
+        }
+
+        @keyframes trace-question-pulse {
+            0%, 100% { opacity: 0.55; }
+            8%, 92% { opacity: 1; }
+        }
+        @keyframes trace-fragment-1 {
+            0%, 100% { opacity: 0.55; border-color: var(--border); }
+            34%, 90% { opacity: 1; border-color: var(--accent); }
+        }
+        @keyframes trace-fragment-2 {
+            0%, 40%, 100% { opacity: 0.55; border-color: var(--border); }
+            48%, 90% { opacity: 1; border-color: var(--accent); }
+        }
+        @keyframes trace-dot-travel {
+            0%, 16% { opacity: 0; transform: translateX(0); }
+            22% { opacity: 0.9; transform: translateX(0); }
+            36%, 50% { opacity: 0.9; transform: translateX(calc(100% - 6px)); }
+            64%, 88% { opacity: 0.9; transform: translateX(0); }
+            96%, 100% { opacity: 0; transform: translateX(0); }
+        }
+        @keyframes trace-label-fade {
+            0%, 18%, 70%, 100% { opacity: 0; }
+            24%, 62% { opacity: 1; }
+        }
+        @keyframes trace-reflection-1 {
+            0%, 62% { opacity: 0; transform: translateY(4px); }
+            70%, 92% { opacity: 1; transform: translateY(0); }
+            98%, 100% { opacity: 0; transform: translateY(4px); }
+        }
+        @keyframes trace-reflection-2 {
+            0%, 70% { opacity: 0; transform: translateY(4px); }
+            78%, 92% { opacity: 1; transform: translateY(0); }
+            98%, 100% { opacity: 0; transform: translateY(4px); }
+        }
+
+        @media (max-width: 760px) {
+            .trace-scene { grid-template-columns: 1fr; gap: 1.75rem; }
+            .trace-col.trace-present, .trace-col.trace-archive { padding: 0; }
+            .trace-path { min-height: 42px; }
+            .trace-path::before { top: 0; bottom: 0; left: 50%; right: auto; width: 1px; height: auto; background: linear-gradient(180deg, var(--border2) 0%, var(--border) 50%, var(--border2) 100%); }
+            .trace-path-label { bottom: auto; top: 50%; left: 100%; transform: translateY(-50%); margin-left: 0.6rem; }
+            .trace-dot { left: 50%; margin-left: -3px; top: 100%; margin-top: -3px; }
+
+            @media (prefers-reduced-motion: no-preference) {
+                .trace-scene.is-animated .trace-dot { top: 0; margin-top: -3px; animation-name: trace-dot-travel-vertical; }
+            }
+        }
+        @keyframes trace-dot-travel-vertical {
+            0%, 16% { opacity: 0; transform: translateY(0); }
+            22% { opacity: 0.9; transform: translateY(0); }
+            36%, 50% { opacity: 0.9; transform: translateY(calc(100% - 6px)); }
+            64%, 88% { opacity: 0.9; transform: translateY(0); }
+            96%, 100% { opacity: 0; transform: translateY(0); }
+        }
+
+        /* Content blocks (shared with the rest of the site) */
+        .panel-intro { max-width: 680px; margin-bottom: 2.5rem; }
+        .panel-intro h3 { font-family: 'Newsreader', serif; font-size: 1.6rem; font-weight: 300; margin-bottom: 0.85rem; color: var(--text); }
+        .panel-intro p { font-size: 0.875rem; line-height: 1.85; color: var(--text2); }
+
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 2rem; }
+        .content-cell { background: var(--bg); padding: 1.75rem; }
+        .cell-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.65rem; }
+        .cell-title { font-size: 0.98rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
+        .cell-body { font-size: 0.8rem; line-height: 1.7; color: var(--text2); }
+
+        .flow-steps { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 2rem; }
+        .flow-step { flex: 1; padding: 1.4rem; background: var(--bg); position: relative; }
+        .flow-step::after { content: '→'; position: absolute; right: -0.75rem; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 0.8rem; z-index: 1; }
+        .flow-step:last-child::after { display: none; }
+        .step-num { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 0.5rem; }
+        .step-title { font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+        .step-body { font-size: 0.75rem; line-height: 1.6; color: var(--text2); }
+
+        .quote-block { padding: 1.5rem 2rem; border-left: 2px solid var(--accent); background: var(--bg2); margin-bottom: 2rem; }
+        .quote-text { font-family: 'Newsreader', serif; font-style: italic; font-size: 1.05rem; color: var(--text); line-height: 1.55; }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+        h4.section-sub { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+        ul.detail-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+        ul.detail-list li { font-size: 0.8125rem; line-height: 1.6; color: var(--text2); padding-left: 1.25rem; position: relative; }
+        ul.detail-list li::before { content: '—'; position: absolute; left: 0; color: var(--text3); }
+
+        .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .tag {
+            display: inline-block;
+            font-size: 0.68rem; letter-spacing: 0.06em;
+            border: 1px solid var(--border);
+            color: var(--text2);
+            padding: 0.3rem 0.75rem;
+            border-radius: 999px;
+        }
+
+        @media (max-width: 900px) {
+            .page-shell {
+                grid-template-columns: 1fr;
+                gap: 0;
+                padding: calc(var(--nav-h) + 1.25rem) 1.25rem 4.5rem;
+            }
+            .page-toc {
+                position: sticky;
+                top: var(--nav-h);
+                z-index: 20;
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 1.4rem;
+                background: var(--bg);
+                border-bottom: 1px solid var(--border);
+                padding: 0.9rem 0 1rem;
+                margin-bottom: 2rem;
+                -ms-overflow-style: none; scrollbar-width: none;
+            }
+            .page-toc::-webkit-scrollbar { display: none; }
+            .page-toc a { flex-shrink: 0; padding: 0.2rem 0 0.6rem; border-left: none; border-bottom: 2px solid transparent; }
+            .page-toc a.active { border-left-color: transparent; border-bottom-color: var(--accent); }
+
+            .content-section { padding: 2.5rem 0; }
+            .two-col { grid-template-columns: 1fr; }
+            .flow-steps { flex-direction: column; }
+            .flow-step::after { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="main-nav">
+        <a href="index.html#lab" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 13L5 8L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to Lab
+        </a>
+        <span class="nav-title">Second Person</span>
+        <a href="index.html#projects" class="nav-back" id="nav-next">
+            Portfolio
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+    </nav>
+
+    <div class="page-shell">
+
+        <nav class="page-toc" id="page-toc" aria-label="Section contents">
+            <a href="#overview"><span class="toc-num">01</span>Overview</a>
+            <a href="#friction"><span class="toc-num">02</span>The Friction</a>
+            <a href="#experiment"><span class="toc-num">03</span>The Experiment</a>
+            <a href="#modes"><span class="toc-num">04</span>Three Modes</a>
+            <a href="#anatomy"><span class="toc-num">05</span>Anatomy</a>
+            <a href="#changed"><span class="toc-num">06</span>What Changed</a>
+            <a href="#tensions"><span class="toc-num">07</span>Tensions</a>
+            <a href="#state"><span class="toc-num">08</span>Current State</a>
+        </nav>
+
+        <main class="page-content">
+
+            <section class="content-section" id="overview">
+                <div class="page-eyebrow">Design Lab / Self-initiated Experiment</div>
+                <h1 class="page-title">Second Person</h1>
+                <p class="page-subtitle">An AI interface for communicating with my accumulated self.</p>
+                <p class="page-meta-line">Personal AI · Self-initiated Experiment · Local-first RAG · 2026</p>
+                <p class="page-abstract">I built a local-first AI system that turns my personal archive into a conversational space. It helps past experiences, unfinished ideas, and recurring concerns return to my present thinking — not by remembering for me, but by reducing the friction of reaching what I have already lived and thought.</p>
+                <a class="repo-link" href="https://github.com/zayyyseuc/personal-brain" target="_blank" rel="noopener noreferrer">GitHub — personal-brain →</a>
+
+                <div class="trace-scene" id="trace-scene">
+                    <div class="trace-col trace-present">
+                        <div class="trace-label">Present Self</div>
+                        <div class="trace-question">
+                            <p>Have I thought about this tension between efficiency and emotional attachment before?</p>
+                        </div>
+                        <div class="trace-reflection">
+                            <p class="trace-reflection-line">You have encountered this tension before.</p>
+                            <p class="trace-reflection-line">Earlier, you treated attachment as something efficiency might remove. More recently, you began considering friction as part of the experience itself.</p>
+                        </div>
+                    </div>
+
+                    <div class="trace-path" aria-hidden="true">
+                        <span class="trace-dot"></span>
+                        <span class="trace-path-label">Connecting personal traces</span>
+                    </div>
+
+                    <div class="trace-col trace-archive">
+                        <div class="trace-label">Accumulated Self</div>
+                        <div class="trace-sublabel">Notes · experiences · unfinished thoughts</div>
+                        <div class="trace-fragment is-active" data-order="1">
+                            <div class="trace-fragment-meta">Project Note · 2024</div>
+                            <p>I kept optimizing the interaction, but it gradually lost the feeling that made me care about it.</p>
+                        </div>
+                        <div class="trace-fragment is-active" data-order="2">
+                            <div class="trace-fragment-meta">Weekly Reflection · 2025</div>
+                            <p>Perhaps the inconvenience was part of what made the experience feel personal.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section" id="friction">
+                <div class="panel-intro">
+                    <h3>I had built an archive I could no longer reach.</h3>
+                    <p>Years of project notes, personal essays, and unfinished conversation records had accumulated in my Obsidian vault. The problem stopped being capture a long time ago — it became return.</p>
+                </div>
+
+                <ul class="detail-list" style="margin-bottom: 2rem;">
+                    <li>Folder search assumes I remember where a thought was filed, not what the thought was</li>
+                    <li>Keyword search assumes I remember how I phrased it at the time — often the hardest thing to recall</li>
+                    <li>Most of what I retain is shape, not text: a tension, a mood, a decision that felt like an earlier one</li>
+                    <li>Even a located record rarely explains its own relationship to the question I'm asking now</li>
+                </ul>
+
+                <div class="quote-block">
+                    <p class="quote-text">Could I retrieve personal experience through meaning rather than location or exact language?</p>
+                </div>
+            </section>
+
+            <section class="content-section" id="experiment">
+                <div class="panel-intro">
+                    <h3>Turning an archive into a conversational space</h3>
+                    <p>Second Person connects a local Obsidian vault to semantic retrieval and a language model. When I ask a question, it searches for conceptually relevant fragments across my archive, brings them into the current context, and helps me examine how my thinking has developed over time.</p>
+                </div>
+
+                <div class="flow-steps">
+                    <div class="flow-step"><div class="step-num">01</div><div class="step-title">Ask from the present</div><div class="step-body">A question, half-formed or specific.</div></div>
+                    <div class="flow-step"><div class="step-num">02</div><div class="step-title">Retrieve past traces</div><div class="step-body">Semantic search across the vault.</div></div>
+                    <div class="flow-step"><div class="step-num">03</div><div class="step-title">Reflect through dialogue</div><div class="step-body">The AI holds both, and I think against them.</div></div>
+                    <div class="flow-step"><div class="step-num">04</div><div class="step-title">Return new meaning</div><div class="step-body">The conversation becomes a new trace in the archive.</div></div>
+                </div>
+            </section>
+
+            <section class="content-section" id="modes">
+                <div class="panel-intro">
+                    <h3>Three modes of self-communication</h3>
+                    <p>Not feature categories — three different reasons I return to the archive.</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-cell">
+                        <div class="cell-label">Recall</div>
+                        <div class="cell-title">Finding what I could no longer name</div>
+                        <ul class="detail-list">
+                            <li>Starts from a vague question, not a precise keyword</li>
+                            <li>Semantic retrieval pulls concept-related records across time and files</li>
+                            <li>Answers stay traceable to an identifiable personal source, not generic knowledge</li>
+                        </ul>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Reflect</div>
+                        <div class="cell-title">Noticing patterns across time</div>
+                        <ul class="detail-list">
+                            <li>A weekly review pulls together the past period's records</li>
+                            <li>The system surfaces recurring themes, habits, and tensions</li>
+                            <li>The output is a reflection question, not a verdict on who I am</li>
+                        </ul>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Continue</div>
+                        <div class="cell-title">Letting unfinished thoughts develop</div>
+                        <ul class="detail-list">
+                            <li>A half-formed idea can be logged into the Lab feature</li>
+                            <li>Continued dialogue develops a fragment into a clearer idea</li>
+                            <li>The fuller version moves into Imagination notes or the personal archive</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section" id="anatomy">
+                <div class="panel-intro">
+                    <h3>Anatomy of the system</h3>
+                    <p>What actually runs underneath the conversation.</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-cell"><div class="cell-label">01 · Source</div><div class="cell-title">Obsidian vault</div><p class="cell-body">The source of record.</p></div>
+                    <div class="content-cell"><div class="cell-label">02 · Indexing</div><div class="cell-title">Chunking &amp; embeddings</div><p class="cell-body">BAAI/bge-m3.</p></div>
+                    <div class="content-cell"><div class="cell-label">03 · Storage</div><div class="cell-title">Local vector index</div><p class="cell-body">vectra, file-based.</p></div>
+                    <div class="content-cell"><div class="cell-label">04 · Input</div><div class="cell-title">Present question</div><p class="cell-body">Streamed to DeepSeek-V3.</p></div>
+                    <div class="content-cell"><div class="cell-label">05 · Retrieval</div><div class="cell-title">Relevant traces</div><p class="cell-body">Retrieved, not recited.</p></div>
+                    <div class="content-cell"><div class="cell-label">06 · Output</div><div class="cell-title">AI-mediated response</div><p class="cell-body">Grounded in the vault.</p></div>
+                    <div class="content-cell"><div class="cell-label">07 · Loop</div><div class="cell-title">Returned to the archive</div><p class="cell-body">Reflection or new writing.</p></div>
+                </div>
+
+                <div class="two-col">
+                    <div>
+                        <h4 class="section-sub">Design Decisions</h4>
+                        <ul class="detail-list">
+                            <li><strong style="color:var(--text)">Local-first storage</strong> — personal records stay in a vault I can inspect and manage myself</li>
+                            <li><strong style="color:var(--text)">Semantic retrieval</strong> — relevant records surface without depending on exact keywords</li>
+                            <li><strong style="color:var(--text)">Persona file</strong> — a written context file gives the model consistent background and interaction rules</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="section-sub">&nbsp;</h4>
+                        <ul class="detail-list">
+                            <li><strong style="color:var(--text)">Visible sources</strong> — responses stay traceable to which personal traces the model was drawing from</li>
+                            <li><strong style="color:var(--text)">Continuous indexing</strong> — new writing becomes reachable in future retrieval without a manual rebuild</li>
+                            <li><strong style="color:var(--text)">Explicit sharing rules</strong> — private and family-facing material are separated by an explicit boundary, not a default</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tag-row">
+                    <span class="tag">Node.js</span>
+                    <span class="tag">Express</span>
+                    <span class="tag">Obsidian</span>
+                    <span class="tag">vectra</span>
+                    <span class="tag">BAAI/bge-m3</span>
+                    <span class="tag">DeepSeek-V3</span>
+                    <span class="tag">Vanilla JavaScript</span>
+                </div>
+            </section>
+
+            <section class="content-section" id="changed">
+                <div class="panel-intro">
+                    <h3>The archive became something I could return to.</h3>
+                </div>
+
+                <div class="content-grid" style="grid-template-columns: 1fr;">
+                    <div class="content-cell">
+                        <div class="cell-label">Shift 01</div>
+                        <div class="cell-title">From searching for files to expressing uncertainty</div>
+                        <p class="cell-body">I no longer need to translate a question into a precise query — I can start from an unclear question instead.</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Shift 02</div>
+                        <div class="cell-title">From storing ideas to revisiting them</div>
+                        <p class="cell-body">A fragment doesn't disappear into a folder the moment it's written down — review and conversation give it repeated chances to return.</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Shift 03</div>
+                        <div class="cell-title">From asking an external intelligence to consulting personal evidence</div>
+                        <p class="cell-body">The most useful answers aren't ones that hold more outside knowledge than I do — they redirect me back to my own attention.</p>
+                    </div>
+                </div>
+
+                <div class="quote-block">
+                    <p class="quote-text">The value of the system was not that it knew more than I did. It helped me regain access to what I already knew.</p>
+                </div>
+            </section>
+
+            <section class="content-section" id="tensions">
+                <div class="panel-intro">
+                    <h3>Retrieval is also interpretation.</h3>
+                    <p>Similarity scores, chunking boundaries, and the model's own phrasing all shape which past traces get seen — and how they get connected. The system can't stand neutral to "the past." At least three tensions stay unresolved:</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-cell">
+                        <div class="cell-label">Coherence vs. Contradiction</div>
+                        <p class="cell-body">Does the AI smooth over a contradictory, uneven history into a more consistent-sounding identity than I actually have?</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Convenience vs. Agency</div>
+                        <p class="cell-body">Does lowering retrieval friction also quietly weaken my own memory and my own interpretive authority over my past?</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Relevance vs. Serendipity</div>
+                        <p class="cell-body">As retrieval gets more optimized for relevance, does the value of stumbling onto an unrelated, unexpected record get lost?</p>
+                    </div>
+                </div>
+
+                <p style="font-size:0.875rem;line-height:1.85;color:var(--text2);max-width:680px;">The system should not produce a <strong style="color:var(--text)">definitive version</strong> of who I am. It should surface traces, preserve contradiction, and hand back the conditions for meaning — not the meaning itself.</p>
+            </section>
+
+            <section class="content-section" id="state">
+                <div class="panel-intro">
+                    <h3>Current State</h3>
+                    <p>A functional personal prototype connected to my active Obsidian vault. The system supports semantic conversation, weekly reflection, idea development, persistent dialogue, automatic indexing, and selective family-facing access.</p>
+                </div>
+
+                <p style="font-size:0.875rem;line-height:1.85;color:var(--text2);max-width:680px;margin-bottom:2rem;">The live system contains private personal material and is therefore not publicly accessible. This page uses interface recordings and anonymized interaction examples instead.</p>
+
+                <a class="repo-link" href="https://github.com/zayyyseuc/personal-brain" target="_blank" rel="noopener noreferrer" style="margin-bottom: 2.5rem; display: inline-flex;">GitHub — personal-brain →</a>
+
+                <div class="quote-block" style="margin-top: 1rem;">
+                    <p class="quote-text">The goal is not frictionless memory. It is meaningful re-encounter.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        const sections = Array.from(document.querySelectorAll('.content-section'));
+        const tocLinks = Array.from(document.querySelectorAll('.page-toc a'));
+
+        const setActive = (id) => {
+            tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+        };
+
+        if ('IntersectionObserver' in window && sections.length) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) setActive(entry.target.id);
+                });
+            }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+            sections.forEach(s => observer.observe(s));
+            setActive(sections[0].id);
+        }
+
+        const traceScene = document.getElementById('trace-scene');
+        if (traceScene) {
+            traceScene.classList.add('is-animated');
+            if ('IntersectionObserver' in window) {
+                const sceneObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        traceScene.classList.toggle('is-paused', !entry.isIntersecting);
+                    });
+                }, { threshold: 0.15 });
+                sceneObserver.observe(traceScene);
+            }
+        }
+    </script>
+</body>
+</html>

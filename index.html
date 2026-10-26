@@ -39,8 +39,8 @@
         /* --- 导航栏 (保持不变) --- */
         nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border); padding: 1rem 2rem;
+            background: transparent; backdrop-filter: none;
+            border-bottom: 1px solid transparent; padding: 1rem 2rem;
             transition: all 0.3s ease;
         }
         nav.scrolled { box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05); }
@@ -835,15 +835,42 @@
             position: relative;
             display: block;
             background: white;
-            border-radius: 16px;
+            border-radius: 0;
             overflow: hidden;
             cursor: pointer;
             color: inherit;
             text-decoration: none;
             transition: all 0.3s ease;
             /* 确保有内容或没内容都能撑开 */
-            width: 100%; 
-            height: 100%; 
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Blueprint corner ticks, replacing the rounded-corner treatment */
+        .lab-card::before,
+        .lab-card::after {
+            content: "";
+            position: absolute;
+            width: 13px;
+            height: 13px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .lab-card::before {
+            top: 10px;
+            left: 10px;
+            border-top: 1.5px solid rgba(23, 20, 15, 0.55);
+            border-left: 1.5px solid rgba(23, 20, 15, 0.55);
+        }
+        .lab-card::after {
+            bottom: 10px;
+            right: 10px;
+            border-bottom: 1.5px solid rgba(23, 20, 15, 0.55);
+            border-right: 1.5px solid rgba(23, 20, 15, 0.55);
+        }
+        .lab-card:nth-child(1)::before, .lab-card:nth-child(1)::after,
+        .lab-card:nth-child(4)::before, .lab-card:nth-child(4)::after {
+            border-color: rgba(255, 255, 255, 0.7);
         }
 
       
@@ -908,14 +935,6 @@
                 linear-gradient(135deg, #fbfaf6 0%, #eee8dc 55%, #ddd5c8 100%);
         }
 
-        .lab-card:nth-child(n+2) .lab-card-placeholder::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border: 1px solid rgba(255, 255, 255, 0.28);
-            box-shadow: inset 0 0 0 1px rgba(26, 26, 26, 0.08);
-            pointer-events: none;
-        }
 
         .lab-card:nth-child(1) .brain-mom-preview {
             position: relative;
@@ -926,35 +945,44 @@
                 repeating-linear-gradient(90deg, #101625 0 1px, #182235 1px 86px);
         }
 
-        .brain-mom-preview::before {
+        /* Archive rail — accumulated notes feeding into the dialogue */
+        .archive-rail {
+            position: absolute;
+            top: 16%;
+            bottom: 16%;
+            left: clamp(18px, 4vw, 40px);
+            width: min(16%, 84px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .archive-rail span {
+            height: 1px;
+            background: rgba(245, 244, 238, 0.22);
+            position: relative;
+        }
+        .archive-rail span::before {
             content: "";
             position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 52%;
-            width: 1px;
-            background: rgba(198, 242, 121, 0.65);
+            left: 0; top: -2.5px;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: rgba(198, 242, 121, 0.55);
         }
+        .archive-rail span:nth-child(2) { width: 72%; }
+        .archive-rail span:nth-child(4) { width: 55%; }
+        .archive-rail span:nth-child(6) { width: 84%; }
 
         .lab-mini-phone {
             position: absolute;
-            top: 14%;
-            width: min(23%, 132px);
-            height: 72%;
+            top: 12%;
+            right: clamp(24px, 8vw, 90px);
+            width: min(38%, 208px);
+            height: 76%;
             border: 1px solid rgba(255, 255, 255, 0.26);
-            border-radius: 24px;
+            border-radius: 20px;
             background: #fff;
             box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
-        }
-
-        .lab-mini-phone.brain {
-            right: 31%;
-            transform: rotate(-5deg);
-        }
-
-        .lab-mini-phone.share {
-            right: 9%;
-            transform: rotate(5deg);
         }
 
         .lab-mini-phone::before {
@@ -963,33 +991,38 @@
             top: 0;
             left: 34%;
             width: 32%;
-            height: 10%;
+            height: 8%;
             border-radius: 0 0 10px 10px;
             background: #121418;
         }
 
         .lab-mini-screen {
             position: absolute;
-            inset: 14% 10% 9%;
-            display: grid;
-            align-content: start;
-            gap: 7px;
+            inset: 14% 9% 9%;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
         }
 
         .lab-mini-line {
             height: 8px;
             border-radius: 999px;
             background: #e8ebf2;
+            width: 100%;
         }
 
-        .lab-mini-line.dark {
-            height: 34px;
-            border-radius: 12px;
+        .lab-mini-line.query {
+            align-self: flex-end;
+            width: 48%;
+            background: #cfd6e6;
+        }
+
+        .lab-mini-line.response {
+            align-self: flex-start;
+            width: 82%;
+            height: 20px;
+            border-radius: 10px;
             background: #13192c;
-        }
-
-        .lab-mini-line.green {
-            background: #dce9d3;
         }
 
         .brain-mom-caption {
@@ -1432,18 +1465,20 @@
                 height: 100%;
                 object-fit: cover;
                 object-position: center center;
-                opacity: 0.18;
+                opacity: 0;
             }
 
             .projects-exp-bg-img.active {
-                opacity: 0.18;
+                opacity: 0.55;
             }
 
             .projects-exp-bg-layer::after {
                 opacity: 1;
                 z-index: 1;
                 background:
-                    linear-gradient(180deg, var(--projects-overlay-left) 0%, var(--projects-overlay-bottom) 100%);
+                    linear-gradient(180deg,
+                        color-mix(in srgb, var(--projects-overlay-left) 42%, transparent) 0%,
+                        color-mix(in srgb, var(--projects-overlay-bottom) 62%, transparent) 100%);
             }
 
             .projects-exp-info {
@@ -1728,9 +1763,9 @@
             </button>
             <ul class="nav-links" id="site-nav-links">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#cv">CV</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#lab">Lab</a></li>
+                <li><a href="#cv">CV</a></li>
             </ul>
         </div>
     </nav>
@@ -1749,11 +1784,160 @@
             </div>
         </div>
         
-        <div class="scroll-hint" onclick="document.getElementById('cv').scrollIntoView({behavior: 'smooth'})" style="cursor: pointer;">
+        <div class="scroll-hint" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})" style="cursor: pointer;">
             <span>Explore</span>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M10 3V17M10 17L15 12M10 17L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
+        </div>
+    </section>
+    <section class="projects-section" id="projects">
+            <h2 class="projects-exp-heading">Projects</h2>
+            <div class="projects-exp-wrapper">
+                <div class="projects-exp-bg-layer">
+                    <img src="images/project-bg/urban-bg.jpg" class="projects-exp-bg-img active" id="project-img-1" alt="Urban Mirage" fetchpriority="high" decoding="async">
+                    <img src="images/project-bg/vr-bg.jpg" class="projects-exp-bg-img" id="project-img-2" alt="CUBIK" loading="lazy" decoding="async">
+                    <img src="images/project-bg/forest-bg.jpg" class="projects-exp-bg-img" id="project-img-3" alt="Fragments of the Forest" loading="lazy" decoding="async">
+                    <img src="images/project-bg/silent-bg.jpg" class="projects-exp-bg-img" id="project-img-4" alt="Silent Signal" loading="lazy" decoding="async">
+                    <img src="images/project-bg/pet-bg.jpg" class="projects-exp-bg-img" id="project-img-5" alt="Pet Space" loading="lazy" decoding="async">
+
+                    <article class="projects-exp-info" aria-live="polite">
+                        <div class="projects-exp-kicker" id="projects-exp-kicker">Project 01</div>
+                        <h3 class="projects-exp-title">
+                            <span id="projects-exp-title">Urban Mirage</span>
+                            <a class="projects-exp-github" id="projects-exp-github" href="https://github.com/zayyyseuc/GhostTown" target="_blank" rel="noopener noreferrer" aria-label="Open project GitHub repository">
+                                <svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.54 2.87 8.39 6.84 9.75.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.33 9.33 0 0 1 12 7.02c.85 0 1.7.12 2.5.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.19 10.19 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/>
+                                </svg>
+                                <svg class="youtube-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.55 3.58 12 3.58 12 3.58s-7.55 0-9.4.5A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.85.5 9.4.5 9.4.5s7.55 0 9.4-.5a3 3 0 0 0 2.1-2.12A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8ZM9.55 15.56V8.44L15.82 12l-6.27 3.56Z"/>
+                                </svg>
+                            </a>
+                        </h3>
+                        <p class="projects-exp-summary" id="projects-exp-summary"></p>
+                        <div class="projects-exp-meta">
+                            <span class="projects-exp-meta-label">Type</span>
+                            <span class="projects-exp-meta-value" id="projects-exp-type"></span>
+                            <span class="projects-exp-meta-label">Focus</span>
+                            <span class="projects-exp-meta-value" id="projects-exp-focus"></span>
+                            <span class="projects-exp-meta-label">Time</span>
+                            <span class="projects-exp-meta-value" id="projects-exp-time"></span>
+                        </div>
+                        <div class="projects-exp-tags" id="projects-exp-tags"></div>
+                    </article>
+                </div>
+
+                <div class="projects-exp-wall">
+                    <div class="projects-exp-list-shell">
+                        <div class="projects-exp-list">
+                            <div class="projects-exp-tooth empty" style="--extend: 100px; --h: 24px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 50px; --h: 12px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 200px; --h: 30px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 90px; --h: 18px;"></div>
+
+                            <a href="p_urban.html" class="projects-exp-tooth item" style="--extend: 150px;" data-target="project-img-1">
+                                <span class="projects-exp-index">01</span>
+                                <span class="projects-exp-item-title">URBAN MIRAGE</span>
+                            </a>
+                            
+                            <div class="projects-exp-tooth empty" style="--extend: 80px; --h: 15px;"></div>
+                            
+                            <a href="p_cubik.html" class="projects-exp-tooth item" style="--extend: 190px;" data-target="project-img-2">
+                                <span class="projects-exp-index">02</span>
+                                <span class="projects-exp-item-title">CUBIK</span>
+                            </a>
+
+                            <div class="projects-exp-tooth empty" style="--extend: 250px; --h: 22px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 110px; --h: 14px;"></div>
+
+                            <a href="p_forest.html" class="projects-exp-tooth item" style="--extend: 170px;" data-target="project-img-3">
+                                <span class="projects-exp-index">03</span>
+                                <span class="projects-exp-item-title">FRAGMENTS OF THE FOREST</span>
+                            </a>
+                            
+                            <a href="p_silent.html" class="projects-exp-tooth item" style="--extend: 130px;" data-target="project-img-4">
+                                <span class="projects-exp-index">04</span>
+                                <span class="projects-exp-item-title">SILENT SIGNAL</span>
+                            </a>
+
+                            <div class="projects-exp-tooth empty" style="--extend: 240px; --h: 13px;"></div>
+
+                            <a href="p_pet.html" class="projects-exp-tooth item" style="--extend: 220px;" data-target="project-img-5">
+                                <span class="projects-exp-index">05</span>
+                                <span class="projects-exp-item-title">PET SPACE</span>
+                            </a>
+
+                            <div class="projects-exp-tooth empty" style="--extend: 200px; --h: 26px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 90px; --h: 16px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 140px; --h: 24px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 190px; --h: 15px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 170px; --h: 20px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 80px; --h: 35px;"></div>
+                            <div class="projects-exp-tooth empty" style="--extend: 100px; --h: 25px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    
+
+    <section class="lab-section" id="lab">
+        <div class="projects-container">
+            <h2 class="section-title" style="text-align: center;">AI Native Lab</h2>
+            
+            <div class="lab-grid">
+                <a href="lab_second_person.html" class="lab-card">
+                    <div class="lab-card-placeholder brain-mom-preview">
+                        <div class="brain-mom-caption">
+                            <b>Second Person</b>
+                            <span>Turning a personal archive into a space for dialogue, reflection, and return.</span>
+                        </div>
+                        <div class="archive-rail" aria-hidden="true">
+                            <span></span><span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                        <div class="lab-mini-phone">
+                            <div class="lab-mini-screen">
+                                <span class="lab-mini-line query"></span>
+                                <span class="lab-mini-line response"></span>
+                                <span class="lab-mini-line query"></span>
+                                <span class="lab-mini-line response"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lab-overlay"><span>Second Person</span></div>
+                </a>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Material Test</span></div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Sketch</span></div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Concept Art</span></div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Icon</span></div>
+                </div>
+                
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>3D Render</span></div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-card-placeholder"></div>
+                    <div class="lab-overlay"><span>Photography</span></div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1825,12 +2009,7 @@
             <div class="cv-contact-block">
                  <span class="cv-contact-label">Email</span>
                  <a href="mailto:zai_seuc@berkeley.edu" class="cv-contact-item">zai_seuc@berkeley.edu</a>
-                 <a href="mailto:chen_seuc@qq.com" class="cv-contact-item">chen_seuc@qq.com</a>  
-            </div>
-
-            <div class="cv-contact-block">
-                <span class="cv-contact-label">Phone</span>
-                <span class="cv-contact-item">+86 187 8027 1110</span>
+                 <a href="mailto:zchanzay@gmail.com" class="cv-contact-item">zchanzay@gmail.com</a>
             </div>
 
             <div class="cv-contact-block">
@@ -1862,6 +2041,7 @@
                 <span class="cv-contact-item">San Francisco · Berkeley, CA</span>
             </div>
 
+            <!-- Temporarily hidden
             <div class="cv-contact-block">
                 <span class="cv-contact-label">Download CV</span>
                 <div class="cv-download-options">
@@ -1869,165 +2049,12 @@
                     <a href="files/ChenZai_CV_CN.pdf" download>中文 PDF</a>
                 </div>
             </div>
+            -->
 
         </div>
 
     </section>
 
-    <section class="projects-section" id="projects">
-            <h2 class="projects-exp-heading">Projects</h2>
-            <div class="projects-exp-wrapper">
-                <div class="projects-exp-bg-layer">
-                    <img src="images/project-bg/urban-bg.jpg" class="projects-exp-bg-img active" id="project-img-1" alt="Urban Mirage" fetchpriority="high" decoding="async">
-                    <img src="images/project-bg/vr-bg.jpg" class="projects-exp-bg-img" id="project-img-2" alt="CUBIK" loading="lazy" decoding="async">
-                    <img src="images/project-bg/forest-bg.jpg" class="projects-exp-bg-img" id="project-img-3" alt="Fragments of the Forest" loading="lazy" decoding="async">
-                    <img src="images/project-bg/silent-bg.jpg" class="projects-exp-bg-img" id="project-img-4" alt="Silent Signal" loading="lazy" decoding="async">
-                    <img src="images/project-bg/pet-bg.jpg" class="projects-exp-bg-img" id="project-img-5" alt="Pet Space" loading="lazy" decoding="async">
-
-                    <article class="projects-exp-info" aria-live="polite">
-                        <div class="projects-exp-kicker" id="projects-exp-kicker">Project 01</div>
-                        <h3 class="projects-exp-title">
-                            <span id="projects-exp-title">Urban Mirage</span>
-                            <a class="projects-exp-github" id="projects-exp-github" href="https://github.com/zayyyseuc/GhostTown" target="_blank" rel="noopener noreferrer" aria-label="Open project GitHub repository">
-                                <svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.54 2.87 8.39 6.84 9.75.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.33 9.33 0 0 1 12 7.02c.85 0 1.7.12 2.5.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.19 10.19 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/>
-                                </svg>
-                                <svg class="youtube-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.55 3.58 12 3.58 12 3.58s-7.55 0-9.4.5A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.85.5 9.4.5 9.4.5s7.55 0 9.4-.5a3 3 0 0 0 2.1-2.12A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8ZM9.55 15.56V8.44L15.82 12l-6.27 3.56Z"/>
-                                </svg>
-                            </a>
-                        </h3>
-                        <p class="projects-exp-summary" id="projects-exp-summary"></p>
-                        <div class="projects-exp-meta">
-                            <span class="projects-exp-meta-label">Type</span>
-                            <span class="projects-exp-meta-value" id="projects-exp-type"></span>
-                            <span class="projects-exp-meta-label">Focus</span>
-                            <span class="projects-exp-meta-value" id="projects-exp-focus"></span>
-                            <span class="projects-exp-meta-label">Time</span>
-                            <span class="projects-exp-meta-value" id="projects-exp-time"></span>
-                        </div>
-                        <div class="projects-exp-tags" id="projects-exp-tags"></div>
-                    </article>
-                </div>
-
-                <div class="projects-exp-wall">
-                    <div class="projects-exp-list-shell">
-                        <div class="projects-exp-list">
-                            <div class="projects-exp-tooth empty" style="--extend: 100px; --h: 24px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 50px; --h: 12px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 200px; --h: 30px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 90px; --h: 18px;"></div>
-
-                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 150px;" data-target="project-img-1">
-                                <span class="projects-exp-index">01</span>
-                                <span class="projects-exp-item-title">URBAN MIRAGE</span>
-                            </a>
-                            
-                            <div class="projects-exp-tooth empty" style="--extend: 80px; --h: 15px;"></div>
-                            
-                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 190px;" data-target="project-img-2">
-                                <span class="projects-exp-index">02</span>
-                                <span class="projects-exp-item-title">CUBIK</span>
-                            </a>
-
-                            <div class="projects-exp-tooth empty" style="--extend: 250px; --h: 22px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 110px; --h: 14px;"></div>
-
-                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 170px;" data-target="project-img-3">
-                                <span class="projects-exp-index">03</span>
-                                <span class="projects-exp-item-title">FRAGMENTS OF THE FOREST</span>
-                            </a>
-                            
-                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 130px;" data-target="project-img-4">
-                                <span class="projects-exp-index">04</span>
-                                <span class="projects-exp-item-title">SILENT SIGNAL</span>
-                            </a>
-
-                            <div class="projects-exp-tooth empty" style="--extend: 240px; --h: 13px;"></div>
-
-                            <a href="#projects" class="projects-exp-tooth item" style="--extend: 220px;" data-target="project-img-5">
-                                <span class="projects-exp-index">05</span>
-                                <span class="projects-exp-item-title">PET SPACE</span>
-                            </a>
-
-                            <div class="projects-exp-tooth empty" style="--extend: 200px; --h: 26px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 90px; --h: 16px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 140px; --h: 24px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 190px; --h: 15px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 170px; --h: 20px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 80px; --h: 35px;"></div>
-                            <div class="projects-exp-tooth empty" style="--extend: 100px; --h: 25px;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    
-
-    <section class="lab-section" id="lab">
-        <div class="projects-container">
-            <h2 class="section-title" style="text-align: center;">Design Lab</h2>
-            
-            <div class="lab-grid">
-                <a href="lab_brain_mom.html" class="lab-card">
-                    <div class="lab-card-placeholder brain-mom-preview">
-                        <div class="brain-mom-caption">
-                            <b>Contextual Sharing</b>
-                            <span>AI-shaped exchange</span>
-                        </div>
-                        <div class="lab-mini-phone brain">
-                            <div class="lab-mini-screen">
-                                <span class="lab-mini-line"></span>
-                                <span class="lab-mini-line dark"></span>
-                                <span class="lab-mini-line"></span>
-                                <span class="lab-mini-line"></span>
-                            </div>
-                        </div>
-                        <div class="lab-mini-phone share">
-                            <div class="lab-mini-screen">
-                                <span class="lab-mini-line green"></span>
-                                <span class="lab-mini-line green"></span>
-                                <span class="lab-mini-line"></span>
-                                <span class="lab-mini-line green"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lab-overlay"><span>AI Context Sharing</span></div>
-                </a>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Material Test</span></div>
-                </div>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Sketch</span></div>
-                </div>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Concept Art</span></div>
-                </div>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Icon</span></div>
-                </div>
-                
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>3D Render</span></div>
-                </div>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Photography</span></div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     
 
@@ -2255,7 +2282,7 @@
                 pageTitle: 'Zai\'s portfolio',
                 lang: 'en',
                 navToggle: 'Toggle navigation',
-                nav: ['Home', 'CV', 'Projects', 'Lab'],
+                nav: ['Home', 'Projects', 'Lab', 'CV'],
                 cvVertical: 'CV',
                 bio: [
                     'I am a designer exploring spatial computing. My work often begins with conditions that are difficult to perceive directly: cities that appear dense yet lack lived vitality, bodily risks that cannot always be actively reported, emotional distance in remote companionship, ecological relationships that are hard to explain, and information structures waiting to be reimagined in immersive space.',
@@ -2270,23 +2297,23 @@
                     award: ['National Second Prize', 'Tianjin Salt Field Scenic Street Design'],
                     skills: ['Design', 'Programming', 'Languages', 'Python, Arduino, Microcontroller Programming', 'Chinese (Native) · English (IELTS 7.5)']
                 },
-                contact: ['Email', 'Phone', 'Find me at', 'Based in', 'Download CV'],
+                contact: ['Email', 'Find me at', 'Based in'],
                 basedIn: 'San Francisco · Berkeley, CA',
                 cvPdf: 'English PDF',
                 xhsTitle: '小红书 (Coming soon)',
                 projectHeading: 'Projects',
                 projectMeta: ['Type', 'Focus', 'Time'],
                 externalLink: { github: 'GitHub repository', youtube: 'YouTube video', none: 'No external link for this project' },
-                labHeading: 'Design Lab',
-                labCaption: ['Contextual Sharing', 'AI-shaped exchange'],
-                labItems: ['AI Context Sharing', 'Material Test', 'Sketch', 'Concept Art', 'Icon', '3D Render', 'Photography'],
+                labHeading: 'AI Native Lab',
+                labCaption: ['Second Person', 'Turning a personal archive into a space for dialogue, reflection, and return.'],
+                labItems: ['Second Person', 'Material Test', 'Sketch', 'Concept Art', 'Icon', '3D Render', 'Photography'],
                 footer: '© 2026 Chen Zai. Designed with passion for interdisciplinary design.'
             },
             zh: {
                 pageTitle: 'Chen Zai 作品集',
                 lang: 'zh-CN',
                 navToggle: '切换导航',
-                nav: ['Home', '简历', '项目', '实验室'],
+                nav: ['Home', '项目', '实验室', '简历'],
                 cvVertical: '简历',
                 bio: [
                     '我是陈在，一名正在探索空间计算的设计师。我的创作常从那些难以被直接感知的状态出发：看似密集却缺少真实生活活力的城市、无法被主动报告的身体风险、远程陪伴中的情感距离、难以解释的生态关系，以及等待被重新想象的信息结构。',
@@ -2301,16 +2328,16 @@
                     award: ['国家级二等奖', '天津盐场风景街区设计'],
                     skills: ['设计', '编程', '语言', 'Python, Arduino, 单片机编程', '中文（母语） · 英语（IELTS 7.5）']
                 },
-                contact: ['邮箱', '电话', '找到我', '所在地', '下载简历'],
+                contact: ['邮箱', '找到我', '所在地'],
                 basedIn: '旧金山 · 伯克利，加州',
                 cvPdf: '英文 PDF',
                 xhsTitle: '小红书（即将开放）',
                 projectHeading: '项目',
                 projectMeta: ['类型', '关注', '时间'],
                 externalLink: { github: 'GitHub 仓库', youtube: 'YouTube 视频', none: '该项目暂无外部链接' },
-                labHeading: '设计实验室',
-                labCaption: ['情境化分享', '由 AI 塑形的交流'],
-                labItems: ['AI 语境分享', '材料测试', '草图', '概念图', '图标', '3D 渲染', '摄影'],
+                labHeading: 'AI 原生实验室',
+                labCaption: ['第二人称', '把个人档案变成对话、反思与回归的空间。'],
+                labItems: ['第二人称', '材料测试', '草图', '概念图', '图标', '3D 渲染', '摄影'],
                 footer: '© 2026 Chen Zai. 为跨学科设计而作。'
             }
         };
@@ -2354,8 +2381,7 @@
             entries[6].querySelector('.cv-entry-sub').textContent = text.entries.skills[4];
 
             textAll('.cv-contact-label', text.contact);
-            document.querySelector('.cv-contact-block:nth-of-type(4) .cv-contact-item').textContent = text.basedIn;
-            document.querySelector('.cv-download-options a:first-child').textContent = text.cvPdf;
+            document.querySelector('.cv-contact-block:nth-of-type(3) .cv-contact-item').textContent = text.basedIn;
             document.querySelector('.cv-icon-disabled').setAttribute('title', text.xhsTitle);
             document.querySelector('.projects-exp-heading').textContent = text.projectHeading;
             textAll('.projects-exp-meta-label', text.projectMeta);

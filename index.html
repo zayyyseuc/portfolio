@@ -533,7 +533,8 @@
             opacity: 1;
         }
 
-        .projects-exp-bg-img {
+        .projects-exp-bg-img,
+        .projects-exp-bg-video {
             position: absolute;
             inset: 0;
             width: 100%;
@@ -545,8 +546,13 @@
             filter: var(--projects-exp-filter);
         }
 
-        .projects-exp-bg-img.active {
+        .projects-exp-bg-img.active,
+        .projects-exp-bg-video.active {
             opacity: 1;
+        }
+
+        .projects-exp-bg-video {
+            pointer-events: none;
         }
 
         .projects-exp-info {
@@ -1797,7 +1803,9 @@
                 <div class="projects-exp-bg-layer">
                     <img src="images/project-bg/urban-bg.jpg" class="projects-exp-bg-img active" id="project-img-1" alt="Urban Mirage" fetchpriority="high" decoding="async">
                     <img src="images/project-bg/vr-bg.jpg" class="projects-exp-bg-img" id="project-img-2" alt="CUBIK" loading="lazy" decoding="async">
+                    <video class="projects-exp-bg-video" id="project-video-2" muted loop playsinline preload="none" poster="images/project-bg/vr-bg.jpg" data-target="project-img-2" data-src="videos/cubik_headvideo-web.mp4" aria-hidden="true"></video>
                     <img src="images/project-bg/forest-bg.jpg" class="projects-exp-bg-img" id="project-img-3" alt="Fragments of the Forest" loading="lazy" decoding="async">
+                    <video class="projects-exp-bg-video" id="project-video-3" muted loop playsinline preload="none" poster="images/project-bg/forest-bg.jpg" data-target="project-img-3" data-src="videos/forest_headvideo-web.mp4" aria-hidden="true"></video>
                     <img src="images/project-bg/silent-bg.jpg" class="projects-exp-bg-img" id="project-img-4" alt="Silent Signal" loading="lazy" decoding="async">
                     <img src="images/project-bg/pet-bg.jpg" class="projects-exp-bg-img" id="project-img-5" alt="Pet Space" loading="lazy" decoding="async">
 
@@ -2095,6 +2103,12 @@
         const projectsExpWrapper = document.querySelector('.projects-exp-wrapper');
         const projectsExpItems = document.querySelectorAll('.projects-exp-tooth.item');
         const projectsExpImages = document.querySelectorAll('.projects-exp-bg-img');
+        const projectCoverVideos = new Map(
+            [...document.querySelectorAll('.projects-exp-bg-video')]
+                .map(video => [video.dataset.target, video])
+        );
+        let activeProjectTargetId = 'project-img-1';
+        let projectsExpInView = false;
         const projectsExpInfo = {
             kicker: document.getElementById('projects-exp-kicker'),
             title: document.getElementById('projects-exp-title'),
@@ -2420,6 +2434,66 @@
             projectsExpWrapper.style.setProperty('--projects-exp-filter', theme.filter);
         }
 
+        function stopProjectCoverVideos(reset = false) {
+            projectCoverVideos.forEach(video => {
+                video.pause();
+                video.classList.remove('active');
+                if (reset && video.readyState > 0) {
+                    video.currentTime = 0;
+                }
+            });
+        }
+
+        function syncProjectCoverVideo(targetId) {
+            activeProjectTargetId = targetId;
+            const projectVideo = projectCoverVideos.get(targetId);
+
+            projectCoverVideos.forEach(video => {
+                if (video === projectVideo) return;
+                video.pause();
+                video.classList.remove('active');
+                if (video.readyState > 0) video.currentTime = 0;
+            });
+
+            const canPlayProjectVideo =
+                Boolean(projectVideo) &&
+                projectsExpInView &&
+                !mobileProjectsQuery.matches &&
+                !reduceMotion &&
+                !document.hidden;
+
+            if (!canPlayProjectVideo) {
+                if (projectVideo) {
+                    projectVideo.pause();
+                    projectVideo.classList.remove('active');
+                }
+                return;
+            }
+
+            if (!projectVideo.getAttribute('src')) {
+                projectVideo.setAttribute('src', projectVideo.dataset.src);
+                projectVideo.load();
+            }
+
+            const playPromise = projectVideo.play();
+            if (playPromise) {
+                playPromise.then(() => {
+                    if (
+                        activeProjectTargetId === targetId &&
+                        projectCoverVideos.get(activeProjectTargetId) === projectVideo &&
+                        projectsExpInView &&
+                        !mobileProjectsQuery.matches &&
+                        !document.hidden &&
+                        projectsExpWrapper.classList.contains('info-visible')
+                    ) {
+                        projectVideo.classList.add('active');
+                    }
+                }).catch(() => {
+                    projectVideo.classList.remove('active');
+                });
+            }
+        }
+
         function renderProjectsExpInfo(targetId) {
             const data = (currentLanguage === 'zh' ? projectsExpDataZh : projectsExpDataEn)[targetId];
             if (!data) return;
@@ -2428,6 +2502,7 @@
             projectsExpImages.forEach(img => img.classList.remove('active'));
             const targetImage = document.getElementById(targetId);
             if (targetImage) targetImage.classList.add('active');
+            syncProjectCoverVideo(targetId);
 
             projectsExpInfo.kicker.textContent = data.kicker;
             projectsExpInfo.title.textContent = data.title;
@@ -2489,6 +2564,27 @@
         projectsExpWrapper.addEventListener('mouseleave', () => {
             setActiveProjectItem(null);
             projectsExpWrapper.classList.remove('info-visible');
+            activeProjectTargetId = '';
+            stopProjectCoverVideos(true);
+        });
+
+        const projectsExpObserver = new IntersectionObserver((entries) => {
+            projectsExpInView = entries[0].isIntersecting;
+            if (!projectsExpInView) {
+                stopProjectCoverVideos();
+            } else if (projectCoverVideos.has(activeProjectTargetId) && projectsExpWrapper.classList.contains('info-visible')) {
+                syncProjectCoverVideo(activeProjectTargetId);
+            }
+        }, { threshold: 0.15 });
+
+        projectsExpObserver.observe(projectsExpWrapper);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopProjectCoverVideos();
+            } else if (projectCoverVideos.has(activeProjectTargetId) && projectsExpWrapper.classList.contains('info-visible')) {
+                syncProjectCoverVideo(activeProjectTargetId);
+            }
         });
 
         renderProjectsExpInfo('project-img-1');
@@ -2500,6 +2596,7 @@
 
         mobileProjectsQuery.addEventListener('change', (event) => {
             if (event.matches) {
+                stopProjectCoverVideos(true);
                 setActiveProjectItem(projectsExpItems[0]);
                 renderProjectsExpInfo('project-img-1');
             } else {

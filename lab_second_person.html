@@ -270,7 +270,20 @@
         .panel-intro h3 { font-family: 'Newsreader', serif; font-size: 1.6rem; font-weight: 300; margin-bottom: 0.85rem; color: var(--text); }
         .panel-intro p { font-size: 0.875rem; line-height: 1.85; color: var(--text2); }
 
+        .case-brief {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 1px;
+            border: 1px solid var(--border);
+            background: var(--border);
+            margin: 2.25rem 0 0;
+        }
+        .case-brief-cell { background: var(--bg); padding: 1.4rem 1.5rem; }
+        .case-brief-cell h3 { font-size: 0.9rem; line-height: 1.4; font-weight: 500; margin: 0.4rem 0 0.55rem; }
+        .case-brief-cell p { font-size: 0.76rem; line-height: 1.7; color: var(--text2); }
+
         .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 2rem; }
+        .capability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .content-cell { background: var(--bg); padding: 1.75rem; }
         .cell-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.65rem; }
         .cell-title { font-size: 0.98rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
@@ -303,6 +316,142 @@
             border-radius: 999px;
         }
 
+        /* Product evidence — anonymized reconstructions of the working interface */
+        .evidence-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 2rem;
+            margin: 3rem 0 1.25rem;
+        }
+        .evidence-heading h4 {
+            font-family: 'Newsreader', serif;
+            font-size: 1.35rem;
+            font-weight: 300;
+        }
+        .evidence-heading p {
+            max-width: 430px;
+            font-size: 0.7rem;
+            line-height: 1.65;
+            color: var(--text3);
+            text-align: right;
+        }
+        .storyboard {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+        }
+        .story-frame {
+            min-width: 0;
+            background: var(--bg);
+            padding: 0.8rem;
+        }
+        .story-screen {
+            min-height: 318px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(23,20,15,0.12);
+            border-radius: 3px;
+            background: #f3f1ed;
+            box-shadow: 0 8px 24px rgba(23,20,15,0.05);
+        }
+        .screen-bar {
+            min-height: 31px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            padding: 0 0.65rem;
+            border-bottom: 1px solid rgba(23,20,15,0.1);
+            background: rgba(255,255,255,0.72);
+            font-size: 0.48rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #756f67;
+        }
+        .screen-dots { display: flex; gap: 3px; }
+        .screen-dots i { width: 4px; height: 4px; border-radius: 50%; background: #bcb5ac; }
+        .screen-body { flex: 1; display: flex; flex-direction: column; padding: 0.75rem; }
+        .screen-kicker {
+            margin-bottom: 0.65rem;
+            font-size: 0.48rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #8e867c;
+        }
+        .mini-nav { display: flex; gap: 0.3rem; margin-bottom: 0.75rem; }
+        .mini-nav span { padding: 0.23rem 0.38rem; border: 1px solid rgba(23,20,15,0.11); border-radius: 999px; font-size: 0.43rem; color: #837c73; background: rgba(255,255,255,0.6); }
+        .mini-nav span.is-active { background: #272521; border-color: #272521; color: #fff; }
+        .lab-card {
+            padding: 0.8rem;
+            border: 1px solid rgba(23,20,15,0.12);
+            background: rgba(255,255,255,0.84);
+        }
+        .lab-card strong { display: block; margin-bottom: 0.4rem; font-family: 'Newsreader', serif; font-size: 0.78rem; line-height: 1.3; font-weight: 400; }
+        .lab-card p { font-size: 0.52rem; line-height: 1.55; color: #6e6861; }
+        .mini-meta { margin-top: 0.5rem; display: flex; justify-content: space-between; font-size: 0.4rem; color: #9b948a; }
+        .new-note { margin-top: auto; align-self: end; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: #272521; color: white; font-size: 0.8rem; }
+        .chat-window { gap: 0.55rem; }
+        .chat-bubble { max-width: 88%; padding: 0.62rem 0.7rem; border-radius: 8px; font-size: 0.52rem; line-height: 1.55; }
+        .chat-bubble.user { align-self: end; background: #292723; color: #fff; border-bottom-right-radius: 2px; }
+        .chat-bubble.ai { align-self: start; background: rgba(255,255,255,0.9); border: 1px solid rgba(23,20,15,0.1); color: #5f5952; border-bottom-left-radius: 2px; }
+        .thinking { display: flex; align-items: center; gap: 3px; font-size: 0.43rem; color: #968f86; }
+        .thinking i { width: 3px; height: 3px; border-radius: 50%; background: currentColor; }
+        .source-card { padding: 0.55rem 0.6rem; border-left: 2px solid #5a554f; background: rgba(255,255,255,0.76); }
+        .source-card + .source-card { margin-top: 0.4rem; }
+        .source-card b { display: block; margin-bottom: 0.25rem; font-size: 0.43rem; letter-spacing: 0.08em; text-transform: uppercase; color: #777067; }
+        .source-card p { font-size: 0.48rem; line-height: 1.45; color: #655f57; }
+        .source-action { margin-top: auto; display: flex; gap: 0.35rem; }
+        .source-action span { padding: 0.3rem 0.45rem; border: 1px solid rgba(23,20,15,0.13); border-radius: 2px; background: rgba(255,255,255,0.7); font-size: 0.42rem; color: #716a62; }
+        .draft-title { font-family: 'Newsreader', serif; font-size: 0.95rem; font-weight: 400; line-height: 1.2; margin-bottom: 0.7rem; }
+        .draft-line { height: 1px; background: rgba(23,20,15,0.12); margin: 0.42rem 0; }
+        .draft-line.short { width: 68%; }
+        .draft-copy { font-family: 'Newsreader', serif; font-size: 0.58rem; line-height: 1.7; color: #625c55; }
+        .saved-state { margin-top: auto; display: flex; align-items: center; gap: 0.35rem; padding-top: 0.7rem; border-top: 1px solid rgba(23,20,15,0.1); font-size: 0.42rem; color: #777067; }
+        .saved-state i { width: 5px; height: 5px; border-radius: 50%; background: #777067; }
+        .story-caption { padding: 0.8rem 0.2rem 0.2rem; }
+        .story-caption span { display: block; margin-bottom: 0.35rem; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); }
+        .story-caption strong { display: block; margin-bottom: 0.35rem; font-size: 0.78rem; font-weight: 500; }
+        .story-caption p { font-size: 0.67rem; line-height: 1.55; color: var(--text2); }
+
+        .surface-pair {
+            display: grid;
+            grid-template-columns: 1.35fr 0.65fr;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+        .surface-figure { min-width: 0; margin: 0; padding: 1rem; background: var(--bg); }
+        .surface-screen { min-height: 330px; border: 1px solid rgba(23,20,15,0.12); border-radius: 3px; overflow: hidden; background: #f1efe9; }
+        .surface-screen.family { background: #f7eee7; }
+        .surface-home { display: grid; grid-template-columns: 72px 1fr; min-height: 298px; }
+        .surface-side { padding: 0.8rem 0.55rem; border-right: 1px solid rgba(23,20,15,0.09); background: rgba(255,255,255,0.46); }
+        .surface-side b { display: block; margin-bottom: 1rem; font-family: 'Newsreader', serif; font-size: 0.62rem; font-weight: 400; }
+        .surface-side span { display: block; padding: 0.3rem 0; font-size: 0.41rem; color: #878076; }
+        .surface-side span.is-active { color: #272521; font-weight: 600; }
+        .surface-main { padding: 0.9rem; }
+        .surface-main h5 { margin-bottom: 0.65rem; font-family: 'Newsreader', serif; font-size: 0.9rem; font-weight: 400; }
+        .weekly-card { padding: 0.75rem; border: 1px solid rgba(23,20,15,0.1); background: rgba(255,255,255,0.78); }
+        .weekly-card small { display: block; margin-bottom: 0.35rem; font-size: 0.4rem; letter-spacing: 0.12em; text-transform: uppercase; color: #918a80; }
+        .weekly-card p { font-size: 0.52rem; line-height: 1.55; color: #625c55; }
+        .topic-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; margin-top: 0.5rem; }
+        .topic-row span { padding: 0.45rem 0.35rem; border: 1px solid rgba(23,20,15,0.09); background: rgba(255,255,255,0.5); font-size: 0.4rem; color: #797269; }
+        .family-body { padding: 1rem 0.85rem; }
+        .family-title { margin-bottom: 0.85rem; font-family: 'Newsreader', serif; font-size: 0.95rem; font-weight: 400; }
+        .status-card { margin-bottom: 0.55rem; padding: 0.75rem; border-radius: 8px; background: rgba(255,255,255,0.78); }
+        .status-card small { display: block; margin-bottom: 0.3rem; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; color: #a17961; }
+        .status-card p { font-size: 0.52rem; line-height: 1.5; color: #705b50; }
+        .public-note { padding: 0.65rem; border-top: 1px solid rgba(112,91,80,0.12); }
+        .public-note b { display: block; margin-bottom: 0.25rem; font-size: 0.5rem; font-weight: 500; color: #695348; }
+        .public-note p { font-size: 0.43rem; line-height: 1.45; color: #987d6f; }
+        .surface-caption { display: flex; justify-content: space-between; gap: 1rem; padding-top: 0.8rem; }
+        .surface-caption strong { font-size: 0.75rem; font-weight: 500; }
+        .surface-caption span { max-width: 260px; font-size: 0.6rem; line-height: 1.5; color: var(--text3); text-align: right; }
+
         @media (max-width: 900px) {
             .page-shell {
                 grid-template-columns: 1fr;
@@ -330,6 +479,22 @@
             .two-col { grid-template-columns: 1fr; }
             .flow-steps { flex-direction: column; }
             .flow-step::after { display: none; }
+            .case-brief { grid-template-columns: 1fr; }
+            .capability-grid { grid-template-columns: 1fr; }
+            .storyboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .surface-pair { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            #main-nav { padding: 0 0.9rem; }
+            .nav-back { gap: 0.25rem; font-size: 0.7rem; letter-spacing: 0.02em; }
+            .nav-title { font-size: 0.9rem; }
+            .evidence-heading { align-items: start; flex-direction: column; gap: 0.6rem; }
+            .evidence-heading p { text-align: left; }
+            .storyboard { grid-template-columns: 1fr; }
+            .story-screen { min-height: 340px; }
+            .surface-caption { flex-direction: column; }
+            .surface-caption span { text-align: left; }
         }
     </style>
 </head>
@@ -351,13 +516,13 @@
 
         <nav class="page-toc" id="page-toc" aria-label="Section contents">
             <a href="#overview"><span class="toc-num">01</span>Overview</a>
-            <a href="#friction"><span class="toc-num">02</span>The Friction</a>
-            <a href="#experiment"><span class="toc-num">03</span>The Experiment</a>
-            <a href="#modes"><span class="toc-num">04</span>Three Modes</a>
-            <a href="#anatomy"><span class="toc-num">05</span>Anatomy</a>
-            <a href="#changed"><span class="toc-num">06</span>What Changed</a>
-            <a href="#tensions"><span class="toc-num">07</span>Tensions</a>
-            <a href="#state"><span class="toc-num">08</span>Current State</a>
+            <a href="#friction"><span class="toc-num">02</span>Problem Framing</a>
+            <a href="#experiment"><span class="toc-num">03</span>Design Strategy</a>
+            <a href="#modes"><span class="toc-num">04</span>Experience Design</a>
+            <a href="#anatomy"><span class="toc-num">05</span>System Delivery</a>
+            <a href="#changed"><span class="toc-num">06</span>Outcome</a>
+            <a href="#tensions"><span class="toc-num">07</span>Risks &amp; Ethics</a>
+            <a href="#state"><span class="toc-num">08</span>Next Steps</a>
         </nav>
 
         <main class="page-content">
@@ -369,6 +534,24 @@
                 <p class="page-meta-line">Personal AI · Self-initiated Experiment · Local-first RAG · 2026</p>
                 <p class="page-abstract">I built a local-first AI system that turns my personal archive into a conversational space. It helps past experiences, unfinished ideas, and recurring concerns return to my present thinking — not by remembering for me, but by reducing the friction of reaching what I have already lived and thought.</p>
                 <a class="repo-link" href="https://github.com/zayyyseuc/personal-brain" target="_blank" rel="noopener noreferrer">GitHub — personal-brain →</a>
+
+                <div class="case-brief">
+                    <article class="case-brief-cell">
+                        <div class="cell-label">Challenge</div>
+                        <h3>Capture had succeeded. Retrieval had failed.</h3>
+                        <p>Years of notes remained available in theory, but folders and exact keywords made them difficult to reach from a present, half-formed question.</p>
+                    </article>
+                    <article class="case-brief-cell">
+                        <div class="cell-label">Strategic premise</div>
+                        <h3>AI should return evidence, not define identity.</h3>
+                        <p>The system uses semantic retrieval and visible sources to reconnect present questions with earlier traces while preserving the user's interpretive authority.</p>
+                    </article>
+                    <article class="case-brief-cell">
+                        <div class="cell-label">Delivered</div>
+                        <h3>A working personal knowledge product.</h3>
+                        <p>Semantic chat, weekly review, idea capture, persistent conversations, automatic indexing, and a separately governed family-facing PWA.</p>
+                    </article>
+                </div>
 
                 <div class="trace-scene" id="trace-scene">
                     <div class="trace-col trace-present">
@@ -404,8 +587,26 @@
 
             <section class="content-section" id="friction">
                 <div class="panel-intro">
-                    <h3>I had built an archive I could no longer reach.</h3>
-                    <p>Years of project notes, personal essays, and unfinished conversation records had accumulated in my Obsidian vault. The problem stopped being capture a long time ago — it became return.</p>
+                    <h3>Problem Framing</h3>
+                    <p>I had built an archive I could no longer reach. Years of project notes, personal essays, and unfinished conversation records had accumulated in my Obsidian vault. The problem stopped being capture a long time ago — it became return.</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-cell">
+                        <div class="cell-label">Evidence base</div>
+                        <div class="cell-title">A longitudinal personal archive</div>
+                        <p class="cell-body">Project records, reflections, unfinished writing, and conversation history exposed how ideas recur across different files and years.</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Observed breakdown</div>
+                        <div class="cell-title">The memory of a thought is not its filename</div>
+                        <p class="cell-body">What remained available was often a tension, mood, or decision pattern — exactly the material conventional folder and keyword search could not address.</p>
+                    </div>
+                    <div class="content-cell">
+                        <div class="cell-label">Design constraint</div>
+                        <div class="cell-title">Keep the archive inspectable</div>
+                        <p class="cell-body">AI could mediate access, but the source of record still needed to remain editable, portable, and legible outside the model.</p>
+                    </div>
                 </div>
 
                 <ul class="detail-list" style="margin-bottom: 2rem;">
@@ -422,8 +623,8 @@
 
             <section class="content-section" id="experiment">
                 <div class="panel-intro">
-                    <h3>Turning an archive into a conversational space</h3>
-                    <p>Second Person connects a local Obsidian vault to semantic retrieval and a language model. When I ask a question, it searches for conceptually relevant fragments across my archive, brings them into the current context, and helps me examine how my thinking has developed over time.</p>
+                    <h3>Design Strategy</h3>
+                    <p>Turn the archive into a conversational space without turning the model into an authority over the self. When I ask a question, Second Person retrieves conceptually relevant fragments, brings them into the current context, and helps me examine how my thinking has developed over time.</p>
                 </div>
 
                 <div class="flow-steps">
@@ -432,12 +633,18 @@
                     <div class="flow-step"><div class="step-num">03</div><div class="step-title">Reflect through dialogue</div><div class="step-body">The AI holds both, and I think against them.</div></div>
                     <div class="flow-step"><div class="step-num">04</div><div class="step-title">Return new meaning</div><div class="step-body">The conversation becomes a new trace in the archive.</div></div>
                 </div>
+
+                <div class="content-grid">
+                    <div class="content-cell"><div class="cell-label">Principle 01</div><div class="cell-title">Meaning over exact match</div><p class="cell-body">Let vague questions retrieve related experiences even when vocabulary, file location, and original phrasing have changed.</p></div>
+                    <div class="content-cell"><div class="cell-label">Principle 02</div><div class="cell-title">Traceability over fluent authority</div><p class="cell-body">Keep the source notes visible so a persuasive response can still be checked against the material it interpreted.</p></div>
+                    <div class="content-cell"><div class="cell-label">Principle 03</div><div class="cell-title">Return over passive storage</div><p class="cell-body">Design review, conversation, and idea-development loops that repeatedly bring unfinished material back into use.</p></div>
+                </div>
             </section>
 
             <section class="content-section" id="modes">
                 <div class="panel-intro">
-                    <h3>Three modes of self-communication</h3>
-                    <p>Not feature categories — three different reasons I return to the archive.</p>
+                    <h3>Experience Design</h3>
+                    <p>Three modes of self-communication — not feature categories, but three different reasons to return to the archive.</p>
                 </div>
 
                 <div class="content-grid">
@@ -469,12 +676,76 @@
                         </ul>
                     </div>
                 </div>
+
+                <div class="evidence-heading">
+                    <h4>A return journey, in use</h4>
+                    <p>Storyboard reconstructed from the working prototype with anonymized content. The sequence shows interaction behavior without exposing the private archive.</p>
+                </div>
+
+                <div class="storyboard" aria-label="Four-step product use storyboard">
+                    <figure class="story-frame">
+                        <div class="story-screen">
+                            <div class="screen-bar"><span>Personal Brain</span><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                            <div class="screen-body">
+                                <div class="screen-kicker">Lab · Unfinished</div>
+                                <div class="mini-nav"><span>Today</span><span class="is-active">Lab</span><span>Imaginations</span></div>
+                                <div class="lab-card">
+                                    <strong>When did “efficient” start to feel less personal?</strong>
+                                    <p>A half-formed tension is captured before it has a folder, title, or conclusion.</p>
+                                    <div class="mini-meta"><span>just now</span><span>open thread</span></div>
+                                </div>
+                                <span class="new-note" aria-hidden="true">+</span>
+                            </div>
+                        </div>
+                        <figcaption class="story-caption"><span>01 · Capture</span><strong>Keep the fragment alive</strong><p>I record the shape of the thought without first deciding where it belongs.</p></figcaption>
+                    </figure>
+
+                    <figure class="story-frame">
+                        <div class="story-screen">
+                            <div class="screen-bar"><span>Explore mode</span><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                            <div class="screen-body chat-window">
+                                <div class="screen-kicker">Conversation · New question</div>
+                                <div class="chat-bubble user">Have I thought about the tension between efficiency and emotional attachment before?</div>
+                                <div class="thinking"><i></i><i></i><i></i><span>retrieving related traces</span></div>
+                                <div class="chat-bubble ai">I found two earlier moments that seem to hold the same tension, although you framed it differently each time.</div>
+                            </div>
+                        </div>
+                        <figcaption class="story-caption"><span>02 · Ask</span><strong>Search in present language</strong><p>The question can stay vague; semantic retrieval bridges changes in wording and time.</p></figcaption>
+                    </figure>
+
+                    <figure class="story-frame">
+                        <div class="story-screen">
+                            <div class="screen-bar"><span>2 source traces</span><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                            <div class="screen-body">
+                                <div class="screen-kicker">Evidence behind the response</div>
+                                <div class="source-card"><b>Project note · 2024</b><p>Optimizing the interaction gradually removed the feeling that made me care about it.</p></div>
+                                <div class="source-card"><b>Weekly reflection · 2025</b><p>Perhaps the inconvenience was part of what made the experience feel personal.</p></div>
+                                <div class="source-action"><span>Open source</span><span>Continue conversation</span></div>
+                            </div>
+                        </div>
+                        <figcaption class="story-caption"><span>03 · Reconnect</span><strong>Inspect, do not just accept</strong><p>Past notes remain visible, so the interpretation can be checked against its source.</p></figcaption>
+                    </figure>
+
+                    <figure class="story-frame">
+                        <div class="story-screen">
+                            <div class="screen-bar"><span>Imaginations</span><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                            <div class="screen-body">
+                                <div class="screen-kicker">New draft · From conversation</div>
+                                <h5 class="draft-title">Friction as a form of attachment</h5>
+                                <p class="draft-copy">The question may not be how to remove every inconvenience, but which forms of effort create a relationship worth returning to.</p>
+                                <div class="draft-line"></div><div class="draft-line"></div><div class="draft-line short"></div>
+                                <div class="saved-state"><i></i><span>Saved to the archive · available to future retrieval</span></div>
+                            </div>
+                        </div>
+                        <figcaption class="story-caption"><span>04 · Continue</span><strong>Return a changed thought</strong><p>The dialogue becomes new writing, closing the loop without closing the question.</p></figcaption>
+                    </figure>
+                </div>
             </section>
 
             <section class="content-section" id="anatomy">
                 <div class="panel-intro">
-                    <h3>Anatomy of the system</h3>
-                    <p>What actually runs underneath the conversation.</p>
+                    <h3>System Delivery</h3>
+                    <p>The working architecture underneath the conversation, from the source vault to retrieval, response, and return.</p>
                 </div>
 
                 <div class="content-grid">
@@ -489,7 +760,7 @@
 
                 <div class="two-col">
                     <div>
-                        <h4 class="section-sub">Design Decisions</h4>
+                        <h4 class="section-sub">Implementation Decisions</h4>
                         <ul class="detail-list">
                             <li><strong style="color:var(--text)">Local-first storage</strong> — personal records stay in a vault I can inspect and manage myself</li>
                             <li><strong style="color:var(--text)">Semantic retrieval</strong> — relevant records surface without depending on exact keywords</li>
@@ -497,7 +768,7 @@
                         </ul>
                     </div>
                     <div>
-                        <h4 class="section-sub">&nbsp;</h4>
+                        <h4 class="section-sub">Boundary &amp; Governance Decisions</h4>
                         <ul class="detail-list">
                             <li><strong style="color:var(--text)">Visible sources</strong> — responses stay traceable to which personal traces the model was drawing from</li>
                             <li><strong style="color:var(--text)">Continuous indexing</strong> — new writing becomes reachable in future retrieval without a manual rebuild</li>
@@ -519,7 +790,60 @@
 
             <section class="content-section" id="changed">
                 <div class="panel-intro">
-                    <h3>The archive became something I could return to.</h3>
+                    <h3>Outcome</h3>
+                    <p>The archive became something I could return to. The current prototype demonstrates the full loop from retrieval to reflection, capture, and selective sharing.</p>
+                </div>
+
+                <div class="evidence-heading" style="margin-top:0;">
+                    <h4>One archive, two governed surfaces</h4>
+                    <p>Interface reconstruction based on the implemented desktop product and the separate family PWA.</p>
+                </div>
+
+                <div class="surface-pair">
+                    <figure class="surface-figure">
+                        <div class="surface-screen">
+                            <div class="screen-bar"><span>Private workspace</span><span>local-first archive</span></div>
+                            <div class="surface-home">
+                                <aside class="surface-side">
+                                    <b>Second Person</b>
+                                    <span class="is-active">Today</span>
+                                    <span>Conversations</span>
+                                    <span>Lab</span>
+                                    <span>Imaginations</span>
+                                </aside>
+                                <div class="surface-main">
+                                    <h5>This week, in return</h5>
+                                    <div class="weekly-card">
+                                        <small>Weekly review</small>
+                                        <p>Several notes returned to the same tension: when does removing friction improve an experience, and when does it remove attachment?</p>
+                                        <div class="topic-row"><span>interaction</span><span>attachment</span><span>memory</span></div>
+                                    </div>
+                                    <div class="topic-row"><span>Open question</span><span>Recent trace</span><span>Continue writing</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <figcaption class="surface-caption"><strong>Personal Brain</strong><span>Full archive, dialogue, review, and idea development.</span></figcaption>
+                    </figure>
+
+                    <figure class="surface-figure">
+                        <div class="surface-screen family">
+                            <div class="screen-bar"><span>Mom · PWA</span><span>public notes only</span></div>
+                            <div class="family-body">
+                                <h5 class="family-title">A small window home</h5>
+                                <div class="status-card"><small>Status</small><p>Busy this week, but making time to write and rest.</p></div>
+                                <div class="public-note"><b>Recently shared</b><p>A short update explicitly marked public in the source archive.</p></div>
+                                <div class="public-note"><b>Milestone</b><p>A selected moment, visible without exposing private notes or conversations.</p></div>
+                            </div>
+                        </div>
+                        <figcaption class="surface-caption"><strong>Family surface</strong><span>Separate index; explicit public boundary.</span></figcaption>
+                    </figure>
+                </div>
+
+                <div class="content-grid capability-grid">
+                    <div class="content-cell"><div class="cell-label">Working capability</div><div class="cell-title">Grounded semantic conversation</div><p class="cell-body">Questions retrieve up to five relevant note fragments, stream a response, and preserve the source paths used to construct it.</p></div>
+                    <div class="content-cell"><div class="cell-label">Working capability</div><div class="cell-title">Weekly reflection</div><p class="cell-body">Recently modified notes become a concise review, a set of recurring themes, and an open reflection question rather than a fixed judgment.</p></div>
+                    <div class="content-cell"><div class="cell-label">Working capability</div><div class="cell-title">Idea lifecycle</div><p class="cell-body">Fleeting thoughts enter Lab, develop through conversation, and can move into longer Imagination writing or the main archive.</p></div>
+                    <div class="content-cell"><div class="cell-label">Working capability</div><div class="cell-title">Selective family access</div><p class="cell-body">A separate PWA exposes only explicitly public notes through a separate index, alongside a status card, activity view, and milestones.</p></div>
                 </div>
 
                 <div class="content-grid" style="grid-template-columns: 1fr;">
@@ -547,8 +871,14 @@
 
             <section class="content-section" id="tensions">
                 <div class="panel-intro">
-                    <h3>Retrieval is also interpretation.</h3>
-                    <p>Similarity scores, chunking boundaries, and the model's own phrasing all shape which past traces get seen — and how they get connected. The system can't stand neutral to "the past." At least three tensions stay unresolved:</p>
+                    <h3>Risks, Ethics &amp; Trade-offs</h3>
+                    <p>Retrieval is also interpretation. Similarity scores, chunking boundaries, and the model's phrasing all shape which past traces get seen — and how they get connected. The system cannot stand neutral to “the past.”</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-cell"><div class="cell-label">Stored locally</div><div class="cell-title">User-owned records and runtime data</div><p class="cell-body">The Obsidian vault, vector indexes, conversation history, reminders, and review cache remain file-based and locally inspectable.</p></div>
+                    <div class="content-cell"><div class="cell-label">External computation</div><div class="cell-title">A local-first system, not a local-only model</div><p class="cell-body">Queries and selected context use hosted embedding and language-model APIs; optional web enrichment uses Tavily. That boundary must remain visible rather than hidden behind “local-first.”</p></div>
+                    <div class="content-cell"><div class="cell-label">Explicit sharing</div><div class="cell-title">Public means deliberately marked public</div><p class="cell-body">The family experience uses a separate vector index, includes only notes with <strong style="color:var(--text)">public: true</strong>, and excludes configured folders before indexing.</p></div>
                 </div>
 
                 <div class="content-grid">
@@ -571,13 +901,33 @@
 
             <section class="content-section" id="state">
                 <div class="panel-intro">
-                    <h3>Current State</h3>
+                    <h3>Current State &amp; Next Steps</h3>
                     <p>A functional personal prototype connected to my active Obsidian vault. The system supports semantic conversation, weekly reflection, idea development, persistent dialogue, automatic indexing, and selective family-facing access.</p>
                 </div>
 
-                <p style="font-size:0.875rem;line-height:1.85;color:var(--text2);max-width:680px;margin-bottom:2rem;">The live system contains private personal material and is therefore not publicly accessible. This page uses interface recordings and anonymized interaction examples instead.</p>
+                <p style="font-size:0.875rem;line-height:1.85;color:var(--text2);max-width:680px;margin-bottom:2rem;">The live system contains private personal material and is therefore not publicly accessible. This page uses anonymized interface reconstructions and interaction examples instead.</p>
 
                 <a class="repo-link" href="https://github.com/zayyyseuc/personal-brain" target="_blank" rel="noopener noreferrer" style="margin-bottom: 2.5rem; display: inline-flex;">GitHub — personal-brain →</a>
+
+                <div class="two-col">
+                    <div>
+                        <h4 class="section-sub">What is proven</h4>
+                        <ul class="detail-list">
+                            <li>The end-to-end retrieval, streaming response, source display, capture, and re-indexing loop is implemented</li>
+                            <li>The product works across desktop and mobile, with a separate installable family PWA</li>
+                            <li>Privacy boundaries are encoded in the indexing architecture rather than left to interface copy alone</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="section-sub">What needs validation</h4>
+                        <ul class="detail-list">
+                            <li>Evaluate retrieval quality across vague, contradictory, and time-dependent questions</li>
+                            <li>Test whether visible sources actually help users challenge confident but incomplete interpretations</li>
+                            <li>Study whether repeated AI-mediated recall strengthens reflection or gradually narrows it</li>
+                            <li>Threat-model the external model boundary and make context transmission more legible in-product</li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="quote-block" style="margin-top: 1rem;">
                     <p class="quote-text">The goal is not frictionless memory. It is meaningful re-encounter.</p>

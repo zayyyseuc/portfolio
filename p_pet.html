@@ -129,7 +129,19 @@
         }
 
         .panel-intro { max-width: 680px; margin-bottom: 2.5rem; }
+        .panel-intro h3 { font-family: 'Newsreader', serif; font-size: 1.75rem; font-weight: 300; margin-bottom: 1rem; color: var(--text); }
         .panel-intro p { font-size: 0.875rem; line-height: 1.85; color: var(--text2); }
+
+        .case-brief {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr 1fr;
+            gap: 1px;
+            border: 1px solid var(--border);
+            background: var(--border);
+        }
+        .case-brief-cell { background: var(--bg); padding: 1.4rem 1.5rem; }
+        .case-brief-cell h4 { font-size: 0.9rem; font-weight: 500; line-height: 1.35; color: var(--text); margin: 0.45rem 0 0.65rem; }
+        .case-brief-cell p { font-size: 0.76rem; line-height: 1.7; color: var(--text2); }
 
         ul.detail-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
         ul.detail-list li { font-size: 0.8125rem; line-height: 1.65; color: var(--text2); padding-left: 1.25rem; position: relative; }
@@ -514,6 +526,7 @@
                 border-bottom: 2px solid transparent;
             }
             .page-toc a.active { border-left-color: transparent; border-bottom-color: var(--accent); }
+            .case-brief { grid-template-columns: 1fr; }
 
             .content-section { padding: 2.5rem 0; }
             .two-col { grid-template-columns: 1fr; gap: 2rem; }
@@ -559,18 +572,44 @@
     <div class="page-shell">
 
         <nav class="page-toc" id="page-toc" aria-label="Section contents">
-            <a href="#research"><span class="toc-num">01</span>Research</a>
-            <a href="#storyboard"><span class="toc-num">02</span>Storyboard</a>
-            <a href="#system"><span class="toc-num">03</span>System</a>
-            <a href="#hardware"><span class="toc-num">04</span>Hardware</a>
-            <a href="#reflection"><span class="toc-num">05</span>Reflection</a>
+            <a href="#overview"><span class="toc-num">01</span>Overview</a>
+            <a href="#research"><span class="toc-num">02</span>Research Evidence</a>
+            <a href="#storyboard"><span class="toc-num">03</span>Experience Strategy</a>
+            <a href="#system"><span class="toc-num">04</span>System Strategy</a>
+            <a href="#hardware"><span class="toc-num">05</span>Delivery</a>
+            <a href="#reflection"><span class="toc-num">06</span>Learning</a>
         </nav>
 
         <main class="page-content">
 
+            <section class="content-section" id="overview">
+                <div class="panel-intro">
+                    <h3>Project Overview</h3>
+                    <p>Pet Space explores how remote pet presence can support people through stressful workdays without turning the home into a surveillance feed. The response is a calm, distributed sensing system that communicates reassurance rather than footage.</p>
+                </div>
+                <div class="case-brief">
+                    <article class="case-brief-cell">
+                        <span class="meta-label">Challenge</span>
+                        <h4>Distance removes the quiet comfort pets provide.</h4>
+                        <p>Existing pet technology optimizes tracking, feeding, and monitoring. The opportunity was to design for companionship itself.</p>
+                    </article>
+                    <article class="case-brief-cell">
+                        <span class="meta-label">Strategic premise</span>
+                        <h4>Presence should be felt, not watched.</h4>
+                        <p>Calm Technology and affective-presence research set a boundary: enough signal to reassure, without demanding attention or exposing a camera feed.</p>
+                    </article>
+                    <article class="case-brief-cell">
+                        <span class="meta-label">Delivered</span>
+                        <h4>A three-module working system.</h4>
+                        <p>Infrared and radar nodes detect activity, an ESP32-C3 gateway relays it, and a portable terminal turns it into a low-attention cue.</p>
+                    </article>
+                </div>
+            </section>
+
             <section class="content-section research" id="research">
                 <div class="research-top">
                     <div class="research-statement">
+                        <div class="section-label">Research Evidence</div>
                         <h2>Pets offer quiet, non-task-oriented comfort.</h2>
                         <p>Distance breaks it.</p>
                     </div>
@@ -607,7 +646,7 @@
 
             <section class="content-section storyboard" id="storyboard">
                 <div class="storyboard-header">
-                    <div class="section-label">User Journey</div>
+                    <div class="section-label">Experience Strategy</div>
                     <h2 class="section-title">From exhausted to connected.</h2>
                 </div>
 
@@ -719,7 +758,7 @@
 
             <section class="content-section system" id="system">
                 <div class="system-header">
-                    <div class="section-label">System Architecture</div>
+                    <div class="section-label">System Strategy</div>
                     <h2 class="section-title">Three modules. One calm moment.</h2>
                 </div>
 
@@ -786,7 +825,7 @@
 
             <section class="content-section hardware hardware-section" id="hardware">
                 <div class="hardware-header">
-                    <div class="section-label">Built &amp; Tested</div>
+                    <div class="section-label">Delivery</div>
                     <h2 class="section-title">Hardware that makes the experience real.</h2>
                 </div>
 
@@ -822,7 +861,7 @@
 
             <section class="content-section" id="reflection">
                 <div class="panel-intro">
-                    <h3 style="font-family:'Newsreader',serif;font-size:1.75rem;font-weight:300;margin-bottom:1rem;color:var(--text);">Reflection</h3>
+                    <h3>Learning &amp; Next Steps</h3>
                     <p>The system deliberately reports presence, not footage — distributed infrared and radar sensing means a pet owner feels their pet is there without a camera pointed at the animal, or at their own home. That restraint is the design; whether it's still reassuring enough in practice is the open question.</p>
                 </div>
 

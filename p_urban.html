@@ -260,6 +260,12 @@
         .tab-btn:hover { color: var(--text2); }
         .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
 
+        @media (max-width: 760px) {
+            .tab-bar { overflow-x: auto; scrollbar-width: none; }
+            .tab-bar::-webkit-scrollbar { display: none; }
+            .tab-btn { flex: 0 0 auto; min-width: 8.75rem; white-space: nowrap; }
+        }
+
         .tab-panels { flex: 1; overflow: hidden; position: relative; }
         .tab-panel {
             position: absolute; inset: 0; overflow-y: auto;
@@ -1037,15 +1043,47 @@
     <section class="detail" id="detail">
 
         <div class="tab-bar">
-            <button class="tab-btn active" onclick="switchTab('research', this)">Research</button>
-            <button class="tab-btn" onclick="switchTab('strategy', this)">Strategy</button>
-            <button class="tab-btn" onclick="switchTab('tech', this)">Technical Implementation</button>
-            <button class="tab-btn" onclick="switchTab('deployment', this)">Deployment</button>
+            <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
+            <button class="tab-btn" onclick="switchTab('research', this)">Research Evidence</button>
+            <button class="tab-btn" onclick="switchTab('strategy', this)">Model Strategy</button>
+            <button class="tab-btn" onclick="switchTab('tech', this)">Delivery</button>
+            <button class="tab-btn" onclick="switchTab('deployment', this)">Field Validation</button>
         </div>
 
         <div class="tab-panels">
 
-            <div class="tab-panel active" id="panel-research" style="display: flex; flex-direction: column; height: 100%; box-sizing: border-box;">
+            <div class="tab-panel active" id="panel-overview">
+                <div class="panel-intro">
+                    <h3>Project Overview</h3>
+                    <p>Urban Mirage asks whether an apparently complete district is actually socially alive. The project reframes urban vacancy as a multisensory classification problem, then carries that hypothesis from proxy-data framing through multimodal model design to a battery-powered field prototype.</p>
+                </div>
+
+                <div class="content-grid">
+                    <article class="content-cell">
+                        <div class="cell-label">Problem framing</div>
+                        <div class="cell-title">Built density is not social vitality.</div>
+                        <p class="cell-body">Visual documentation can register finished roads and illuminated towers while missing the rhythms that make a place inhabited. The useful question became: what evidence of everyday life remains at street level?</p>
+                    </article>
+                    <article class="content-cell">
+                        <div class="cell-label">Strategic choice</div>
+                        <div class="cell-title">Combine complementary signals.</div>
+                        <p class="cell-body">Images capture spatial structure; audio captures temporal activity. A systematic weight sweep tested where their fusion was stronger and more stable than either modality alone.</p>
+                    </article>
+                    <article class="content-cell">
+                        <div class="cell-label">Delivered</div>
+                        <div class="cell-title">A field-deployable sensing system.</div>
+                        <p class="cell-body">The model was translated into synchronized image and acoustic acquisition modules with an onboard display and a compact battery-powered enclosure for in-situ use.</p>
+                    </article>
+                </div>
+
+                <div class="stat-row">
+                    <div class="stat"><div class="stat-value">2<span>×</span></div><div class="stat-desc">Complementary modalities: spatial image evidence and temporal acoustic evidence.</div></div>
+                    <div class="stat"><div class="stat-value">11<span>×</span></div><div class="stat-desc">Fusion-weight settings tested to expose performance sensitivity rather than report a single lucky run.</div></div>
+                    <div class="stat"><div class="stat-value">76.7<span>%</span></div><div class="stat-desc">In-situ accuracy from the selected multimodal operating point.</div></div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="panel-research" style="display: flex; flex-direction: column; height: 100%; box-sizing: border-box;">
 
                 <!-- 顶部：标题 + 两句话背景 -->
                 <div style="margin-bottom: 2rem; max-width: 720px;">

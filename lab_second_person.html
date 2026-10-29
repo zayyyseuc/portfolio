@@ -23,7 +23,7 @@
         }
 
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; max-width: 100%; }
 
         #main-nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -250,7 +250,7 @@
             .trace-col.trace-present, .trace-col.trace-archive { padding: 0; }
             .trace-path { min-height: 42px; }
             .trace-path::before { top: 0; bottom: 0; left: 50%; right: auto; width: 1px; height: auto; background: linear-gradient(180deg, var(--border2) 0%, var(--border) 50%, var(--border2) 100%); }
-            .trace-path-label { bottom: auto; top: 50%; left: 100%; transform: translateY(-50%); margin-left: 0.6rem; }
+            .trace-path-label { bottom: auto; top: 50%; left: calc(50% + 0.7rem); transform: translateY(-50%); margin-left: 0; }
             .trace-dot { left: 50%; margin-left: -3px; top: 100%; margin-top: -3px; }
 
             @media (prefers-reduced-motion: no-preference) {
@@ -457,6 +457,8 @@
                 grid-template-columns: 1fr;
                 gap: 0;
                 padding: calc(var(--nav-h) + 1.25rem) 1.25rem 4.5rem;
+                width: 100%;
+                max-width: 100%;
             }
             .page-toc {
                 position: sticky;
@@ -464,35 +466,76 @@
                 z-index: 20;
                 flex-direction: row;
                 overflow-x: auto;
-                gap: 1.4rem;
+                overflow-y: hidden;
+                gap: 0.55rem;
                 background: var(--bg);
                 border-bottom: 1px solid var(--border);
-                padding: 0.9rem 0 1rem;
+                padding: 0.8rem 0 0.9rem;
                 margin-bottom: 2rem;
                 -ms-overflow-style: none; scrollbar-width: none;
+                scroll-snap-type: x proximity;
+                overscroll-behavior-x: contain;
             }
             .page-toc::-webkit-scrollbar { display: none; }
-            .page-toc a { flex-shrink: 0; padding: 0.2rem 0 0.6rem; border-left: none; border-bottom: 2px solid transparent; }
+            .page-toc a {
+                flex-shrink: 0;
+                padding: 0.3rem 0.55rem 0.6rem;
+                border-left: none;
+                border-bottom: 2px solid transparent;
+                scroll-snap-align: center;
+            }
             .page-toc a.active { border-left-color: transparent; border-bottom-color: var(--accent); }
 
-            .content-section { padding: 2.5rem 0; }
+            .content-section {
+                padding: 2.5rem 0;
+                scroll-margin-top: calc(var(--nav-h) + 4rem);
+            }
+            .page-content, .content-section { width: 100%; min-width: 0; }
             .two-col { grid-template-columns: 1fr; }
             .flow-steps { flex-direction: column; }
             .flow-step::after { display: none; }
             .case-brief { grid-template-columns: 1fr; }
             .capability-grid { grid-template-columns: 1fr; }
+            .content-grid { grid-template-columns: minmax(0, 1fr); }
             .storyboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .surface-pair { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 480px) {
+            :root { --nav-h: 62px; }
             #main-nav { padding: 0 0.9rem; }
             .nav-back { gap: 0.25rem; font-size: 0.7rem; letter-spacing: 0.02em; }
             .nav-title { font-size: 0.9rem; }
+            .page-shell { padding: calc(var(--nav-h) + 0.75rem) 1rem 3.5rem; }
+            .page-toc { margin: 0 -1rem 1.75rem; padding-inline: 0.45rem; }
+            .page-toc a { font-size: 0.62rem; padding-inline: 0.45rem; }
+            .content-section { padding: 2.25rem 0; }
+            .page-title { font-size: 2.35rem; }
+            .page-subtitle { font-size: 1rem; }
+            .page-abstract, .panel-intro p { font-size: 0.85rem; line-height: 1.78; }
+            .panel-intro { margin-bottom: 2rem; }
+            .case-brief-cell, .content-cell { padding: 1.3rem; }
+            .trace-scene { margin-top: 2rem; padding: 1.15rem; }
+            .trace-path-label { font-size: 0.52rem; letter-spacing: 0.1em; }
             .evidence-heading { align-items: start; flex-direction: column; gap: 0.6rem; }
             .evidence-heading p { text-align: left; }
             .storyboard { grid-template-columns: 1fr; }
-            .story-screen { min-height: 340px; }
+            .story-frame { padding: 0.6rem; }
+            .story-screen { min-height: 300px; }
+            .screen-bar, .screen-kicker { font-size: 0.52rem; }
+            .mini-nav span { font-size: 0.5rem; }
+            .lab-card strong { font-size: 0.86rem; }
+            .lab-card p, .chat-bubble { font-size: 0.6rem; }
+            .thinking, .source-card b, .source-action span, .saved-state { font-size: 0.49rem; }
+            .source-card p, .draft-copy { font-size: 0.56rem; }
+            .story-caption p { font-size: 0.72rem; }
+            .surface-figure { padding: 0.65rem; }
+            .surface-screen { min-height: 292px; }
+            .surface-home { grid-template-columns: 62px 1fr; min-height: 260px; }
+            .surface-side { padding-inline: 0.45rem; }
+            .surface-main { padding: 0.7rem; }
+            .weekly-card { padding: 0.6rem; }
+            .topic-row { grid-template-columns: 1fr; }
             .surface-caption { flex-direction: column; }
             .surface-caption span { text-align: left; }
         }
@@ -940,9 +983,24 @@
     <script>
         const sections = Array.from(document.querySelectorAll('.content-section'));
         const tocLinks = Array.from(document.querySelectorAll('.page-toc a'));
+        const pageToc = document.getElementById('page-toc');
+        let activeSectionId = '';
 
         const setActive = (id) => {
             tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+            if (id === activeSectionId) return;
+            activeSectionId = id;
+
+            if (pageToc && window.matchMedia('(max-width: 900px)').matches) {
+                const activeLink = tocLinks.find(a => a.getAttribute('href') === '#' + id);
+                if (activeLink) {
+                    const targetLeft = activeLink.offsetLeft - (pageToc.clientWidth - activeLink.offsetWidth) / 2;
+                    pageToc.scrollTo({
+                        left: Math.max(0, targetLeft),
+                        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+                    });
+                }
+            }
         };
 
         if ('IntersectionObserver' in window && sections.length) {

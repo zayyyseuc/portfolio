@@ -799,291 +799,74 @@
         .skill-list { list-style: none; display: flex; flex-wrap: wrap; gap: 0.75rem; }
         .skill-list li { padding: 0.625rem 1.125rem; background: var(--bg-secondary); border-radius: 20px; font-size: 0.9375rem; color: var(--text-secondary); border: 1px solid var(--border); }
 
-        /* --- Design Lab Section --- */
+        /* --- Lab: four collections, image-only square covers --- */
         .lab-section {
-            /* 1. 强制一屏高度 (与 Projects 保持一致) */
             height: 100vh;
-            /* 顶部避开导航栏，底部留白 */
-            padding: 120px 4rem 40px 4rem;
+            height: 100svh;
+            min-height: 560px;
+            padding: 88px 4rem 3rem;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
         }
-
-        /* 复用 projects-container 的样式，但确保它在 Lab 里也生效 */
-        .lab-section .projects-container {
-            width: 100%;
-            height: 100%;
-            max-width: 1600px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        .lab-section .section-title {
-            text-align: center;
-            margin-bottom: 2rem;
-            flex-shrink: 0; /* 防止标题被压缩 */
-        }
-
-        .lab-grid {
-            width: 100%;
-            /* 2. 关键：让网格自动填满剩余的所有高度 */
-            flex: 1; 
+        .lab-section .projects-container { width: 100%; max-width: 1600px; margin: 0 auto; }
+        .lab-section .section-title { text-align: center; margin-bottom: 3rem; }
+        .lab-collections {
+            --tile: min(calc((100vw - 8rem - 6.75rem) / 4), calc(100svh - 300px));
             display: grid;
-            /* 3. 完美拼图数学：4列 x 3行 */
-            grid-template-columns: repeat(8, 1fr);
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 0.75rem;
+            grid-template-columns: repeat(4, var(--tile));
+            justify-content: center;
+            gap: 2.25rem;
         }
-
-        .lab-card {
-            position: relative;
+        .lab-collection { display: block; color: inherit; text-decoration: none; }
+        .lab-collection-cover {
             display: block;
-            background: white;
-            border-radius: 0;
+            aspect-ratio: 1 / 1;
             overflow: hidden;
-            cursor: pointer;
-            color: inherit;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            /* 确保有内容或没内容都能撑开 */
+            background: #f5f3f0;
+            border: 1px solid rgba(23, 20, 15, 0.06);
+            border-radius: 2px;
+        }
+        .lab-collection-cover { position: relative; }
+        .lab-stack, .lab-stack img { position: absolute; inset: 0; }
+        .lab-stack { z-index: 0; }
+        .lab-collection-cover > img { position: relative; z-index: 1; }
+        .lab-collection-cover img {
             width: 100%;
             height: 100%;
-        }
-
-        /* Blueprint corner ticks, replacing the rounded-corner treatment */
-        .lab-card::before,
-        .lab-card::after {
-            content: "";
-            position: absolute;
-            width: 13px;
-            height: 13px;
-            z-index: 2;
-            pointer-events: none;
-        }
-        .lab-card::before {
-            top: 10px;
-            left: 10px;
-            border-top: 1.5px solid rgba(23, 20, 15, 0.55);
-            border-left: 1.5px solid rgba(23, 20, 15, 0.55);
-        }
-        .lab-card::after {
-            bottom: 10px;
-            right: 10px;
-            border-bottom: 1.5px solid rgba(23, 20, 15, 0.55);
-            border-right: 1.5px solid rgba(23, 20, 15, 0.55);
-        }
-        .lab-card:nth-child(1)::before, .lab-card:nth-child(1)::after,
-        .lab-card:nth-child(4)::before, .lab-card:nth-child(4)::after {
-            border-color: rgba(255, 255, 255, 0.7);
-        }
-
-      
-        /* Row 1 */
-        .lab-card:nth-child(1) { grid-column: span 4; } /* 宽 */
-        .lab-card:nth-child(2) { grid-column: span 2; } /* 普通 */
-        .lab-card:nth-child(3) { grid-column: span 2; } /* 普通 */
-
-        /* Row 2 */
-        .lab-card:nth-child(4) { grid-column: span 5; } /* 超宽 */
-        .lab-card:nth-child(5) { grid-column: span 3; } /* 普通 */
-
-        /* Row 3 */
-        .lab-card:nth-child(6) { grid-column: span 2; } /* 宽 */
-        .lab-card:nth-child(7) { grid-column: span 6; } /* 宽 */
-
-
-        /* --- 占位图与渐变色 --- */
-        .lab-card-placeholder {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            transition: transform 0.5s ease;
-        }
-        .lab-card:hover .lab-card-placeholder { transform: scale(1.05); }
-
-        /* Design Lab filler studies */
-        .lab-card:nth-child(1) .lab-card-placeholder { background: #111827; }
-        .lab-card:nth-child(2) .lab-card-placeholder {
-            background:
-                linear-gradient(135deg, rgba(255, 255, 255, 0.76), transparent 48%),
-                repeating-linear-gradient(90deg, rgba(24, 24, 24, 0.055) 0 1px, transparent 1px 24px),
-                linear-gradient(145deg, #fbfaf7 0%, #eeeae2 100%);
-        }
-        .lab-card:nth-child(3) .lab-card-placeholder {
-            background:
-                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.42) 0 1px, transparent 1px 18px),
-                linear-gradient(135deg, #edf1f2 0%, #d5dddf 58%, #b9c5c7 100%);
-        }
-        .lab-card:nth-child(4) .lab-card-placeholder {
-            background:
-                linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 100%),
-                linear-gradient(135deg, #111111 0%, #242424 58%, #4a4a4a 100%);
-            background-size: 84px 100%, auto;
-        }
-        .lab-card:nth-child(5) .lab-card-placeholder {
-            background:
-                repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.38) 0 1px, transparent 1px 16px),
-                linear-gradient(135deg, #f4f5f2 0%, #dfe5df 52%, #c8d1c8 100%);
-        }
-        .lab-card:nth-child(6) .lab-card-placeholder {
-            background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 52%),
-                repeating-linear-gradient(90deg, transparent 0 18px, rgba(18, 24, 30, 0.06) 18px 19px),
-                linear-gradient(135deg, #f6f7f7 0%, #e4e8ea 52%, #cdd4d8 100%);
-        }
-        .lab-card:nth-child(7) .lab-card-placeholder {
-            background:
-                linear-gradient(120deg, rgba(255, 255, 255, 0.72) 0 28%, transparent 28% 100%),
-                repeating-linear-gradient(0deg, rgba(27, 24, 20, 0.045) 0 1px, transparent 1px 26px),
-                linear-gradient(135deg, #fbfaf6 0%, #eee8dc 55%, #ddd5c8 100%);
-        }
-
-
-        .lab-card:nth-child(1) .brain-mom-preview {
-            position: relative;
-            overflow: hidden;
-            color: #f5f4ee;
-            background:
-                linear-gradient(120deg, rgba(11, 16, 29, 0.98), rgba(34, 42, 57, 0.74)),
-                repeating-linear-gradient(90deg, #101625 0 1px, #182235 1px 86px);
-        }
-
-        /* Archive rail — accumulated notes feeding into the dialogue */
-        .archive-rail {
-            position: absolute;
-            top: 16%;
-            bottom: 16%;
-            left: clamp(18px, 4vw, 40px);
-            width: min(16%, 84px);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .archive-rail span {
-            height: 1px;
-            background: rgba(245, 244, 238, 0.22);
-            position: relative;
-        }
-        .archive-rail span::before {
-            content: "";
-            position: absolute;
-            left: 0; top: -2.5px;
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            background: rgba(198, 242, 121, 0.55);
-        }
-        .archive-rail span:nth-child(2) { width: 72%; }
-        .archive-rail span:nth-child(4) { width: 55%; }
-        .archive-rail span:nth-child(6) { width: 84%; }
-
-        .lab-mini-phone {
-            position: absolute;
-            top: 12%;
-            right: clamp(24px, 8vw, 90px);
-            width: min(38%, 208px);
-            height: 76%;
-            border: 1px solid rgba(255, 255, 255, 0.26);
-            border-radius: 20px;
-            background: #fff;
-            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
-        }
-
-        .lab-mini-phone::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 34%;
-            width: 32%;
-            height: 8%;
-            border-radius: 0 0 10px 10px;
-            background: #121418;
-        }
-
-        .lab-mini-screen {
-            position: absolute;
-            inset: 14% 9% 9%;
-            display: flex;
-            flex-direction: column;
-            gap: 9px;
-        }
-
-        .lab-mini-line {
-            height: 8px;
-            border-radius: 999px;
-            background: #e8ebf2;
-            width: 100%;
-        }
-
-        .lab-mini-line.query {
-            align-self: flex-end;
-            width: 48%;
-            background: #cfd6e6;
-        }
-
-        .lab-mini-line.response {
-            align-self: flex-start;
-            width: 82%;
-            height: 20px;
-            border-radius: 10px;
-            background: #13192c;
-        }
-
-        .brain-mom-caption {
-            position: absolute;
-            left: clamp(18px, 3vw, 34px);
-            bottom: clamp(18px, 3vh, 30px);
-            z-index: 1;
-            max-width: 42%;
-        }
-
-        .brain-mom-caption b {
+            object-fit: cover;
             display: block;
-            font-size: clamp(1.15rem, 2vw, 2rem);
-            line-height: 1.1;
+            transition: transform 0.6s ease;
         }
-
-        .brain-mom-caption span {
+        .lab-collection:hover .lab-collection-cover img,
+        .lab-collection:focus-visible .lab-collection-cover img { transform: scale(1.03); }
+        .lab-collection-label {
             display: block;
-            margin-top: 8px;
-            color: rgba(245, 244, 238, 0.66);
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
+            margin-top: 0.85rem;
+            font-size: 0.95rem;
+            font-weight: 600;
         }
-
-        /* --- 遮罩层 --- */
-        .lab-overlay {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            padding: 1.5rem;
-            color: white;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            display: flex; align-items: flex-end;
-        }
-        .lab-card:hover .lab-overlay { opacity: 1; transform: translateY(0); }
-
-        /* --- 移动端适配 --- */
         @media (max-width: 1024px) {
-            .lab-section { height: auto; padding: 6rem 2rem; }
-            .lab-grid {
-                display: flex;
-                flex-direction: column; /* 手机上变成垂直排列 */
-                gap: 1.5rem;
-            }
-            .lab-card { 
-                height: 250px; 
-                grid-column: span 1 !important; /* 强制取消所有 grid 跨度 */
-            }
+            .lab-section { padding: 88px 2rem 2rem; }
+            .lab-collections { --tile: min(calc((100vw - 4rem - 3.75rem) / 4), calc(100svh - 280px)); gap: 1.25rem; }
+        }
+        @media (max-width: 900px) {
+            .lab-collections { --tile: min(calc((100vw - 4.75rem) / 2), calc((100svh - 300px) / 2)); grid-template-columns: repeat(2, var(--tile)); gap: 1rem 0.75rem; }
+        }
+        @media (max-width: 640px) {
+            .lab-collection-label { font-size: 0.85rem; margin-top: 0.5rem; }
         }
 
-        
+
+        /* Cover → collection: the stacked covers fan out into the grid (cross-document View Transition) */
+        @view-transition { navigation: auto; }
+        ::view-transition-group(*) { animation-duration: 0.7s; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
+        ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.35s; }
+        ::view-transition-group(lab-tile-2) { animation-delay: 0.05s; }
+        ::view-transition-group(lab-tile-3) { animation-delay: 0.1s; }
+        ::view-transition-group(lab-tile-4) { animation-delay: 0.15s; }
+        @media (prefers-reduced-motion: reduce) { ::view-transition-group(*) { animation-duration: 0.01s; } }
 
         /* --- 动画 --- */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
@@ -1686,57 +1469,7 @@
                 margin-left: 0;
             }
 
-            .lab-section {
-                height: auto;
-                padding: 5rem 1.25rem 2.5rem;
-                overflow: visible;
-                overflow-x: hidden;
-                width: 100%;
-                min-width: 0;
-            }
-
-            .lab-section .section-title {
-                margin-bottom: 1.4rem;
-                font-size: clamp(2rem, 12vw, 3rem);
-                line-height: 1.05;
-                overflow-wrap: anywhere;
-            }
-
-            .lab-grid {
-                display: grid;
-                grid-template-columns: 1fr;
-                grid-auto-rows: auto;
-                gap: 1rem;
-                overflow: visible;
-                min-width: 0;
-            }
-
-            .lab-section .projects-container {
-                min-width: 0;
-            }
-
-            .lab-card,
-            .lab-card:nth-child(n) {
-                grid-column: auto;
-                height: auto;
-                min-height: 180px;
-                width: 100%;
-            }
-
-            .lab-card-placeholder {
-                min-height: 180px;
-                height: 100%;
-                width: 100%;
-            }
-
-            .lab-overlay {
-                opacity: 1;
-                transform: none;
-                padding: 1rem;
-                box-sizing: border-box;
-                min-height: 72px;
-                overflow-wrap: anywhere;
-            }
+            .lab-section { padding: 5rem 1rem 2.5rem; }
 
             footer {
                 padding: 1.5rem 1rem;
@@ -1902,57 +1635,23 @@
         <div class="projects-container">
             <h2 class="section-title" style="text-align: center;">Research &amp; Explorations</h2>
             
-            <div class="lab-grid">
-                <a href="lab_second_person.html" class="lab-card">
-                    <div class="lab-card-placeholder brain-mom-preview">
-                        <div class="brain-mom-caption">
-                            <b>Second Person</b>
-                            <span>Turning a personal archive into a space for dialogue, reflection, and return.</span>
-                        </div>
-                        <div class="archive-rail" aria-hidden="true">
-                            <span></span><span></span><span></span><span></span><span></span><span></span>
-                        </div>
-                        <div class="lab-mini-phone">
-                            <div class="lab-mini-screen">
-                                <span class="lab-mini-line query"></span>
-                                <span class="lab-mini-line response"></span>
-                                <span class="lab-mini-line query"></span>
-                                <span class="lab-mini-line response"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lab-overlay"><span>Second Person</span></div>
+            <div class="lab-collections">
+                <a class="lab-collection" href="lab_sensing.html">
+                    <span class="lab-collection-cover"><span class="lab-stack" aria-hidden="true"><img src="images/lab/above-glow.jpg" alt="" loading="lazy" style="object-position:center"><img src="images/lab/pet-space.jpg" alt="" loading="lazy" style="object-position:35% center"><img src="images/lab/urban-mirage.jpg" alt="" loading="lazy" style="object-position:center"></span><img src="images/lab/silent-signal.jpg" alt="" loading="lazy" style="object-position:center"></span>
+                    <span class="lab-collection-label">Sensing &amp; Calm Tech</span>
                 </a>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Material Test</span></div>
-                </div>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Sketch</span></div>
-                </div>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Concept Art</span></div>
-                </div>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Icon</span></div>
-                </div>
-                
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>3D Render</span></div>
-                </div>
-
-                <div class="lab-card">
-                    <div class="lab-card-placeholder"></div>
-                    <div class="lab-overlay"><span>Photography</span></div>
-                </div>
+                <a class="lab-collection" href="lab_kinetic.html">
+                    <span class="lab-collection-cover"><span class="lab-stack" aria-hidden="true"><img src="images/lab/ring-hand.jpg" alt="" loading="lazy" style="object-position:center"></span><img src="images/lab/gears-final.jpg" alt="" loading="lazy" style="object-position:center"></span>
+                    <span class="lab-collection-label">Kinetic Objects</span>
+                </a>
+                <a class="lab-collection" href="lab_ai.html">
+                    <span class="lab-collection-cover"><span class="lab-stack" aria-hidden="true"><img src="images/lab/second-person.jpg" alt="" loading="lazy" style="object-position:center"></span><img src="images/lab/minime-vending.jpg" alt="" loading="lazy" style="object-position:center 15%"></span>
+                    <span class="lab-collection-label">AI &amp; the Self</span>
+                </a>
+                <a class="lab-collection" href="lab_perception.html">
+                    <span class="lab-collection-cover"><span class="lab-stack" aria-hidden="true"><img src="images/lab/cubik.jpg" alt="" loading="lazy" style="object-position:center"><img src="images/lab/cymatica-app.jpg" alt="" loading="lazy" style="object-position:22% center"></span><img src="images/lab/forest.jpg" alt="" loading="lazy" style="object-position:center"></span>
+                    <span class="lab-collection-label">Perception &amp; Space</span>
+                </a>
             </div>
         </div>
     </section>
@@ -2327,8 +2026,8 @@
                 projectMeta: ['Type', 'Focus', 'Time'],
                 externalLink: { github: 'GitHub repository', youtube: 'YouTube video', none: 'No external link for this project' },
                 labHeading: 'Research & Explorations',
+                labCollections: ['Sensing & Calm Tech', 'Kinetic Objects', 'AI & the Self', 'Perception & Space'],
                 labCaption: ['Second Person', 'Turning a personal archive into a space for dialogue, reflection, and return.'],
-                labItems: ['Second Person', 'Material Test', 'Sketch', 'Concept Art', 'Icon', '3D Render', 'Photography'],
                 footer: '© 2026 Chen Zai. Designed with passion for interdisciplinary design.'
             },
             zh: {
@@ -2358,8 +2057,8 @@
                 projectMeta: ['类型', '关注', '时间'],
                 externalLink: { github: 'GitHub 仓库', youtube: 'YouTube 视频', none: '该项目暂无外部链接' },
                 labHeading: '研究与探索',
+                labCollections: ['感知与安静科技', '动态装置', 'AI 与自我', '感知与空间'],
                 labCaption: ['第二人称', '把个人档案变成对话、反思与回归的空间。'],
-                labItems: ['第二人称', '材料测试', '草图', '概念图', '图标', '3D 渲染', '摄影'],
                 footer: '© 2026 Chen Zai. 为跨学科设计而作。'
             }
         };
@@ -2408,9 +2107,12 @@
             document.querySelector('.projects-exp-heading').textContent = text.projectHeading;
             textAll('.projects-exp-meta-label', text.projectMeta);
             document.querySelector('.lab-section .section-title').textContent = text.labHeading;
-            document.querySelector('.brain-mom-caption b').textContent = text.labCaption[0];
-            document.querySelector('.brain-mom-caption span').textContent = text.labCaption[1];
-            textAll('.lab-overlay span', text.labItems);
+            textAll('.lab-collection-label', text.labCollections);
+            const labCaption = document.querySelector('.brain-mom-caption');
+            if (labCaption) {
+                labCaption.querySelector('b').textContent = text.labCaption[0];
+                labCaption.querySelector('span').textContent = text.labCaption[1];
+            }
             document.querySelector('footer p').textContent = text.footer;
 
             document.querySelectorAll('.language-switcher a').forEach(link => {
@@ -2866,6 +2568,39 @@
         }, { threshold: 0.4 });
 
         sections.forEach(section => observer.observe(section));
+    </script>
+    <script>
+    (() => {
+        // Name the clicked cover and its hidden stack so they morph into the collection grid.
+        const name = (link, on) => {
+            const imgs = [link.querySelector('.lab-collection-cover > img'), ...link.querySelectorAll('.lab-stack img')];
+            imgs.forEach((img, i) => { img.style.viewTransitionName = on ? 'lab-tile-' + (i + 1) : ''; });
+            const label = link.querySelector('.lab-collection-label');
+            if (label) label.style.viewTransitionName = on ? 'lab-title' : '';
+        };
+        const clear = () => document.querySelectorAll('.lab-collection').forEach((l) => name(l, false));
+        document.querySelectorAll('.lab-collection').forEach((link) => {
+            link.addEventListener('click', (e) => {
+                if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                clear();
+                name(link, true);
+            });
+        });
+        // Coming back from a collection: fold the grid back into its cover.
+        window.addEventListener('pagereveal', (e) => {
+            if (!e.viewTransition) { clear(); return; }
+            let from = '';
+            try { from = (navigation.activation && navigation.activation.from && navigation.activation.from.url) || ''; } catch (_) {}
+            const m = from.match(/lab_(sensing|kinetic|ai|perception)\.html/);
+            clear();
+            if (m) {
+                const link = document.querySelector('.lab-collection[href="lab_' + m[1] + '.html"]');
+                if (link) name(link, true);
+            }
+            e.viewTransition.finished.finally(clear);
+        });
+        window.addEventListener('pageshow', (e) => { if (e.persisted) clear(); });
+    })();
     </script>
 </body>
 </html>

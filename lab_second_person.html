@@ -1,1030 +1,788 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Person | Chen Zai</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Brain Circles | Chen Zai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: concentric rings as the organizing image. A centered reading column (~68ch) with wide breakout bands for diagrams, phones and storyboard. */
+:root {
+  /* palette taken from the portfolio site: warm near-black on white, cream panels, one warm-brown accent */
+  --bg: #FFFFFF;
+  --surface: #F8F7F4;
+  --ink: #171410;
+  --muted: #6B6560;
+  --line: #E6E2DC;
+  --moss: #7A5741;
+  --moss-soft: #F4ECE4;
+  --lamp: #94694F;
+  --lamp-soft: #F5F2ED;
+  --private: #777067;
+  --private-soft: #EFEFEF;
+  --frame: #1A1510;
+  --heat0: #EFEBE5; --heat1: #E0D2C4; --heat2: #C9AD94; --heat3: #A17961; --heat4: #6E4F3C;
+  --f-display: "Newsreader", "Songti SC", Georgia, serif;
+  --f-body: "Inter", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141210; --surface: #1C1916; --ink: #ECE7DF; --muted: #A39C8F; --line: #2E2A25;
+    --moss: #D1A98C; --moss-soft: #2C231C; --lamp: #C99A78; --lamp-soft: #24201B;
+    --private: #A39C8F; --private-soft: #24221F; --frame: #050404;
+    --heat0: #221F1B; --heat1: #3A2F26; --heat2: #5C4636; --heat3: #8A6A52; --heat4: #C99A78;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141210; --surface: #1C1916; --ink: #ECE7DF; --muted: #A39C8F; --line: #2E2A25;
+  --moss: #D1A98C; --moss-soft: #2C231C; --lamp: #C99A78; --lamp-soft: #24201B;
+  --private: #A39C8F; --private-soft: #24221F; --frame: #050404;
+  --heat0: #221F1B; --heat1: #3A2F26; --heat2: #5C4636; --heat3: #8A6A52; --heat4: #C99A78;
+  color-scheme: dark;
+}
 
-        :root {
-            --bg: #ffffff;
-            --bg2: #f8f8f8;
-            --bg3: #efefef;
-            --text: #171410;
-            --text2: #6b6560;
-            --text3: #a39c8f;
-            --accent: #2d2d2d;
-            --accent2: #55504a;
-            --border: rgba(23,20,15,0.1);
-            --border2: rgba(23,20,15,0.05);
-            --nav-h: 68px;
-        }
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; }
+.col { max-width: 68ch; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; letter-spacing: -0.01em; margin: 0; }
+h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.04; font-weight: 400; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); line-height: 1.12; font-weight: 400; }
+h3 { font-size: 1.15rem; font-weight: 600; line-height: 1.25; }
+p { margin: 0; }
+.eyebrow { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--f-mono); font-size: 0.85em; }
+code { font-family: var(--f-mono); font-size: 0.85em; background: var(--moss-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--moss); }
+:focus-visible { outline: 2px solid var(--lamp); outline-offset: 2px; }
 
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; max-width: 100%; }
+section { padding-block: 72px 0; display: grid; gap: 28px; }
+.sec-head { display: grid; gap: 12px; }
+.lede { font-size: 1.15rem; color: var(--ink); }
+.prose { display: grid; gap: 14px; }
+.prose p { color: var(--ink); }
+.muted { color: var(--muted); }
 
-        #main-nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            height: var(--nav-h);
-            padding: 0 2.5rem;
-            display: flex; align-items: center; justify-content: space-between;
-            background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-back { display: flex; align-items: center; gap: 0.5rem; color: var(--text2); text-decoration: none; font-size: 0.8125rem; letter-spacing: 0.05em; transition: color 0.2s; }
-        .nav-back:hover { color: var(--text); }
-        .nav-back svg { transition: transform 0.2s; }
-        .nav-back:hover svg { transform: translateX(-3px); }
-        #nav-next:hover svg { transform: translateX(3px); }
-        .nav-title { font-family: 'Newsreader', serif; font-size: 1rem; font-weight: 400; color: var(--text2); letter-spacing: 0.02em; }
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 40px; align-items: center; padding-block: 56px 8px; }
+.hero-text { display: grid; gap: 20px; min-width: 0; }
+.hero-text .lede { max-width: 46ch; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 8px 18px; font-family: var(--f-mono); font-size: 0.78rem; color: var(--muted); }
+.rings { width: 100%; max-width: 440px; justify-self: center; }
+.rings text { font-family: var(--f-mono); font-size: 10px; fill: var(--muted); letter-spacing: 0.06em; }
+@media (max-width: 820px) { .hero { grid-template-columns: 1fr; } .rings { max-width: 340px; } }
 
-        /* ══════════════════════════════
-           PAGE SHELL — sidebar TOC + single scrolling column
-        ══════════════════════════════ */
-        .page-shell {
-            display: grid;
-            grid-template-columns: 210px minmax(0, 1fr);
-            gap: 4rem;
-            max-width: 1360px;
-            margin: 0 auto;
-            padding: calc(var(--nav-h) + 3.5rem) 3rem 7rem;
-        }
+/* tags */
+.tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.tag.built { background: var(--moss-soft); color: var(--moss); }
+.tag.proposed { border: 1px dashed var(--lamp); color: var(--lamp); }
 
-        .page-toc {
-            position: sticky;
-            top: calc(var(--nav-h) + 2.25rem);
-            align-self: start;
-            display: flex;
-            flex-direction: column;
-            gap: 0.1rem;
-        }
-        .page-toc a {
-            display: flex; align-items: baseline; gap: 0.65rem;
-            padding: 0.6rem 0 0.6rem 1rem;
-            font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase;
-            color: var(--text3); text-decoration: none;
-            border-left: 2px solid var(--border);
-            transition: color 0.2s ease, border-color 0.2s ease;
-            line-height: 1.4;
-        }
-        .page-toc a .toc-num { font-family: 'Newsreader', serif; font-style: italic; font-size: 0.72rem; color: inherit; flex-shrink: 0; }
-        .page-toc a:hover { color: var(--text2); }
-        .page-toc a.active { color: var(--text); border-left-color: var(--accent); }
-        .page-toc a.active .toc-num { color: var(--accent); }
+/* observation diagram */
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.compare figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 10px; }
+.compare svg { width: 100%; height: auto; }
+.compare figcaption { font-size: 0.95rem; color: var(--muted); }
+.compare figcaption b { color: var(--ink); font-family: var(--f-display); font-weight: 600; }
+@media (max-width: 640px) { .compare { grid-template-columns: 1fr; } }
 
-        .page-content { min-width: 0; }
+.question { border-left: 3px solid var(--lamp); padding: 6px 0 6px 20px; font-family: var(--f-display); font-size: clamp(1.25rem, 2.4vw, 1.6rem); line-height: 1.3; max-width: 34em; }
 
-        .content-section { padding: 4rem 0; border-top: 1px solid var(--border); scroll-margin-top: calc(var(--nav-h) + 1.75rem); }
-        .content-section:first-of-type { padding-top: 0; border-top: none; }
+/* chart */
+.chart-box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; overflow-x: auto; }
+.chart-box svg { width: 100%; min-width: 560px; height: auto; display: block; }
+.chart-box text { font-family: var(--f-mono); font-size: 11px; fill: var(--muted); }
+.chart-box .pt-label { font-family: var(--f-display); font-size: 13px; fill: var(--ink); font-weight: 600; }
+.chart-box .pt-sub { font-size: 10px; fill: var(--muted); }
+.channels { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.channel { display: grid; gap: 6px; align-content: start; padding-top: 12px; border-top: 2px solid var(--line); }
+.channel .k { font-family: var(--f-mono); font-size: 0.72rem; color: var(--muted); }
+.channel p { font-size: 0.95rem; }
 
-        /* ── Header block (first section) ── */
-        .page-eyebrow { font-size: 0.7rem; letter-spacing: 0.25em; color: var(--text3); text-transform: uppercase; margin-bottom: 1.5rem; }
-        .page-title { font-family: 'Newsreader', serif; font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
-        .page-subtitle { font-family: 'Newsreader', serif; font-style: italic; font-size: 1.05rem; color: var(--text2); line-height: 1.6; max-width: 560px; margin-bottom: 1.5rem; }
-        .page-meta-line { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.75rem; }
-        .page-abstract { font-size: 0.9rem; line-height: 1.85; color: var(--text2); max-width: 640px; margin-bottom: 1.5rem; }
-        .repo-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8125rem; color: var(--text); border-bottom: 1px solid var(--accent); padding-bottom: 2px; }
-        .repo-link:hover { color: var(--accent2); }
+/* principles */
+.principles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; }
+.principle { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; padding-block: 18px; border-top: 1px solid var(--line); }
+.principle .dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 7px; }
+.principle .dot.in { background: var(--moss); }
+.principle .dot.out { background: transparent; border: 2px dashed var(--lamp); }
+.principle h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.principle p { grid-column: 2; font-size: 0.98rem; color: var(--muted); }
+@media (max-width: 760px) { .principles { grid-template-columns: 1fr; } }
 
-        /* ══════════════════════════════
-           TRACE SCENE — hero visualization
-           Present Self ⇄ AI-mediated retrieval ⇄ Accumulated Self
-        ══════════════════════════════ */
-        .trace-scene {
-            --cycle: 11s;
-            margin: 2.75rem 0 0.5rem;
-            display: grid;
-            grid-template-columns: 1fr 64px 1fr;
-            align-items: start;
-            gap: 0;
-            border: 1px solid var(--border);
-            background: var(--bg2);
-            padding: clamp(1.5rem, 3vw, 2.5rem);
-        }
+/* flows */
+.flows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.flow { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 12px; min-width: 0; align-content: start; }
+.flow-fig { margin: 0; display: grid; gap: 12px; }
+.flow-fig .paper { background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px; overflow-x: auto; }
+.flow-fig img { display: block; width: 100%; min-width: 720px; height: auto; }
+.flow-fig figcaption { font-size: 0.92rem; color: var(--muted); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+.flow-fig figcaption a { font-family: var(--f-mono); font-size: 0.78rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 18px; height: 12px; border-radius: 3px; display: inline-block; }
+@media (max-width: 860px) { .flows { grid-template-columns: 1fr; } }
 
-        .trace-col { display: flex; flex-direction: column; gap: 0.85rem; min-width: 0; }
-        .trace-col.trace-present { padding-right: 1.5rem; }
-        .trace-col.trace-archive { padding-left: 1.5rem; }
+/* phones */
+.phones { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; }
+.phone-fig { margin: 0; display: grid; gap: 12px; justify-items: center; width: 270px; max-width: 100%; }
+.phone-fig figcaption { font-size: 0.92rem; color: var(--muted); text-align: left; width: 100%; }
+.phone-fig figcaption b { color: var(--ink); font-family: var(--f-display); }
+.phone { width: 270px; max-width: 100%; background: var(--frame); border-radius: 38px; padding: 9px; }
+.screen { background: var(--surface); border-radius: 30px; min-height: 520px; padding: 14px 14px 18px; display: flex; flex-direction: column; gap: 12px; font-family: var(--f-body); font-size: 13px; line-height: 1.4; color: var(--ink); overflow: hidden; }
+.statusbar { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 10px; color: var(--muted); padding: 0 6px; }
+.scr-title { font-family: var(--f-display); font-weight: 400; font-size: 20px; }
+.scr-sub { font-size: 11px; color: var(--muted); font-family: var(--f-mono); }
+.card { background: var(--bg); border-radius: 16px; padding: 12px; display: grid; gap: 6px; }
+.card .lbl { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.status-card { background: var(--lamp-soft); }
+.heat { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; }
+.heat i { aspect-ratio: 1; border-radius: 3px; display: block; background: var(--heat0); }
+.heat i.l1 { background: var(--heat1); } .heat i.l2 { background: var(--heat2); } .heat i.l3 { background: var(--heat3); } .heat i.l4 { background: var(--heat4); }
+.heat-note { font-size: 10px; color: var(--muted); font-family: var(--f-mono); }
+.share-item { display: grid; gap: 2px; padding-block: 6px; border-top: 1px solid var(--line); }
+.share-item:first-of-type { border-top: 0; }
+.share-item b { font-weight: 600; }
+.share-item span { color: var(--muted); font-size: 12px; font-family: var(--f-body); }
+.mile { display: flex; justify-content: space-between; align-items: baseline; }
+.mile b { font-size: 22px; font-variant-numeric: tabular-nums; }
+.bubble { padding: 9px 12px; border-radius: 16px; max-width: 88%; font-size: 13px; }
+.bubble.q { background: var(--moss); color: var(--surface); align-self: flex-end; border-bottom-right-radius: 4px; }
+.bubble.a { background: var(--bg); align-self: flex-start; border-bottom-left-radius: 4px; }
+.src { font-family: var(--f-mono); font-size: 9.5px; color: var(--muted); align-self: flex-start; }
+.handoff { align-self: flex-start; border: 1px dashed var(--lamp); color: var(--lamp); background: transparent; border-radius: 999px; padding: 6px 12px; font: 600 12px var(--f-display); cursor: pointer; }
+.sheet { margin-top: auto; background: var(--bg); border-radius: 20px; padding: 14px; display: grid; gap: 10px; }
+.opt { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 12px; border: 1px solid var(--line); }
+.opt.on { border-color: var(--moss); background: var(--moss-soft); }
+.radio { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--muted); flex: none; }
+.opt.on .radio { border-color: var(--moss); background: radial-gradient(circle, var(--moss) 45%, transparent 50%); }
+.note-body { font-family: var(--f-body); font-size: 13px; color: var(--ink); line-height: 1.5; }
 
-        .trace-label {
-            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
-            color: var(--text3);
-        }
-        .trace-sublabel {
-            font-size: 0.72rem; color: var(--text3); margin-top: -0.5rem;
-        }
+/* demo */
+.demo { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 28px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+.vault { display: grid; gap: 10px; min-width: 0; }
+.vault-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.vnote { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; align-items: center; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); transition: border-color .3s, background .3s; }
+.vnote.shared { border-color: var(--moss); background: var(--moss-soft); }
+.vnote.locked { opacity: 0.75; }
+.vnote .t { font-family: var(--f-display); font-weight: 600; }
+.vnote .meta { grid-column: 1; font-family: var(--f-mono); font-size: 0.72rem; color: var(--muted); }
+.switch { grid-row: 1 / span 2; grid-column: 2; position: relative; width: 46px; height: 26px; border-radius: 999px; border: 0; background: var(--private-soft); cursor: pointer; padding: 0; transition: background .25s; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--private); transition: transform .25s, background .25s; }
+.switch[aria-checked="true"] { background: var(--moss); }
+.switch[aria-checked="true"]::after { transform: translateX(20px); background: var(--surface); }
+.switch:disabled { cursor: not-allowed; }
+.index-line { font-family: var(--f-mono); font-size: 0.78rem; color: var(--muted); }
+.index-line b { color: var(--moss); font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--moss); color: var(--moss); background: transparent; border-radius: 999px; padding: 5px 10px; font: 600 11.5px var(--f-display); cursor: pointer; }
+.chip:hover { background: var(--moss-soft); }
+.chat { display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
+.flash { animation: flash 1.2s ease-out; }
+@keyframes flash { from { background: var(--lamp-soft); } to { background: transparent; } }
+.caret::after { content: "▍"; color: var(--moss); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+@media (max-width: 820px) { .demo { grid-template-columns: 1fr; justify-items: stretch; } .demo .phone { justify-self: center; } }
 
-        .trace-question {
-            border: 1px solid var(--border);
-            border-left: 2px solid var(--accent);
-            background: var(--bg);
-            padding: 1rem 1.25rem;
-        }
-        .trace-question p {
-            font-family: 'Newsreader', serif; font-style: italic;
-            font-size: 0.98rem; line-height: 1.55; color: var(--text);
-        }
+/* storyboard */
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.panel { margin: 0; display: grid; gap: 10px; align-content: start; }
+.panel svg { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); display: block; }
+.panel figcaption { font-size: 0.95rem; display: grid; gap: 3px; }
+.panel figcaption .n { font-family: var(--f-mono); font-size: 0.72rem; color: var(--muted); }
+@media (max-width: 860px) { .board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .board { grid-template-columns: 1fr; } }
+/* svg drawing tokens */
+.s-line { stroke: var(--ink); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.s-thin { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.f-ink { fill: var(--ink); } .f-muted { fill: var(--muted); } .f-bg { fill: var(--bg); } .f-surface { fill: var(--surface); }
+.f-moss { fill: var(--moss); } .f-moss-soft { fill: var(--moss-soft); } .f-lamp { fill: var(--lamp); } .f-lamp-soft { fill: var(--lamp-soft); }
+.f-private { fill: var(--private); } .f-private-soft { fill: var(--private-soft); } .f-line { fill: var(--line); }
+.s-moss { stroke: var(--moss); } .s-lamp { stroke: var(--lamp); } .s-private { stroke: var(--private); } .s-line-c { stroke: var(--line); }
+.svg-t { font-family: var(--f-mono); font-size: 9px; fill: var(--muted); }
+.svg-tb { font-family: var(--f-display); font-size: 10px; fill: var(--ink); font-weight: 600; }
 
-        .trace-fragment {
-            border: 1px solid var(--border);
-            background: var(--bg);
-            padding: 0.85rem 1.1rem;
-            opacity: 0.55;
-            transition: opacity 0.4s ease, border-color 0.4s ease;
-        }
-        .trace-fragment.is-active { opacity: 1; border-color: var(--accent); }
-        .trace-fragment-meta {
-            font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
-            color: var(--text3); margin-bottom: 0.4rem;
-        }
-        .trace-fragment p { font-size: 0.8125rem; line-height: 1.6; color: var(--text2); }
+/* tensions */
+.tensions { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+.tension { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 8px; align-content: start; }
+.tension p { font-size: 0.96rem; color: var(--muted); }
 
-        .trace-reflection {
-            margin-top: 0.35rem;
-            min-height: 3.6rem;
-            border-top: 1px solid var(--border);
-            padding-top: 0.85rem;
-        }
-        .trace-reflection-line {
-            font-family: 'Newsreader', serif; font-style: italic;
-            font-size: 0.85rem; line-height: 1.65; color: var(--text2);
-            opacity: 0;
-            transform: translateY(4px);
-        }
-        .trace-reflection-line:first-child { color: var(--text); font-weight: 500; }
+/* status table */
+.status { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.status th, .status td { text-align: left; padding: 10px 12px 10px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.status th { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.table-wrap { overflow-x: auto; }
 
-        .trace-path {
-            position: relative;
-            align-self: stretch;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100%;
-        }
-        .trace-path::before {
-            content: "";
-            position: absolute;
-            top: 50%; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, var(--border2) 0%, var(--border) 50%, var(--border2) 100%);
-        }
-        .trace-dot {
-            position: absolute;
-            top: 50%; left: 0;
-            width: 6px; height: 6px;
-            margin-top: -3px;
-            border-radius: 50%;
-            background: var(--accent);
-            opacity: 0;
-        }
-        .trace-path-label {
-            position: absolute;
-            bottom: -1.9rem;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
-            color: var(--text3);
-            opacity: 0;
-        }
+footer { padding-block: 72px 0; color: var(--muted); font-size: 0.9rem; }
 
-        /* Static, fully-revealed state — the default, and the reduced-motion state */
-        .trace-question,
-        .trace-fragment.is-active,
-        .trace-path-label,
-        .trace-reflection-line { opacity: 1; }
-        .trace-reflection-line { transform: translateY(0); }
-        .trace-dot { opacity: 0.9; left: 100%; margin-left: -3px; }
-
-        /* Animated state — only when motion is not reduced */
-        @media (prefers-reduced-motion: no-preference) {
-            .trace-scene.is-animated .trace-question { animation: trace-question-pulse var(--cycle) ease-in-out infinite; }
-            .trace-scene.is-animated .trace-fragment[data-order="1"] { animation: trace-fragment-1 var(--cycle) ease-in-out infinite; }
-            .trace-scene.is-animated .trace-fragment[data-order="2"] { animation: trace-fragment-2 var(--cycle) ease-in-out infinite; }
-            .trace-scene.is-animated .trace-dot { left: 0; margin-left: 0; animation: trace-dot-travel var(--cycle) ease-in-out infinite; }
-            .trace-scene.is-animated .trace-path-label { animation: trace-label-fade var(--cycle) ease-in-out infinite; }
-            .trace-scene.is-animated .trace-reflection-line:nth-child(1) { animation: trace-reflection-1 var(--cycle) ease-in-out infinite; }
-            .trace-scene.is-animated .trace-reflection-line:nth-child(2) { animation: trace-reflection-2 var(--cycle) ease-in-out infinite; }
-
-            .trace-scene.is-animated.is-paused * { animation-play-state: paused !important; }
-        }
-
-        @keyframes trace-question-pulse {
-            0%, 100% { opacity: 0.55; }
-            8%, 92% { opacity: 1; }
-        }
-        @keyframes trace-fragment-1 {
-            0%, 100% { opacity: 0.55; border-color: var(--border); }
-            34%, 90% { opacity: 1; border-color: var(--accent); }
-        }
-        @keyframes trace-fragment-2 {
-            0%, 40%, 100% { opacity: 0.55; border-color: var(--border); }
-            48%, 90% { opacity: 1; border-color: var(--accent); }
-        }
-        @keyframes trace-dot-travel {
-            0%, 16% { opacity: 0; transform: translateX(0); }
-            22% { opacity: 0.9; transform: translateX(0); }
-            36%, 50% { opacity: 0.9; transform: translateX(calc(100% - 6px)); }
-            64%, 88% { opacity: 0.9; transform: translateX(0); }
-            96%, 100% { opacity: 0; transform: translateX(0); }
-        }
-        @keyframes trace-label-fade {
-            0%, 18%, 70%, 100% { opacity: 0; }
-            24%, 62% { opacity: 1; }
-        }
-        @keyframes trace-reflection-1 {
-            0%, 62% { opacity: 0; transform: translateY(4px); }
-            70%, 92% { opacity: 1; transform: translateY(0); }
-            98%, 100% { opacity: 0; transform: translateY(4px); }
-        }
-        @keyframes trace-reflection-2 {
-            0%, 70% { opacity: 0; transform: translateY(4px); }
-            78%, 92% { opacity: 1; transform: translateY(0); }
-            98%, 100% { opacity: 0; transform: translateY(4px); }
-        }
-
-        @media (max-width: 760px) {
-            .trace-scene { grid-template-columns: 1fr; gap: 1.75rem; }
-            .trace-col.trace-present, .trace-col.trace-archive { padding: 0; }
-            .trace-path { min-height: 42px; }
-            .trace-path::before { top: 0; bottom: 0; left: 50%; right: auto; width: 1px; height: auto; background: linear-gradient(180deg, var(--border2) 0%, var(--border) 50%, var(--border2) 100%); }
-            .trace-path-label { bottom: auto; top: 50%; left: calc(50% + 0.7rem); transform: translateY(-50%); margin-left: 0; }
-            .trace-dot { left: 50%; margin-left: -3px; top: 100%; margin-top: -3px; }
-
-            @media (prefers-reduced-motion: no-preference) {
-                .trace-scene.is-animated .trace-dot { top: 0; margin-top: -3px; animation-name: trace-dot-travel-vertical; }
-            }
-        }
-        @keyframes trace-dot-travel-vertical {
-            0%, 16% { opacity: 0; transform: translateY(0); }
-            22% { opacity: 0.9; transform: translateY(0); }
-            36%, 50% { opacity: 0.9; transform: translateY(calc(100% - 6px)); }
-            64%, 88% { opacity: 0.9; transform: translateY(0); }
-            96%, 100% { opacity: 0; transform: translateY(0); }
-        }
-
-        /* Content blocks (shared with the rest of the site) */
-        .panel-intro { max-width: 680px; margin-bottom: 2.5rem; }
-        .panel-intro h3 { font-family: 'Newsreader', serif; font-size: 1.6rem; font-weight: 300; margin-bottom: 0.85rem; color: var(--text); }
-        .panel-intro p { font-size: 0.875rem; line-height: 1.85; color: var(--text2); }
-
-        .case-brief {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr 1fr;
-            gap: 1px;
-            border: 1px solid var(--border);
-            background: var(--border);
-            margin: 2.25rem 0 0;
-        }
-        .case-brief-cell { background: var(--bg); padding: 1.4rem 1.5rem; }
-        .case-brief-cell h3 { font-size: 0.9rem; line-height: 1.4; font-weight: 500; margin: 0.4rem 0 0.55rem; }
-        .case-brief-cell p { font-size: 0.76rem; line-height: 1.7; color: var(--text2); }
-
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 2rem; }
-        .capability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .content-cell { background: var(--bg); padding: 1.75rem; }
-        .cell-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.65rem; }
-        .cell-title { font-size: 0.98rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
-        .cell-body { font-size: 0.8rem; line-height: 1.7; color: var(--text2); }
-
-        .flow-steps { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 2rem; }
-        .flow-step { flex: 1; padding: 1.4rem; background: var(--bg); position: relative; }
-        .flow-step::after { content: '→'; position: absolute; right: -0.75rem; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 0.8rem; z-index: 1; }
-        .flow-step:last-child::after { display: none; }
-        .step-num { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 0.5rem; }
-        .step-title { font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
-        .step-body { font-size: 0.75rem; line-height: 1.6; color: var(--text2); }
-
-        .quote-block { padding: 1.5rem 2rem; border-left: 2px solid var(--accent); background: var(--bg2); margin-bottom: 2rem; }
-        .quote-text { font-family: 'Newsreader', serif; font-style: italic; font-size: 1.05rem; color: var(--text); line-height: 1.55; }
-
-        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
-        h4.section-sub { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
-        ul.detail-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
-        ul.detail-list li { font-size: 0.8125rem; line-height: 1.6; color: var(--text2); padding-left: 1.25rem; position: relative; }
-        ul.detail-list li::before { content: '—'; position: absolute; left: 0; color: var(--text3); }
-
-        .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-        .tag {
-            display: inline-block;
-            font-size: 0.68rem; letter-spacing: 0.06em;
-            border: 1px solid var(--border);
-            color: var(--text2);
-            padding: 0.3rem 0.75rem;
-            border-radius: 999px;
-        }
-
-        /* Product evidence — anonymized reconstructions of the working interface */
-        .evidence-heading {
-            display: flex;
-            align-items: end;
-            justify-content: space-between;
-            gap: 2rem;
-            margin: 3rem 0 1.25rem;
-        }
-        .evidence-heading h4 {
-            font-family: 'Newsreader', serif;
-            font-size: 1.35rem;
-            font-weight: 300;
-        }
-        .evidence-heading p {
-            max-width: 430px;
-            font-size: 0.7rem;
-            line-height: 1.65;
-            color: var(--text3);
-            text-align: right;
-        }
-        .storyboard {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
-        }
-        .story-frame {
-            min-width: 0;
-            background: var(--bg);
-            padding: 0.8rem;
-        }
-        .story-screen {
-            min-height: 318px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid rgba(23,20,15,0.12);
-            border-radius: 3px;
-            background: #f3f1ed;
-            box-shadow: 0 8px 24px rgba(23,20,15,0.05);
-        }
-        .screen-bar {
-            min-height: 31px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.5rem;
-            padding: 0 0.65rem;
-            border-bottom: 1px solid rgba(23,20,15,0.1);
-            background: rgba(255,255,255,0.72);
-            font-size: 0.48rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: #756f67;
-        }
-        .screen-dots { display: flex; gap: 3px; }
-        .screen-dots i { width: 4px; height: 4px; border-radius: 50%; background: #bcb5ac; }
-        .screen-body { flex: 1; display: flex; flex-direction: column; padding: 0.75rem; }
-        .screen-kicker {
-            margin-bottom: 0.65rem;
-            font-size: 0.48rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: #8e867c;
-        }
-        .mini-nav { display: flex; gap: 0.3rem; margin-bottom: 0.75rem; }
-        .mini-nav span { padding: 0.23rem 0.38rem; border: 1px solid rgba(23,20,15,0.11); border-radius: 999px; font-size: 0.43rem; color: #837c73; background: rgba(255,255,255,0.6); }
-        .mini-nav span.is-active { background: #272521; border-color: #272521; color: #fff; }
-        .lab-card {
-            padding: 0.8rem;
-            border: 1px solid rgba(23,20,15,0.12);
-            background: rgba(255,255,255,0.84);
-        }
-        .lab-card strong { display: block; margin-bottom: 0.4rem; font-family: 'Newsreader', serif; font-size: 0.78rem; line-height: 1.3; font-weight: 400; }
-        .lab-card p { font-size: 0.52rem; line-height: 1.55; color: #6e6861; }
-        .mini-meta { margin-top: 0.5rem; display: flex; justify-content: space-between; font-size: 0.4rem; color: #9b948a; }
-        .new-note { margin-top: auto; align-self: end; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: #272521; color: white; font-size: 0.8rem; }
-        .chat-window { gap: 0.55rem; }
-        .chat-bubble { max-width: 88%; padding: 0.62rem 0.7rem; border-radius: 8px; font-size: 0.52rem; line-height: 1.55; }
-        .chat-bubble.user { align-self: end; background: #292723; color: #fff; border-bottom-right-radius: 2px; }
-        .chat-bubble.ai { align-self: start; background: rgba(255,255,255,0.9); border: 1px solid rgba(23,20,15,0.1); color: #5f5952; border-bottom-left-radius: 2px; }
-        .thinking { display: flex; align-items: center; gap: 3px; font-size: 0.43rem; color: #968f86; }
-        .thinking i { width: 3px; height: 3px; border-radius: 50%; background: currentColor; }
-        .source-card { padding: 0.55rem 0.6rem; border-left: 2px solid #5a554f; background: rgba(255,255,255,0.76); }
-        .source-card + .source-card { margin-top: 0.4rem; }
-        .source-card b { display: block; margin-bottom: 0.25rem; font-size: 0.43rem; letter-spacing: 0.08em; text-transform: uppercase; color: #777067; }
-        .source-card p { font-size: 0.48rem; line-height: 1.45; color: #655f57; }
-        .source-action { margin-top: auto; display: flex; gap: 0.35rem; }
-        .source-action span { padding: 0.3rem 0.45rem; border: 1px solid rgba(23,20,15,0.13); border-radius: 2px; background: rgba(255,255,255,0.7); font-size: 0.42rem; color: #716a62; }
-        .draft-title { font-family: 'Newsreader', serif; font-size: 0.95rem; font-weight: 400; line-height: 1.2; margin-bottom: 0.7rem; }
-        .draft-line { height: 1px; background: rgba(23,20,15,0.12); margin: 0.42rem 0; }
-        .draft-line.short { width: 68%; }
-        .draft-copy { font-family: 'Newsreader', serif; font-size: 0.58rem; line-height: 1.7; color: #625c55; }
-        .saved-state { margin-top: auto; display: flex; align-items: center; gap: 0.35rem; padding-top: 0.7rem; border-top: 1px solid rgba(23,20,15,0.1); font-size: 0.42rem; color: #777067; }
-        .saved-state i { width: 5px; height: 5px; border-radius: 50%; background: #777067; }
-        .story-caption { padding: 0.8rem 0.2rem 0.2rem; }
-        .story-caption span { display: block; margin-bottom: 0.35rem; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); }
-        .story-caption strong { display: block; margin-bottom: 0.35rem; font-size: 0.78rem; font-weight: 500; }
-        .story-caption p { font-size: 0.67rem; line-height: 1.55; color: var(--text2); }
-
-        .surface-pair {
-            display: grid;
-            grid-template-columns: 1.35fr 0.65fr;
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-        }
-        .surface-figure { min-width: 0; margin: 0; padding: 1rem; background: var(--bg); }
-        .surface-screen { min-height: 330px; border: 1px solid rgba(23,20,15,0.12); border-radius: 3px; overflow: hidden; background: #f1efe9; }
-        .surface-screen.family { background: #f7eee7; }
-        .surface-home { display: grid; grid-template-columns: 72px 1fr; min-height: 298px; }
-        .surface-side { padding: 0.8rem 0.55rem; border-right: 1px solid rgba(23,20,15,0.09); background: rgba(255,255,255,0.46); }
-        .surface-side b { display: block; margin-bottom: 1rem; font-family: 'Newsreader', serif; font-size: 0.62rem; font-weight: 400; }
-        .surface-side span { display: block; padding: 0.3rem 0; font-size: 0.41rem; color: #878076; }
-        .surface-side span.is-active { color: #272521; font-weight: 600; }
-        .surface-main { padding: 0.9rem; }
-        .surface-main h5 { margin-bottom: 0.65rem; font-family: 'Newsreader', serif; font-size: 0.9rem; font-weight: 400; }
-        .weekly-card { padding: 0.75rem; border: 1px solid rgba(23,20,15,0.1); background: rgba(255,255,255,0.78); }
-        .weekly-card small { display: block; margin-bottom: 0.35rem; font-size: 0.4rem; letter-spacing: 0.12em; text-transform: uppercase; color: #918a80; }
-        .weekly-card p { font-size: 0.52rem; line-height: 1.55; color: #625c55; }
-        .topic-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; margin-top: 0.5rem; }
-        .topic-row span { padding: 0.45rem 0.35rem; border: 1px solid rgba(23,20,15,0.09); background: rgba(255,255,255,0.5); font-size: 0.4rem; color: #797269; }
-        .family-body { padding: 1rem 0.85rem; }
-        .family-title { margin-bottom: 0.85rem; font-family: 'Newsreader', serif; font-size: 0.95rem; font-weight: 400; }
-        .status-card { margin-bottom: 0.55rem; padding: 0.75rem; border-radius: 8px; background: rgba(255,255,255,0.78); }
-        .status-card small { display: block; margin-bottom: 0.3rem; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; color: #a17961; }
-        .status-card p { font-size: 0.52rem; line-height: 1.5; color: #705b50; }
-        .public-note { padding: 0.65rem; border-top: 1px solid rgba(112,91,80,0.12); }
-        .public-note b { display: block; margin-bottom: 0.25rem; font-size: 0.5rem; font-weight: 500; color: #695348; }
-        .public-note p { font-size: 0.43rem; line-height: 1.45; color: #987d6f; }
-        .surface-caption { display: flex; justify-content: space-between; gap: 1rem; padding-top: 0.8rem; }
-        .surface-caption strong { font-size: 0.75rem; font-weight: 500; }
-        .surface-caption span { max-width: 260px; font-size: 0.6rem; line-height: 1.5; color: var(--text3); text-align: right; }
-
-        @media (max-width: 900px) {
-            .page-shell {
-                grid-template-columns: 1fr;
-                gap: 0;
-                padding: calc(var(--nav-h) + 1.25rem) 1.25rem 4.5rem;
-                width: 100%;
-                max-width: 100%;
-            }
-            .page-toc {
-                position: sticky;
-                top: var(--nav-h);
-                z-index: 20;
-                flex-direction: row;
-                overflow-x: auto;
-                overflow-y: hidden;
-                gap: 0.55rem;
-                background: var(--bg);
-                border-bottom: 1px solid var(--border);
-                padding: 0.8rem 0 0.9rem;
-                margin-bottom: 2rem;
-                -ms-overflow-style: none; scrollbar-width: none;
-                scroll-snap-type: x proximity;
-                overscroll-behavior-x: contain;
-            }
-            .page-toc::-webkit-scrollbar { display: none; }
-            .page-toc a {
-                flex-shrink: 0;
-                padding: 0.3rem 0.55rem 0.6rem;
-                border-left: none;
-                border-bottom: 2px solid transparent;
-                scroll-snap-align: center;
-            }
-            .page-toc a.active { border-left-color: transparent; border-bottom-color: var(--accent); }
-
-            .content-section {
-                padding: 2.5rem 0;
-                scroll-margin-top: calc(var(--nav-h) + 4rem);
-            }
-            .page-content, .content-section { width: 100%; min-width: 0; }
-            .two-col { grid-template-columns: 1fr; }
-            .flow-steps { flex-direction: column; }
-            .flow-step::after { display: none; }
-            .case-brief { grid-template-columns: 1fr; }
-            .capability-grid { grid-template-columns: 1fr; }
-            .content-grid { grid-template-columns: minmax(0, 1fr); }
-            .storyboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .surface-pair { grid-template-columns: 1fr; }
-        }
-
-        @media (max-width: 480px) {
-            :root { --nav-h: 62px; }
-            #main-nav { padding: 0 0.9rem; }
-            .nav-back { gap: 0.25rem; font-size: 0.7rem; letter-spacing: 0.02em; }
-            .nav-title { font-size: 0.9rem; }
-            .page-shell { padding: calc(var(--nav-h) + 0.75rem) 1rem 3.5rem; }
-            .page-toc { margin: 0 -1rem 1.75rem; padding-inline: 0.45rem; }
-            .page-toc a { font-size: 0.62rem; padding-inline: 0.45rem; }
-            .content-section { padding: 2.25rem 0; }
-            .page-title { font-size: 2.35rem; }
-            .page-subtitle { font-size: 1rem; }
-            .page-abstract, .panel-intro p { font-size: 0.85rem; line-height: 1.78; }
-            .panel-intro { margin-bottom: 2rem; }
-            .case-brief-cell, .content-cell { padding: 1.3rem; }
-            .trace-scene { margin-top: 2rem; padding: 1.15rem; }
-            .trace-path-label { font-size: 0.52rem; letter-spacing: 0.1em; }
-            .evidence-heading { align-items: start; flex-direction: column; gap: 0.6rem; }
-            .evidence-heading p { text-align: left; }
-            .storyboard { grid-template-columns: 1fr; }
-            .story-frame { padding: 0.6rem; }
-            .story-screen { min-height: 300px; }
-            .screen-bar, .screen-kicker { font-size: 0.52rem; }
-            .mini-nav span { font-size: 0.5rem; }
-            .lab-card strong { font-size: 0.86rem; }
-            .lab-card p, .chat-bubble { font-size: 0.6rem; }
-            .thinking, .source-card b, .source-action span, .saved-state { font-size: 0.49rem; }
-            .source-card p, .draft-copy { font-size: 0.56rem; }
-            .story-caption p { font-size: 0.72rem; }
-            .surface-figure { padding: 0.65rem; }
-            .surface-screen { min-height: 292px; }
-            .surface-home { grid-template-columns: 62px 1fr; min-height: 260px; }
-            .surface-side { padding-inline: 0.45rem; }
-            .surface-main { padding: 0.7rem; }
-            .weekly-card { padding: 0.6rem; }
-            .topic-row { grid-template-columns: 1fr; }
-            .surface-caption { flex-direction: column; }
-            .surface-caption span { text-align: left; }
-        }
-    </style>
+@keyframes drift { 0%, 20% { transform: translate(0, 0); opacity: 1; } 60%, 100% { transform: var(--to); opacity: 1; } }
+.drift { animation: drift 7s ease-in-out infinite alternate; }
+@keyframes pulse { 0%, 100% { opacity: .35; } 50% { opacity: .9; } }
+.pulse { animation: pulse 4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .drift, .pulse, .caret::after, .flash { animation: none !important; }
+  * { transition: none !important; }
+}
+</style>
+<style>
+/* site navigation, matching the other portfolio case-study pages */
+:root { --nav-h: 68px; }
+body { padding-top: var(--nav-h); }
+#main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: var(--nav-h);
+  padding: 0 2.5rem; display: flex; align-items: center; justify-content: space-between;
+  background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line); font-family: var(--f-body);
+}
+.nav-back { display: flex; align-items: center; gap: 0.5rem; color: var(--muted); text-decoration: none; font-size: 0.8125rem; letter-spacing: 0.05em; transition: color 0.2s; }
+.nav-back:hover { color: var(--ink); }
+.nav-back svg { transition: transform 0.2s; }
+.nav-back:hover svg { transform: translateX(-3px); }
+#nav-next:hover svg { transform: translateX(3px); }
+.nav-title { font-family: var(--f-display); font-size: 1rem; font-weight: 400; color: var(--muted); letter-spacing: 0.02em; }
+@media (max-width: 640px) { #main-nav { padding: 0 16px; } .nav-title { display: none; } }
+</style>
 </head>
 <body>
+<nav id="main-nav">
+  <a href="index.html#lab" class="nav-back">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 13L5 8L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back to Lab
+  </a>
+  <span class="nav-title">Personal Brain Circles</span>
+  <a href="index.html#projects" class="nav-back" id="nav-next">
+    Portfolio
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</nav>
+<div class="wrap">
 
-    <nav id="main-nav">
-        <a href="index.html#lab" class="nav-back">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 13L5 8L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Back to Lab
-        </a>
-        <span class="nav-title">Second Person</span>
-        <a href="index.html#projects" class="nav-back" id="nav-next">
-            Portfolio
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-    </nav>
-
-    <div class="page-shell">
-
-        <nav class="page-toc" id="page-toc" aria-label="Section contents">
-            <a href="#overview"><span class="toc-num">01</span>Overview</a>
-            <a href="#friction"><span class="toc-num">02</span>Problem Framing</a>
-            <a href="#experiment"><span class="toc-num">03</span>Design Strategy</a>
-            <a href="#modes"><span class="toc-num">04</span>Experience Design</a>
-            <a href="#anatomy"><span class="toc-num">05</span>System Delivery</a>
-            <a href="#changed"><span class="toc-num">06</span>Outcome</a>
-            <a href="#tensions"><span class="toc-num">07</span>Risks &amp; Ethics</a>
-            <a href="#state"><span class="toc-num">08</span>Next Steps</a>
-        </nav>
-
-        <main class="page-content">
-
-            <section class="content-section" id="overview">
-                <div class="page-eyebrow">Design Lab / Self-initiated Experiment</div>
-                <h1 class="page-title">Second Person</h1>
-                <p class="page-subtitle">An AI interface for communicating with my accumulated self.</p>
-                <p class="page-meta-line">Personal AI · Self-initiated Experiment · Local-first RAG · 2026</p>
-                <p class="page-abstract">I built a local-first AI system that turns my personal archive into a conversational space. It helps past experiences, unfinished ideas, and recurring concerns return to my present thinking — not by remembering for me, but by reducing the friction of reaching what I have already lived and thought.</p>
-                <a class="repo-link" href="https://github.com/zayyyseuc/personal-brain" target="_blank" rel="noopener noreferrer">GitHub — personal-brain →</a>
-
-                <div class="case-brief">
-                    <article class="case-brief-cell">
-                        <div class="cell-label">Challenge</div>
-                        <h3>Capture had succeeded. Retrieval had failed.</h3>
-                        <p>Years of notes remained available in theory, but folders and exact keywords made them difficult to reach from a present, half-formed question.</p>
-                    </article>
-                    <article class="case-brief-cell">
-                        <div class="cell-label">Strategic premise</div>
-                        <h3>AI should return evidence, not define identity.</h3>
-                        <p>The system uses semantic retrieval and visible sources to reconnect present questions with earlier traces while preserving the user's interpretive authority.</p>
-                    </article>
-                    <article class="case-brief-cell">
-                        <div class="cell-label">Delivered</div>
-                        <h3>A working personal knowledge product.</h3>
-                        <p>Semantic chat, weekly review, idea capture, persistent conversations, automatic indexing, and a separately governed family-facing PWA.</p>
-                    </article>
-                </div>
-
-                <div class="trace-scene" id="trace-scene">
-                    <div class="trace-col trace-present">
-                        <div class="trace-label">Present Self</div>
-                        <div class="trace-question">
-                            <p>Have I thought about this tension between efficiency and emotional attachment before?</p>
-                        </div>
-                        <div class="trace-reflection">
-                            <p class="trace-reflection-line">You have encountered this tension before.</p>
-                            <p class="trace-reflection-line">Earlier, you treated attachment as something efficiency might remove. More recently, you began considering friction as part of the experience itself.</p>
-                        </div>
-                    </div>
-
-                    <div class="trace-path" aria-hidden="true">
-                        <span class="trace-dot"></span>
-                        <span class="trace-path-label">Connecting personal traces</span>
-                    </div>
-
-                    <div class="trace-col trace-archive">
-                        <div class="trace-label">Accumulated Self</div>
-                        <div class="trace-sublabel">Notes · experiences · unfinished thoughts</div>
-                        <div class="trace-fragment is-active" data-order="1">
-                            <div class="trace-fragment-meta">Project Note · 2024</div>
-                            <p>I kept optimizing the interaction, but it gradually lost the feeling that made me care about it.</p>
-                        </div>
-                        <div class="trace-fragment is-active" data-order="2">
-                            <div class="trace-fragment-meta">Weekly Reflection · 2025</div>
-                            <p>Perhaps the inconvenience was part of what made the experience feel personal.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="content-section" id="friction">
-                <div class="panel-intro">
-                    <h3>Problem Framing</h3>
-                    <p>I had built an archive I could no longer reach. Years of project notes, personal essays, and unfinished conversation records had accumulated in my Obsidian vault. The problem stopped being capture a long time ago — it became return.</p>
-                </div>
-
-                <div class="content-grid">
-                    <div class="content-cell">
-                        <div class="cell-label">Evidence base</div>
-                        <div class="cell-title">A longitudinal personal archive</div>
-                        <p class="cell-body">Project records, reflections, unfinished writing, and conversation history exposed how ideas recur across different files and years.</p>
-                    </div>
-                    <div class="content-cell">
-                        <div class="cell-label">Observed breakdown</div>
-                        <div class="cell-title">The memory of a thought is not its filename</div>
-                        <p class="cell-body">What remained available was often a tension, mood, or decision pattern — exactly the material conventional folder and keyword search could not address.</p>
-                    </div>
-                    <div class="content-cell">
-                        <div class="cell-label">Design constraint</div>
-                        <div class="cell-title">Keep the archive inspectable</div>
-                        <p class="cell-body">AI could mediate access, but the source of record still needed to remain editable, portable, and legible outside the model.</p>
-                    </div>
-                </div>
-
-                <ul class="detail-list" style="margin-bottom: 2rem;">
-                    <li>Folder search assumes I remember where a thought was filed, not what the thought was</li>
-                    <li>Keyword search assumes I remember how I phrased it at the time — often the hardest thing to recall</li>
-                    <li>Most of what I retain is shape, not text: a tension, a mood, a decision that felt like an earlier one</li>
-                    <li>Even a located record rarely explains its own relationship to the question I'm asking now</li>
-                </ul>
-
-                <div class="quote-block">
-                    <p class="quote-text">Could I retrieve personal experience through meaning rather than location or exact language?</p>
-                </div>
-            </section>
-
-            <section class="content-section" id="experiment">
-                <div class="panel-intro">
-                    <h3>Design Strategy</h3>
-                    <p>Turn the archive into a conversational space without turning the model into an authority over the self. When I ask a question, Second Person retrieves conceptually relevant fragments, brings them into the current context, and helps me examine how my thinking has developed over time.</p>
-                </div>
-
-                <div class="flow-steps">
-                    <div class="flow-step"><div class="step-num">01</div><div class="step-title">Ask from the present</div><div class="step-body">A question, half-formed or specific.</div></div>
-                    <div class="flow-step"><div class="step-num">02</div><div class="step-title">Retrieve past traces</div><div class="step-body">Semantic search across the vault.</div></div>
-                    <div class="flow-step"><div class="step-num">03</div><div class="step-title">Reflect through dialogue</div><div class="step-body">The AI holds both, and I think against them.</div></div>
-                    <div class="flow-step"><div class="step-num">04</div><div class="step-title">Return new meaning</div><div class="step-body">The conversation becomes a new trace in the archive.</div></div>
-                </div>
-
-                <div class="content-grid">
-                    <div class="content-cell"><div class="cell-label">Principle 01</div><div class="cell-title">Meaning over exact match</div><p class="cell-body">Let vague questions retrieve related experiences even when vocabulary, file location, and original phrasing have changed.</p></div>
-                    <div class="content-cell"><div class="cell-label">Principle 02</div><div class="cell-title">Traceability over fluent authority</div><p class="cell-body">Keep the source notes visible so a persuasive response can still be checked against the material it interpreted.</p></div>
-                    <div class="content-cell"><div class="cell-label">Principle 03</div><div class="cell-title">Return over passive storage</div><p class="cell-body">Design review, conversation, and idea-development loops that repeatedly bring unfinished material back into use.</p></div>
-                </div>
-            </section>
-
-            <section class="content-section" id="modes">
-                <div class="panel-intro">
-                    <h3>Experience Design</h3>
-                    <p>Three modes of self-communication — not feature categories, but three different reasons to return to the archive.</p>
-                </div>
-
-                <div class="content-grid">
-                    <div class="content-cell">
-                        <div class="cell-label">Recall</div>
-                        <div class="cell-title">Finding what I could no longer name</div>
-                        <ul class="detail-list">
-                            <li>Starts from a vague question, not a precise keyword</li>
-                            <li>Semantic retrieval pulls concept-related records across time and files</li>
-                            <li>Answers stay traceable to an identifiable personal source, not generic knowledge</li>
-                        </ul>
-                    </div>
-                    <div class="content-cell">
-                        <div class="cell-label">Reflect</div>
-                        <div class="cell-title">Noticing patterns across time</div>
-                        <ul class="detail-list">
-                            <li>A weekly review pulls together the past period's records</li>
-                            <li>The system surfaces recurring themes, habits, and tensions</li>
-                            <li>The output is a reflection question, not a verdict on who I am</li>
-                        </ul>
-                    </div>
-                    <div class="content-cell">
-                        <div class="cell-label">Continue</div>
-                        <div class="cell-title">Letting unfinished thoughts develop</div>
-                        <ul class="detail-list">
-                            <li>A half-formed idea can be logged into the Lab feature</li>
-                            <li>Continued dialogue develops a fragment into a clearer idea</li>
-                            <li>The fuller version moves into Imagination notes or the personal archive</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="evidence-heading">
-                    <h4>A return journey, in use</h4>
-                    <p>Storyboard reconstructed from the working prototype with anonymized content. The sequence shows interaction behavior without exposing the private archive.</p>
-                </div>
-
-                <div class="storyboard" aria-label="Four-step product use storyboard">
-                    <figure class="story-frame">
-                        <div class="story-screen">
-                            <div class="screen-bar"><span>Personal Brain</span><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-                            <div class="screen-body">
-                                <div class="screen-kicker">Lab · Unfinished</div>
-                                <div class="mini-nav"><span>Today</span><span class="is-active">Lab</span><span>Imaginations</span></div>
-                                <div class="lab-card">
-                                    <strong>When did “efficient” start to feel less personal?</strong>
-                                    <p>A half-formed tension is captured before it has a folder, title, or conclusion.</p>
-                                    <div class="mini-meta"><span>just now</span><span>open thread</span></div>
-                                </div>
-                                <span class="new-note" aria-hidden="true">+</span>
-                            </div>
-                        </div>
-                        <figcaption class="story-caption"><span>01 · Capture</span><strong>Keep the fragment alive</strong><p>I record the shape of the thought without first deciding where it belongs.</p></figcaption>
-                    </figure>
-
-                    <figure class="story-frame">
-                        <div class="story-screen">
-                            <div class="screen-bar"><span>Explore mode</span><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-                            <div class="screen-body chat-window">
-                                <div class="screen-kicker">Conversation · New question</div>
-                                <div class="chat-bubble user">Have I thought about the tension between efficiency and emotional attachment before?</div>
-                                <div class="thinking"><i></i><i></i><i></i><span>retrieving related traces</span></div>
-                                <div class="chat-bubble ai">I found two earlier moments that seem to hold the same tension, although you framed it differently each time.</div>
-                            </div>
-                        </div>
-                        <figcaption class="story-caption"><span>02 · Ask</span><strong>Search in present language</strong><p>The question can stay vague; semantic retrieval bridges changes in wording and time.</p></figcaption>
-                    </figure>
-
-                    <figure class="story-frame">
-                        <div class="story-screen">
-                            <div class="screen-bar"><span>2 source traces</span><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-                            <div class="screen-body">
-                                <div class="screen-kicker">Evidence behind the response</div>
-                                <div class="source-card"><b>Project note · 2024</b><p>Optimizing the interaction gradually removed the feeling that made me care about it.</p></div>
-                                <div class="source-card"><b>Weekly reflection · 2025</b><p>Perhaps the inconvenience was part of what made the experience feel personal.</p></div>
-                                <div class="source-action"><span>Open source</span><span>Continue conversation</span></div>
-                            </div>
-                        </div>
-                        <figcaption class="story-caption"><span>03 · Reconnect</span><strong>Inspect, do not just accept</strong><p>Past notes remain visible, so the interpretation can be checked against its source.</p></figcaption>
-                    </figure>
-
-                    <figure class="story-frame">
-                        <div class="story-screen">
-                            <div class="screen-bar"><span>Imaginations</span><span class="screen-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-                            <div class="screen-body">
-                                <div class="screen-kicker">New draft · From conversation</div>
-                                <h5 class="draft-title">Friction as a form of attachment</h5>
-                                <p class="draft-copy">The question may not be how to remove every inconvenience, but which forms of effort create a relationship worth returning to.</p>
-                                <div class="draft-line"></div><div class="draft-line"></div><div class="draft-line short"></div>
-                                <div class="saved-state"><i></i><span>Saved to the archive · available to future retrieval</span></div>
-                            </div>
-                        </div>
-                        <figcaption class="story-caption"><span>04 · Continue</span><strong>Return a changed thought</strong><p>The dialogue becomes new writing, closing the loop without closing the question.</p></figcaption>
-                    </figure>
-                </div>
-            </section>
-
-            <section class="content-section" id="anatomy">
-                <div class="panel-intro">
-                    <h3>System Delivery</h3>
-                    <p>The working architecture underneath the conversation, from the source vault to retrieval, response, and return.</p>
-                </div>
-
-                <div class="content-grid">
-                    <div class="content-cell"><div class="cell-label">01 · Source</div><div class="cell-title">Obsidian vault</div><p class="cell-body">The source of record.</p></div>
-                    <div class="content-cell"><div class="cell-label">02 · Indexing</div><div class="cell-title">Chunking &amp; embeddings</div><p class="cell-body">BAAI/bge-m3.</p></div>
-                    <div class="content-cell"><div class="cell-label">03 · Storage</div><div class="cell-title">Local vector index</div><p class="cell-body">vectra, file-based.</p></div>
-                    <div class="content-cell"><div class="cell-label">04 · Input</div><div class="cell-title">Present question</div><p class="cell-body">Streamed to DeepSeek-V3.</p></div>
-                    <div class="content-cell"><div class="cell-label">05 · Retrieval</div><div class="cell-title">Relevant traces</div><p class="cell-body">Retrieved, not recited.</p></div>
-                    <div class="content-cell"><div class="cell-label">06 · Output</div><div class="cell-title">AI-mediated response</div><p class="cell-body">Grounded in the vault.</p></div>
-                    <div class="content-cell"><div class="cell-label">07 · Loop</div><div class="cell-title">Returned to the archive</div><p class="cell-body">Reflection or new writing.</p></div>
-                </div>
-
-                <div class="two-col">
-                    <div>
-                        <h4 class="section-sub">Implementation Decisions</h4>
-                        <ul class="detail-list">
-                            <li><strong style="color:var(--text)">Local-first storage</strong> — personal records stay in a vault I can inspect and manage myself</li>
-                            <li><strong style="color:var(--text)">Semantic retrieval</strong> — relevant records surface without depending on exact keywords</li>
-                            <li><strong style="color:var(--text)">Persona file</strong> — a written context file gives the model consistent background and interaction rules</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="section-sub">Boundary &amp; Governance Decisions</h4>
-                        <ul class="detail-list">
-                            <li><strong style="color:var(--text)">Visible sources</strong> — responses stay traceable to which personal traces the model was drawing from</li>
-                            <li><strong style="color:var(--text)">Continuous indexing</strong> — new writing becomes reachable in future retrieval without a manual rebuild</li>
-                            <li><strong style="color:var(--text)">Explicit sharing rules</strong> — private and family-facing material are separated by an explicit boundary, not a default</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="tag-row">
-                    <span class="tag">Node.js</span>
-                    <span class="tag">Express</span>
-                    <span class="tag">Obsidian</span>
-                    <span class="tag">vectra</span>
-                    <span class="tag">BAAI/bge-m3</span>
-                    <span class="tag">DeepSeek-V3</span>
-                    <span class="tag">Vanilla JavaScript</span>
-                </div>
-            </section>
-
-            <section class="content-section" id="changed">
-                <div class="panel-intro">
-                    <h3>Outcome</h3>
-                    <p>The archive became something I could return to. The current prototype demonstrates the full loop from retrieval to reflection, capture, and selective sharing.</p>
-                </div>
-
-                <div class="evidence-heading" style="margin-top:0;">
-                    <h4>One archive, two governed surfaces</h4>
-                    <p>Interface reconstruction based on the implemented desktop product and the separate family PWA.</p>
-                </div>
-
-                <div class="surface-pair">
-                    <figure class="surface-figure">
-                        <div class="surface-screen">
-                            <div class="screen-bar"><span>Private workspace</span><span>local-first archive</span></div>
-                            <div class="surface-home">
-                                <aside class="surface-side">
-                                    <b>Second Person</b>
-                                    <span class="is-active">Today</span>
-                                    <span>Conversations</span>
-                                    <span>Lab</span>
-                                    <span>Imaginations</span>
-                                </aside>
-                                <div class="surface-main">
-                                    <h5>This week, in return</h5>
-                                    <div class="weekly-card">
-                                        <small>Weekly review</small>
-                                        <p>Several notes returned to the same tension: when does removing friction improve an experience, and when does it remove attachment?</p>
-                                        <div class="topic-row"><span>interaction</span><span>attachment</span><span>memory</span></div>
-                                    </div>
-                                    <div class="topic-row"><span>Open question</span><span>Recent trace</span><span>Continue writing</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <figcaption class="surface-caption"><strong>Personal Brain</strong><span>Full archive, dialogue, review, and idea development.</span></figcaption>
-                    </figure>
-
-                    <figure class="surface-figure">
-                        <div class="surface-screen family">
-                            <div class="screen-bar"><span>Mom · PWA</span><span>public notes only</span></div>
-                            <div class="family-body">
-                                <h5 class="family-title">A small window home</h5>
-                                <div class="status-card"><small>Status</small><p>Busy this week, but making time to write and rest.</p></div>
-                                <div class="public-note"><b>Recently shared</b><p>A short update explicitly marked public in the source archive.</p></div>
-                                <div class="public-note"><b>Milestone</b><p>A selected moment, visible without exposing private notes or conversations.</p></div>
-                            </div>
-                        </div>
-                        <figcaption class="surface-caption"><strong>Family surface</strong><span>Separate index; explicit public boundary.</span></figcaption>
-                    </figure>
-                </div>
-
-                <div class="content-grid capability-grid">
-                    <div class="content-cell"><div class="cell-label">Working capability</div><div class="cell-title">Grounded semantic conversation</div><p class="cell-body">Questions retrieve up to five relevant note fragments, stream a response, and preserve the source paths used to construct it.</p></div>
-                    <div class="content-cell"><div class="cell-label">Working capability</div><div class="cell-title">Weekly reflection</div><p class="cell-body">Recently modified notes become a concise review, a set of recurring themes, and an open reflection question rather than a fixed judgment.</p></div>
-                    <div class="content-cell"><div class="cell-label">Working capability</div><div class="cell-title">Idea lifecycle</div><p class="cell-body">Fleeting thoughts enter Lab, develop through conversation, and can move into longer Imagination writing or the main archive.</p></div>
-                    <div class="content-cell"><div class="cell-label">Working capability</div><div class="cell-title">Selective family access</div><p class="cell-body">A separate PWA exposes only explicitly public notes through a separate index, alongside a status card, activity view, and milestones.</p></div>
-                </div>
-
-                <div class="content-grid" style="grid-template-columns: 1fr;">
-                    <div class="content-cell">
-                        <div class="cell-label">Shift 01</div>
-                        <div class="cell-title">From searching for files to expressing uncertainty</div>
-                        <p class="cell-body">I no longer need to translate a question into a precise query — I can start from an unclear question instead.</p>
-                    </div>
-                    <div class="content-cell">
-                        <div class="cell-label">Shift 02</div>
-                        <div class="cell-title">From storing ideas to revisiting them</div>
-                        <p class="cell-body">A fragment doesn't disappear into a folder the moment it's written down — review and conversation give it repeated chances to return.</p>
-                    </div>
-                    <div class="content-cell">
-                        <div class="cell-label">Shift 03</div>
-                        <div class="cell-title">From asking an external intelligence to consulting personal evidence</div>
-                        <p class="cell-body">The most useful answers aren't ones that hold more outside knowledge than I do — they redirect me back to my own attention.</p>
-                    </div>
-                </div>
-
-                <div class="quote-block">
-                    <p class="quote-text">The value of the system was not that it knew more than I did. It helped me regain access to what I already knew.</p>
-                </div>
-            </section>
-
-            <section class="content-section" id="tensions">
-                <div class="panel-intro">
-                    <h3>Risks, Ethics &amp; Trade-offs</h3>
-                    <p>Retrieval is also interpretation. Similarity scores, chunking boundaries, and the model's phrasing all shape which past traces get seen — and how they get connected. The system cannot stand neutral to “the past.”</p>
-                </div>
-
-                <div class="content-grid">
-                    <div class="content-cell"><div class="cell-label">Stored locally</div><div class="cell-title">User-owned records and runtime data</div><p class="cell-body">The Obsidian vault, vector indexes, conversation history, reminders, and review cache remain file-based and locally inspectable.</p></div>
-                    <div class="content-cell"><div class="cell-label">External computation</div><div class="cell-title">A local-first system, not a local-only model</div><p class="cell-body">Queries and selected context use hosted embedding and language-model APIs; optional web enrichment uses Tavily. That boundary must remain visible rather than hidden behind “local-first.”</p></div>
-                    <div class="content-cell"><div class="cell-label">Explicit sharing</div><div class="cell-title">Public means deliberately marked public</div><p class="cell-body">The family experience uses a separate vector index, includes only notes with <strong style="color:var(--text)">public: true</strong>, and excludes configured folders before indexing.</p></div>
-                </div>
-
-                <div class="content-grid">
-                    <div class="content-cell">
-                        <div class="cell-label">Coherence vs. Contradiction</div>
-                        <p class="cell-body">Does the AI smooth over a contradictory, uneven history into a more consistent-sounding identity than I actually have?</p>
-                    </div>
-                    <div class="content-cell">
-                        <div class="cell-label">Convenience vs. Agency</div>
-                        <p class="cell-body">Does lowering retrieval friction also quietly weaken my own memory and my own interpretive authority over my past?</p>
-                    </div>
-                    <div class="content-cell">
-                        <div class="cell-label">Relevance vs. Serendipity</div>
-                        <p class="cell-body">As retrieval gets more optimized for relevance, does the value of stumbling onto an unrelated, unexpected record get lost?</p>
-                    </div>
-                </div>
-
-                <p style="font-size:0.875rem;line-height:1.85;color:var(--text2);max-width:680px;">The system should not produce a <strong style="color:var(--text)">definitive version</strong> of who I am. It should surface traces, preserve contradiction, and hand back the conditions for meaning — not the meaning itself.</p>
-            </section>
-
-            <section class="content-section" id="state">
-                <div class="panel-intro">
-                    <h3>Current State &amp; Next Steps</h3>
-                    <p>A functional personal prototype connected to my active Obsidian vault. The system supports semantic conversation, weekly reflection, idea development, persistent dialogue, automatic indexing, and selective family-facing access.</p>
-                </div>
-
-                <p style="font-size:0.875rem;line-height:1.85;color:var(--text2);max-width:680px;margin-bottom:2rem;">The live system contains private personal material and is therefore not publicly accessible. This page uses anonymized interface reconstructions and interaction examples instead.</p>
-
-                <a class="repo-link" href="https://github.com/zayyyseuc/personal-brain" target="_blank" rel="noopener noreferrer" style="margin-bottom: 2.5rem; display: inline-flex;">GitHub — personal-brain →</a>
-
-                <div class="two-col">
-                    <div>
-                        <h4 class="section-sub">What is proven</h4>
-                        <ul class="detail-list">
-                            <li>The end-to-end retrieval, streaming response, source display, capture, and re-indexing loop is implemented</li>
-                            <li>The product works across desktop and mobile, with a separate installable family PWA</li>
-                            <li>Privacy boundaries are encoded in the indexing architecture rather than left to interface copy alone</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="section-sub">What needs validation</h4>
-                        <ul class="detail-list">
-                            <li>Evaluate retrieval quality across vague, contradictory, and time-dependent questions</li>
-                            <li>Test whether visible sources actually help users challenge confident but incomplete interpretations</li>
-                            <li>Study whether repeated AI-mediated recall strengthens reflection or gradually narrows it</li>
-                            <li>Threat-model the external model boundary and make context transmission more legible in-product</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="quote-block" style="margin-top: 1rem;">
-                    <p class="quote-text">The goal is not frictionless memory. It is meaningful re-encounter.</p>
-                </div>
-            </section>
-
-        </main>
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-text">
+    <span class="eyebrow">Design research · solo · 2026</span>
+    <h1>Personal Brain Circles</h1>
+    <p class="lede">An AI that sits inside a small circle of people who care about each other. It answers only from what each person chooses to share, and it says so when it doesn't know.</p>
+    <div class="meta-row">
+      <span>Node.js · bge-m3 · vectra · DeepSeek</span>
+      <span>PWA · Cloudflare Access</span>
+      <span>Live since May 2026</span>
     </div>
+  </div>
+  <svg class="rings" viewBox="0 0 400 400" role="img" aria-label="Three concentric rings: the private vault at the center, the circle around it, and the world outside. A few notes drift outward from the center into the circle ring; most stay in the center.">
+    <circle cx="200" cy="200" r="188" class="f-surface" />
+    <circle cx="200" cy="200" r="188" class="s-thin" stroke-dasharray="2 6" />
+    <circle cx="200" cy="200" r="128" class="f-moss-soft" />
+    <circle cx="200" cy="200" r="70" class="f-private-soft" />
+    <circle cx="200" cy="200" r="70" fill="none" class="s-private" stroke-width="1.5" />
+    <circle cx="200" cy="200" r="128" fill="none" class="s-moss" stroke-width="1.5" />
+    <text x="200" y="152" text-anchor="middle">VAULT</text>
+    <text x="200" y="92" text-anchor="middle">CIRCLE</text>
+    <text x="200" y="30" text-anchor="middle">WORLD</text>
+    <!-- private notes -->
+    <g class="f-private">
+      <rect x="168" y="178" width="12" height="15" rx="2"/>
+      <rect x="216" y="208" width="12" height="15" rx="2"/>
+      <rect x="186" y="222" width="12" height="15" rx="2"/>
+      <rect x="224" y="176" width="12" height="15" rx="2"/>
+      <rect x="160" y="206" width="12" height="15" rx="2"/>
+    </g>
+    <!-- shared notes drifting outward -->
+    <g class="f-moss">
+      <rect class="drift" style="--to: translate(-62px, -58px)" x="194" y="186" width="12" height="15" rx="2"/>
+      <rect class="drift" style="--to: translate(70px, 64px); animation-delay: -3s" x="198" y="196" width="12" height="15" rx="2"/>
+    </g>
+    <!-- circle members -->
+    <g>
+      <circle cx="96" cy="128" r="11" class="f-lamp pulse"/>
+      <circle cx="312" cy="250" r="11" class="f-lamp pulse" style="animation-delay:-1.3s"/>
+      <circle cx="122" cy="300" r="11" class="f-lamp pulse" style="animation-delay:-2.6s"/>
+    </g>
+    <text x="96" y="154" text-anchor="middle">member</text>
+    <text x="312" y="276" text-anchor="middle">member</text>
+  </svg>
+</header>
 
-    <script>
-        const sections = Array.from(document.querySelectorAll('.content-section'));
-        const tocLinks = Array.from(document.querySelectorAll('.page-toc a'));
-        const pageToc = document.getElementById('page-toc');
-        let activeSectionId = '';
+<!-- OBSERVATION -->
+<section id="observation">
+  <div class="sec-head">
+    <span class="eyebrow">Observation</span>
+    <h2>People are retreating from broadcast into small circles</h2>
+  </div>
+  <div class="prose col">
+    <p>The feed rewards performance. The group chat of five rewards being known. Among the people around me, the sense of safety now comes from a handful of people who already have your context: a parent, two friends, a sister in another city, a roommate.</p>
+    <p>These circles run on scraps: a voice note, a photo of dinner, "did you eat?". They are warm and inconsistent. The person sharing has to keep deciding what to say, and the people who care have to keep asking. Distance and time zones make both harder.</p>
+  </div>
+  <div class="compare">
+    <figure>
+      <svg viewBox="0 0 300 170" role="img" aria-label="Broadcast: one node sends to many faint nodes, arrows only go outward.">
+        <circle cx="60" cy="85" r="14" class="f-ink"/>
+        <g class="s-thin">
+          <line x1="76" y1="85" x2="220" y2="20"/><line x1="76" y1="85" x2="240" y2="50"/><line x1="76" y1="85" x2="250" y2="85"/>
+          <line x1="76" y1="85" x2="240" y2="120"/><line x1="76" y1="85" x2="220" y2="150"/><line x1="76" y1="85" x2="200" y2="85"/>
+        </g>
+        <g class="f-line">
+          <circle cx="226" cy="18" r="7"/><circle cx="248" cy="48" r="7"/><circle cx="258" cy="85" r="7"/><circle cx="248" cy="122" r="7"/>
+          <circle cx="226" cy="152" r="7"/><circle cx="206" cy="85" r="7"/><circle cx="280" cy="30" r="6"/><circle cx="284" cy="140" r="6"/>
+          <circle cx="280" cy="100" r="6"/><circle cx="196" cy="40" r="6"/><circle cx="196" cy="130" r="6"/>
+        </g>
+      </svg>
+      <figcaption><b>Broadcast.</b> One to many. Audience unknown, so people share a version of themselves that is safe for everyone.</figcaption>
+    </figure>
+    <figure>
+      <svg viewBox="0 0 300 170" role="img" aria-label="Circle: five nodes, each connected to every other, with one node holding a private area.">
+        <g class="s-moss" stroke-width="1.4" fill="none">
+          <line x1="150" y1="30" x2="230" y2="80"/><line x1="150" y1="30" x2="200" y2="148"/><line x1="150" y1="30" x2="100" y2="148"/><line x1="150" y1="30" x2="70" y2="80"/>
+          <line x1="230" y1="80" x2="200" y2="148"/><line x1="230" y1="80" x2="100" y2="148"/><line x1="230" y1="80" x2="70" y2="80"/>
+          <line x1="200" y1="148" x2="100" y2="148"/><line x1="200" y1="148" x2="70" y2="80"/><line x1="100" y1="148" x2="70" y2="80"/>
+        </g>
+        <circle cx="150" cy="30" r="20" class="f-private-soft"/>
+        <circle cx="150" cy="30" r="11" class="f-ink"/>
+        <g class="f-lamp"><circle cx="230" cy="80" r="10"/><circle cx="200" cy="148" r="10"/><circle cx="100" cy="148" r="10"/><circle cx="70" cy="80" r="10"/></g>
+      </svg>
+      <figcaption><b>Circle.</b> Few to few. Everyone knows who is listening, so people can share the real version, and still keep a private core.</figcaption>
+    </figure>
+  </div>
+  <p class="question">If an AI sits inside a small circle, how should people share information, and share themselves, through it? What should it pass along, what should it hold back, and who decides?</p>
+</section>
 
-        const setActive = (id) => {
-            tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
-            if (id === activeSectionId) return;
-            activeSectionId = id;
+<!-- ORIGIN -->
+<section id="origin">
+  <div class="sec-head">
+    <span class="eyebrow">Where it started</span>
+    <h2>A circle of two, across an ocean</h2>
+  </div>
+  <div class="prose col">
+    <p>Personal Brain began as a retrieval agent over my own notes: a way to ask questions of my past self. The first circle came next. My parent lives abroad and wanted to know how I was doing without asking every day. So I built a second, much smaller index from only the notes I mark for the circle, and a phone app on top of it.</p>
+    <p>The page below generalizes from that first circle. A circle member here can be a parent, a sibling, a close friend. The design questions are the same.</p>
+  </div>
+</section>
 
-            if (pageToc && window.matchMedia('(max-width: 900px)').matches) {
-                const activeLink = tocLinks.find(a => a.getAttribute('href') === '#' + id);
-                if (activeLink) {
-                    const targetLeft = activeLink.offsetLeft - (pageToc.clientWidth - activeLink.offsetWidth) / 2;
-                    pageToc.scrollTo({
-                        left: Math.max(0, targetLeft),
-                        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
-                    });
-                }
-            }
-        };
+<!-- FIVE CHANNELS -->
+<section id="channels">
+  <div class="sec-head">
+    <span class="eyebrow">Analysis</span>
+    <h2>Five channels, ordered by how much the system interprets</h2>
+    <p class="col muted">A circle member does not get one feed. They get five channels. Each one moves further from words I wrote and closer to the system's reading of me. That shift is where trust has to be designed.</p>
+  </div>
+  <div class="chart-box">
+    <svg id="channel-chart" viewBox="0 0 680 400" role="img" aria-label="Scatter plot. X axis: how much the system interprets, from shows my words to generates new words. Y axis: how directly I authored it, from passive to written by me. Status card sits top-left, milestones and recent shares near it, the AI chat at the far right middle, and the activity heatmap low in the middle."></svg>
+  </div>
+  <div class="channels">
+    <div class="channel"><span class="k">STATUS CARD</span><h3>One line I write</h3><p>"Writing up review notes. Tired but good." Shown exactly as typed, with the time it was updated.</p></div>
+    <div class="channel"><span class="k">MILESTONES</span><h3>Dates I choose</h3><p>The system only counts the days left. A shared horizon gives the circle something to look forward to together.</p></div>
+    <div class="channel"><span class="k">RECENT SHARES</span><h3>Notes I marked</h3><p>The three newest shared notes, cut to 150 characters. My words, but the system picks the excerpt.</p></div>
+    <div class="channel"><span class="k">ACTIVITY HEATMAP</span><h3>My behavior, counted</h3><p>Thirty days of how much I used my own tools. I never wrote it. A member reads it as "how she's doing", which it can't tell them.</p></div>
+    <div class="channel"><span class="k">ASK</span><h3>AI answers from shared notes</h3><p>Short, warm, grounded only in the circle index. It is told to say "I'm not sure" instead of guessing.</p></div>
+  </div>
+</section>
 
-        if ('IntersectionObserver' in window && sections.length) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) setActive(entry.target.id);
-                });
-            }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
-            sections.forEach(s => observer.observe(s));
-            setActive(sections[0].id);
-        }
+<!-- PRINCIPLES -->
+<section id="principles">
+  <div class="sec-head">
+    <span class="eyebrow">How a circle should share</span>
+    <h2>Eight design principles</h2>
+    <div class="legend"><span><span class="tag built">Built</span> running in the current system</span><span><span class="tag proposed">Proposed</span> next iteration</span></div>
+  </div>
+  <div class="principles">
+    <div class="principle"><span class="dot in"></span><h3>Private by default, shared by the piece <span class="tag built">Built</span></h3><p>Nothing reaches the circle unless I mark that note <code>public: true</code>. Whole folders, like drafts or a journal, can be excluded so they are never even offered.</p></div>
+    <div class="principle"><span class="dot in"></span><h3>The boundary lives in the architecture <span class="tag built">Built</span></h3><p>The circle's AI searches a separate index built only from shared notes. A prompt can be talked around. An index that never contained the note cannot leak it.</p></div>
+    <div class="principle"><span class="dot in"></span><h3>Layer the channels <span class="tag built">Built</span></h3><p>Different needs get different channels, from a line I write to an AI answer. Members can stop at whichever layer is enough.</p></div>
+    <div class="principle"><span class="dot in"></span><h3>Presence over notification <span class="tag built">Built</span></h3><p>No pushes, no read receipts. Members visit when they think of me. The circle feels like a lit window, not an inbox.</p></div>
+    <div class="principle"><span class="dot in"></span><h3>A mediator, not a stand-in <span class="tag built">Built</span></h3><p>The AI speaks as my assistant, never as me. It keeps answers to a sentence or two and admits when it doesn't know.</p></div>
+    <div class="principle"><span class="dot out"></span><h3>Point back to the person <span class="tag proposed">Proposed</span></h3><p>When the AI can't answer, its best move is to suggest asking me directly, with one tap. The mediator should create contact, not replace it.</p></div>
+    <div class="principle"><span class="dot out"></span><h3>Everyone shares, not one person <span class="tag proposed">Proposed</span></h3><p>Today the circle has one sharer. A circle where only one person is visible is an audience. Each member should have their own vault and their own shares.</p></div>
+    <div class="principle"><span class="dot out"></span><h3>Label what a signal can't say <span class="tag proposed">Proposed</span></h3><p>The heatmap should say "activity, not mood" on its face. Any inferred channel needs to show the limit of its inference.</p></div>
+  </div>
+</section>
 
-        const traceScene = document.getElementById('trace-scene');
-        if (traceScene) {
-            traceScene.classList.add('is-animated');
-            if ('IntersectionObserver' in window) {
-                const sceneObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        traceScene.classList.toggle('is-paused', !entry.isIntersecting);
-                    });
-                }, { threshold: 0.15 });
-                sceneObserver.observe(traceScene);
-            }
-        }
-    </script>
+<!-- FLOWS -->
+<section id="flows">
+  <div class="sec-head">
+    <span class="eyebrow">User flows</span>
+    <h2>Two roles: the sharer and the circle member</h2>
+    <div class="legend"><span><span class="sw" style="background:#F4ECE4;border:1px solid #A17961"></span>reaches the circle</span><span><span class="sw" style="background:#EFEFEF;border:1px dashed #777067"></span>stays private</span><span><span class="sw" style="border:1px dashed #A17961"></span>proposed</span></div>
+  </div>
+  <figure class="flow-fig">
+    <h3>Sharer: what crosses the boundary</h3>
+    <div class="paper"><img src="diagrams/flow-sharer.png" alt="Sharer flow. A note starts in the private vault and passes two gates: it must be marked public, and it must not sit in an excluded folder such as journal or health. Only then does the circle index rebuild, feeding Recent shares and the AI. Notes failing either gate stay in my own index. A hand-written status line crosses the boundary verbatim. Tool use crosses only as a daily count shown as an activity heatmap, which shows activity, not mood. A proposed loop shows the sharer which topics were asked about." width="1440" height="681"></div>
+    <figcaption>Everything starts private. Each kind of signal crosses through its own gate: per-note opt-in, folder exclusion, a status line sent verbatim, and only a daily count of activity.</figcaption>
+  </figure>
+  <figure class="flow-fig">
+    <h3>Member: checking in</h3>
+    <div class="paper"><img src="diagrams/flow-member.png" alt="Member flow. Open the circle app, sign in with a one-time email code if the 30-day session expired, and land on Circle home to glance at status, heatmap, shares and milestones. If they want no more, they close the app: an ambient check-in with no reply owed. If they ask, the AI layer checks whether shared notes cover the question. If yes, it gives a short warm answer with its source; if no, it says I'm not sure and never invents. Both outcomes lead to a proposed hand-off: suggest asking the person directly, then message or call." width="1600" height="502"></div>
+    <figcaption>The AI sits in the middle of the path, not at its end. Exit one: close the app knowing enough. Exit two: reach the person.</figcaption>
+  </figure>
+</section>
+
+<!-- STATIC UI -->
+<section id="screens">
+  <div class="sec-head">
+    <span class="eyebrow">Interfaces</span>
+    <h2>Three screens</h2>
+    <p class="col muted">The sharer decides once per note. The member glances first and asks second. The answer screen shows the proposed hand-off back to the person.</p>
+  </div>
+  <div class="phones">
+    <figure class="phone-fig">
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>23:41</span><span>Zia · vault</span></div>
+        <div><div class="scr-sub">notes/2026-11-20.md</div><div class="scr-title">Review went well</div></div>
+        <p class="note-body">The committee liked the three-scale structure. They want the title to carry the non-human perspective more clearly. Relieved. Going to sleep before midnight for once.</p>
+        <div class="sheet">
+          <div class="card" style="background:transparent;padding:0"><span class="lbl">Who can see this note</span></div>
+          <div class="opt"><span class="radio"></span><span>Only me</span></div>
+          <div class="opt on"><span class="radio"></span><span>My circle · 2 people</span></div>
+          <div class="scr-sub">writes <span style="color:var(--moss)">public: true</span> · drafts/ and journal/ are never shared</div>
+        </div>
+      </div></div>
+      <figcaption><b>Share a note.</b> One choice per note. Excluded folders don't show the option at all.</figcaption>
+    </figure>
+
+    <figure class="phone-fig">
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>08:12</span><span>Circle</span></div>
+        <div><div class="scr-title">Zia</div><div class="scr-sub">status updated 9 h ago</div></div>
+        <div class="card status-card"><span class="lbl">Status</span><span>Writing up review notes. Tired but good.</span></div>
+        <div class="card"><span class="lbl">Last 30 days</span><div class="heat" data-heat="static"></div><span class="heat-note">activity in her own tools · not mood</span></div>
+        <div class="card"><span class="lbl">Recently shared</span>
+          <div class="share-item"><b>Review went well</b><span>The committee liked the three-scale structure…</span></div>
+          <div class="share-item"><b>First rain in Berkeley</b><span>Walked home the long way…</span></div>
+        </div>
+        <div class="card"><div class="mile"><span>Final submission</span><b>12 <span class="scr-sub">days</span></b></div></div>
+      </div></div>
+      <figcaption><b>Circle home.</b> Four layers to glance at before asking anything.</figcaption>
+    </figure>
+
+    <figure class="phone-fig">
+      <div class="phone"><div class="screen">
+        <div class="statusbar"><span>08:15</span><span>Ask</span></div>
+        <div class="scr-title">Ask about Zia</div>
+        <div class="bubble q">How did her review go?</div>
+        <div class="bubble a">It went well. The committee liked the structure and asked her to sharpen the title.</div>
+        <div class="src">from: Review went well · shared Nov 20</div>
+        <div class="bubble q">Is she sleeping okay?</div>
+        <div class="bubble a">I'm not sure. She hasn't shared anything about sleep. You could ask her yourself.</div>
+        <button class="handoff" type="button" tabindex="-1">Send Zia a message →</button>
+        <div class="src">hand-off is proposed</div>
+      </div></div>
+      <figcaption><b>Ask.</b> Every answer names its source. When there is none, it hands the question back.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- DYNAMIC DEMO -->
+<section id="demo">
+  <div class="sec-head">
+    <span class="eyebrow">Try it</span>
+    <h2>Change what you share, then ask</h2>
+    <p class="col muted">Flip a note into the circle on the left. The circle's index and its answers on the right change with it. This runs the same rules as the real system on sample notes.</p>
+  </div>
+  <div class="demo">
+    <div class="vault">
+      <div class="vault-head"><h3>Zia's vault</h3><span class="index-line" id="index-line"></span></div>
+      <div id="vault-list" class="vault"></div>
+      <p class="muted" style="font-size:.92rem">The journal note sits in an excluded folder, so it can't be shared from here.</p>
+    </div>
+    <div class="phone"><div class="screen" style="min-height:560px">
+      <div class="statusbar"><span>08:20</span><span>Circle</span></div>
+      <div class="card"><span class="lbl">Recently shared</span><div id="demo-shares"></div></div>
+      <div class="card"><span class="lbl">Ask about Zia</span><div class="chips" id="chips"></div></div>
+      <div class="chat" id="chat" aria-live="polite"></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- STORYBOARD -->
+<section id="storyboard">
+  <div class="sec-head">
+    <span class="eyebrow">Storyboard</span>
+    <h2>One evening, one morning</h2>
+  </div>
+  <div class="board">
+    <figure class="panel">
+      <svg viewBox="0 0 240 160" role="img" aria-label="Night. A person at a desk with a laptop, a lamp on, the moon in the window.">
+        <rect x="0" y="0" width="240" height="160" class="f-private-soft"/>
+        <rect x="150" y="18" width="70" height="56" rx="4" class="f-surface"/><rect x="150" y="18" width="70" height="56" rx="4" class="s-line"/>
+        <line x1="185" y1="18" x2="185" y2="74" class="s-thin"/>
+        <circle cx="203" cy="38" r="9" class="f-lamp-soft"/>
+        <rect x="0" y="112" width="240" height="6" class="f-ink"/>
+        <path d="M40 112 L50 70 L58 70" class="s-line"/><path d="M58 70 L70 82" class="s-line"/>
+        <polygon points="62,78 82,78 74,90" class="f-lamp"/>
+        <ellipse cx="72" cy="104" rx="26" ry="10" class="f-lamp-soft" opacity="0.7"/>
+        <rect x="96" y="86" width="40" height="26" rx="2" class="f-ink"/><rect x="99" y="89" width="34" height="19" class="f-moss-soft"/>
+        <circle cx="150" cy="80" r="10" class="f-ink"/>
+        <path d="M140 112 Q142 92 150 92 Q160 92 162 112 Z" class="f-ink"/>
+      </svg>
+      <figcaption><span class="n">1 · 23:40, Berkeley</span>She writes the day down. Most of it stays hers.</figcaption>
+    </figure>
+    <figure class="panel">
+      <svg viewBox="0 0 240 160" role="img" aria-label="A list of three notes. One has its switch on and turns green. One is locked.">
+        <rect x="0" y="0" width="240" height="160" class="f-surface"/>
+        <g>
+          <rect x="30" y="22" width="180" height="32" rx="8" class="f-moss-soft"/><rect x="40" y="31" width="90" height="6" rx="3" class="f-ink"/><rect x="40" y="42" width="60" height="4" rx="2" class="f-muted"/>
+          <rect x="172" y="30" width="28" height="16" rx="8" class="f-moss"/><circle cx="192" cy="38" r="6" class="f-surface"/>
+          <rect x="30" y="64" width="180" height="32" rx="8" class="f-bg"/><rect x="40" y="73" width="80" height="6" rx="3" class="f-ink"/><rect x="40" y="84" width="50" height="4" rx="2" class="f-muted"/>
+          <rect x="172" y="72" width="28" height="16" rx="8" class="f-private-soft"/><circle cx="180" cy="80" r="6" class="f-private"/>
+          <rect x="30" y="106" width="180" height="32" rx="8" class="f-bg" opacity="0.6"/><rect x="40" y="115" width="70" height="6" rx="3" class="f-muted"/>
+          <rect x="182" y="116" width="12" height="10" rx="2" class="f-private"/><path d="M184 116 v-4 a4 4 0 0 1 8 0 v4" class="s-private" fill="none" stroke-width="1.6"/>
+        </g>
+      </svg>
+      <figcaption><span class="n">2 · Choosing</span>She marks one note for the circle. Her journal folder is never offered.</figcaption>
+    </figure>
+    <figure class="panel">
+      <svg viewBox="0 0 240 160" role="img" aria-label="Split frame: night with moon on the left, morning with sun on the right, a dotted arc connecting them.">
+        <rect x="0" y="0" width="120" height="160" class="f-private-soft"/>
+        <rect x="120" y="0" width="120" height="160" class="f-lamp-soft"/>
+        <circle cx="50" cy="45" r="14" class="f-surface"/><circle cx="56" cy="40" r="12" class="f-private-soft"/>
+        <circle cx="185" cy="45" r="14" class="f-lamp"/>
+        <path d="M60 120 Q120 40 180 120" class="s-thin" stroke-dasharray="3 5"/>
+        <rect x="45" y="112" width="30" height="20" rx="3" class="f-ink"/>
+        <rect x="168" y="104" width="22" height="36" rx="5" class="f-ink"/><rect x="171" y="108" width="16" height="26" rx="2" class="f-moss-soft"/>
+        <text x="60" y="150" text-anchor="middle" class="svg-t">night</text><text x="180" y="150" text-anchor="middle" class="svg-t">next morning</text>
+      </svg>
+      <figcaption><span class="n">3 · Across the ocean</span>Morning on the other side. A circle member opens the app with her tea.</figcaption>
+    </figure>
+    <figure class="panel">
+      <svg viewBox="0 0 240 160" role="img" aria-label="A phone showing a status card and a heatmap with many dark squares, and a question mark beside it.">
+        <rect x="0" y="0" width="240" height="160" class="f-surface"/>
+        <rect x="72" y="10" width="96" height="142" rx="14" class="f-ink"/><rect x="78" y="18" width="84" height="126" rx="9" class="f-bg"/>
+        <rect x="84" y="26" width="72" height="20" rx="5" class="f-lamp-soft"/><rect x="89" y="33" width="48" height="5" rx="2" class="f-ink"/>
+        <g id="sb-heat"></g>
+        <text x="200" y="74" text-anchor="middle" class="svg-tb" style="font-size:30px;fill:var(--lamp)">?</text>
+        <text x="200" y="96" text-anchor="middle" class="svg-t">busy, or</text><text x="200" y="107" text-anchor="middle" class="svg-t">not okay?</text>
+      </svg>
+      <figcaption><span class="n">4 · Reading the signal</span>A dense week on the heatmap. Busy, or struggling? The grid can't say.</figcaption>
+    </figure>
+    <figure class="panel">
+      <svg viewBox="0 0 240 160" role="img" aria-label="Chat: a question bubble and an answer bubble saying I'm not sure, with a dashed button below.">
+        <rect x="0" y="0" width="240" height="160" class="f-surface"/>
+        <rect x="100" y="18" width="120" height="26" rx="12" class="f-moss"/>
+        <text x="160" y="35" text-anchor="middle" class="svg-tb" style="fill:var(--surface)">Is she sleeping okay?</text>
+        <rect x="20" y="56" width="150" height="40" rx="12" class="f-bg"/>
+        <text x="30" y="72" class="svg-tb" style="font-weight:400">I'm not sure. She hasn't</text>
+        <text x="30" y="86" class="svg-tb" style="font-weight:400">shared anything about sleep.</text>
+        <rect x="20" y="108" width="122" height="24" rx="12" fill="none" class="s-lamp" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="81" y="124" text-anchor="middle" class="svg-tb" style="fill:var(--lamp)">Ask her yourself →</text>
+      </svg>
+      <figcaption><span class="n">5 · Asking</span>The AI only knows what was shared, and says so.</figcaption>
+    </figure>
+    <figure class="panel">
+      <svg viewBox="0 0 240 160" role="img" aria-label="Two people, each holding a phone, connected by a sound wave.">
+        <rect x="0" y="0" width="240" height="160" class="f-moss-soft"/>
+        <circle cx="50" cy="62" r="14" class="f-ink"/><path d="M30 130 Q32 84 50 84 Q68 84 70 130 Z" class="f-ink"/>
+        <rect x="62" y="56" width="10" height="18" rx="2" class="f-lamp"/>
+        <circle cx="190" cy="62" r="14" class="f-ink"/><path d="M170 130 Q172 84 190 84 Q208 84 210 130 Z" class="f-ink"/>
+        <rect x="168" y="56" width="10" height="18" rx="2" class="f-lamp"/>
+        <path d="M82 66 q8 -10 16 0 t16 0 t16 0 t16 0 t16 0" class="s-moss" stroke-width="2" fill="none"/>
+      </svg>
+      <figcaption><span class="n">6 · Calling</span>She calls instead. The mediator's best answer pointed back to the person.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- TENSIONS -->
+<section id="tensions">
+  <div class="sec-head">
+    <span class="eyebrow">Open tensions</span>
+    <h2>What this design does not resolve yet</h2>
+  </div>
+  <div class="tensions">
+    <div class="tension"><h3>Closeness or avoidance</h3><p>If asking the AI is easier than asking me, the circle might get quieter. The measure of success is more direct contact, not more questions to the AI.</p></div>
+    <div class="tension"><h3>Activity is not wellbeing</h3><p>The heatmap counts what I do. Members read it as how I feel. A passive signal can comfort, and it can also mislead.</p></div>
+    <div class="tension"><h3>Asking is also sharing</h3><p>A member's question ("is she sleeping?") reveals their worry. Today those questions sit in a debug log. Members should know who can see what they ask.</p></div>
+    <div class="tension"><h3>Curation is work</h3><p>Opting in note by note keeps me in control and costs effort. Can the system suggest what to share without deciding for me?</p></div>
+    <div class="tension"><h3>Emotional sovereignty</h3><p>I won't let an AI decide my mood or taste. Yet here an AI speaks about me inside my closest relationships. The design has to keep that voice small.</p></div>
+  </div>
+</section>
+
+<!-- STATUS -->
+<section id="status">
+  <div class="sec-head">
+    <span class="eyebrow">Status</span>
+    <h2>Built, and what comes next</h2>
+  </div>
+  <div class="table-wrap">
+    <table class="status">
+      <thead><tr><th>Part</th><th>State</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Personal vault agent</td><td><span class="tag built">Built</span></td><td>Semantic search and chat over my Obsidian vault, weekly review, idea capture, imported AI chat history.</td></tr>
+        <tr><td>Circle index</td><td><span class="tag built">Built</span></td><td>Separate vector index from notes with <code>public: true</code>, minus excluded folders.</td></tr>
+        <tr><td>Circle app</td><td><span class="tag built">Built</span></td><td>Installable PWA: status card, 30-day heatmap, three recent shares, milestone countdown, ask.</td></tr>
+        <tr><td>Access</td><td><span class="tag built">Built</span></td><td>Email one-time code, one sign-in a month for members. The rest of the site is owner-only.</td></tr>
+        <tr><td>Hand-off to direct contact</td><td><span class="tag proposed">Proposed</span></td><td>When the AI can't answer, offer one tap to message the person.</td></tr>
+        <tr><td>Multi-member circles</td><td><span class="tag proposed">Proposed</span></td><td>Every member has a vault and shares. The circle becomes mutual.</td></tr>
+        <tr><td>Field study</td><td><span class="tag proposed">Proposed</span></td><td>4–6 real circles (families, friend groups, roommates) for three weeks. Diary entries plus question logs with consent. Compare direct contact before and during.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>Chen Zai (Zia) · MDes, UC Berkeley · Personal Brain is a solo project. Notes, names and dates in the screens are sample content.</footer>
+</div>
+
+<script>
+(function () {
+  // ---------- heatmaps ----------
+  var levels = [1,2,0,3,2,1,0,0,2,3,4,3,2,1,0,1,2,2,3,4,4,4,3,4,4,3,2,1,2,3];
+  document.querySelectorAll('[data-heat]').forEach(function (el) {
+    levels.forEach(function (l, i) {
+      var c = document.createElement('i');
+      if (l) c.className = 'l' + l;
+      c.title = (29 - i) + ' days ago';
+      el.appendChild(c);
+    });
+  });
+  // storyboard mini heatmap
+  var sb = document.getElementById('sb-heat');
+  var cls = ['f-line', 'f-moss-soft', 'f-moss', 'f-moss', 'f-ink'];
+  var dense = [1,2,3,4,4,3,4,4,2,3,4,4,3,4,4,4,4,3,2,4,4,3,4,4];
+  dense.forEach(function (l, i) {
+    var r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    r.setAttribute('x', 86 + (i % 6) * 12); r.setAttribute('y', 54 + Math.floor(i / 6) * 12);
+    r.setAttribute('width', 9); r.setAttribute('height', 9); r.setAttribute('rx', 2);
+    r.setAttribute('class', cls[l]);
+    if (l === 2) r.setAttribute('opacity', '0.6');
+    sb.appendChild(r);
+  });
+
+  // ---------- channel chart ----------
+  var svg = document.getElementById('channel-chart');
+  var NS = 'http://www.w3.org/2000/svg';
+  var M = { l: 70, r: 40, t: 24, b: 64 }, W = 680, H = 400;
+  var pw = W - M.l - M.r, ph = H - M.t - M.b;
+  function X(v) { return M.l + v * pw; }
+  function Y(v) { return M.t + (1 - v) * ph; }
+  function el(n, a, txt) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); if (txt) e.textContent = txt; svg.appendChild(e); return e; }
+  // grid
+  [0, 0.5, 1].forEach(function (v) {
+    el('line', { x1: X(0), x2: X(1), y1: Y(v), y2: Y(v), stroke: 'var(--line)', 'stroke-width': 1 });
+    el('line', { x1: X(v), x2: X(v), y1: Y(0), y2: Y(1), stroke: 'var(--line)', 'stroke-width': 1 });
+  });
+  // axis labels
+  el('text', { x: X(0), y: H - 36 }, 'shows my words');
+  el('text', { x: X(0.5), y: H - 36, 'text-anchor': 'middle' }, 'counts or selects');
+  el('text', { x: X(1), y: H - 36, 'text-anchor': 'end' }, 'generates new words');
+  el('text', { x: X(0.5), y: H - 12, 'text-anchor': 'middle', style: 'letter-spacing:.08em' }, 'HOW MUCH THE SYSTEM INTERPRETS →');
+  el('text', { x: M.l - 10, y: Y(1) + 4, 'text-anchor': 'end' }, 'I wrote it');
+  el('text', { x: M.l - 10, y: Y(0) + 4, 'text-anchor': 'end' }, 'passive');
+  var yl = el('text', { x: 18, y: Y(0.5), 'text-anchor': 'middle', transform: 'rotate(-90 18 ' + Y(0.5) + ')', style: 'letter-spacing:.08em' }, 'AUTHORED BY ME →');
+  // trust gradient band
+  el('path', { d: 'M' + X(0.02) + ' ' + Y(0.95) + ' Q ' + X(0.55) + ' ' + Y(0.95) + ' ' + X(0.95) + ' ' + Y(0.5), fill: 'none', stroke: 'var(--lamp)', 'stroke-width': 1.5, 'stroke-dasharray': '5 5' });
+  el('text', { x: X(0.72), y: Y(0.88), fill: 'var(--lamp)', style: 'fill:var(--lamp)' }, 'trust moves from my words');
+  el('text', { x: X(0.72), y: Y(0.88) + 14, style: 'fill:var(--lamp)' }, 'to the system’s reading');
+  var pts = [
+    { n: 'Status card', s: 'typed line', x: 0.03, y: 0.98, c: 'var(--lamp)', dx: 14, dy: 4 },
+    { n: 'Milestones', s: 'counts days', x: 0.12, y: 0.86, c: 'var(--moss)', dx: 14, dy: 4 },
+    { n: 'Recent shares', s: 'picks excerpt', x: 0.28, y: 0.76, c: 'var(--moss)', dx: 14, dy: 4 },
+    { n: 'Activity heatmap', s: 'behavior read as state', x: 0.5, y: 0.1, c: 'var(--private)', dx: 14, dy: 4 },
+    { n: 'Ask (AI)', s: 'grounded in shared notes', x: 0.94, y: 0.48, c: 'var(--moss)', dx: -14, dy: 22, anchor: 'end' }
+  ];
+  pts.forEach(function (p) {
+    el('circle', { cx: X(p.x), cy: Y(p.y), r: 8, fill: p.c });
+    el('text', { x: X(p.x) + p.dx, y: Y(p.y) + p.dy, class: 'pt-label', 'text-anchor': p.anchor || 'start' }, p.n);
+    el('text', { x: X(p.x) + p.dx, y: Y(p.y) + p.dy + 14, class: 'pt-sub', 'text-anchor': p.anchor || 'start' }, p.s);
+  });
+
+  // ---------- demo ----------
+  var notes = [
+    { id: 'review', title: 'Review went well', meta: 'notes/2026-11-20.md', shared: true, topic: 'work',
+      ans: 'It went well. The committee liked her structure and asked her to sharpen the title.' },
+    { id: 'rain', title: 'First rain in Berkeley', meta: 'notes/2026-11-18.md', shared: true, topic: 'life',
+      ans: 'She walked home the long way in the first rain of the season and liked it.' },
+    { id: 'sleep', title: 'Awake at 3am again', meta: 'notes/2026-11-21.md', shared: false, topic: 'sleep',
+      ans: 'She wrote that she has been waking up around 3am this week before deadlines.' },
+    { id: 'trip', title: 'Point Reyes with classmates', meta: 'notes/2026-11-15.md', shared: false, topic: 'trip',
+      ans: 'She went to Point Reyes with classmates last weekend and saw elk on the trail.' },
+    { id: 'journal', title: 'Letter I won’t send', meta: 'journal/ · excluded folder', shared: false, locked: true, topic: 'none' }
+  ];
+  var questions = [
+    { q: 'What is she working on?', topic: 'work' },
+    { q: 'Is she sleeping okay?', topic: 'sleep' },
+    { q: 'Did she go anywhere fun?', topic: 'trip' },
+    { q: 'How is the weather there?', topic: 'life' }
+  ];
+  var list = document.getElementById('vault-list');
+  var sharesEl = document.getElementById('demo-shares');
+  var chips = document.getElementById('chips');
+  var chat = document.getElementById('chat');
+  var indexLine = document.getElementById('index-line');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function renderVault() {
+    list.innerHTML = '';
+    notes.forEach(function (n) {
+      var row = document.createElement('div');
+      row.className = 'vnote' + (n.shared ? ' shared' : '') + (n.locked ? ' locked' : '');
+      var t = document.createElement('span'); t.className = 't'; t.textContent = n.title;
+      var m = document.createElement('span'); m.className = 'meta'; m.textContent = n.meta + (n.shared ? ' · public: true' : '');
+      var sw = document.createElement('button');
+      sw.className = 'switch'; sw.type = 'button'; sw.id = 'sw-' + n.id;
+      sw.setAttribute('role', 'switch'); sw.setAttribute('aria-checked', n.shared ? 'true' : 'false');
+      sw.setAttribute('aria-label', 'Share “' + n.title + '” with the circle');
+      if (n.locked) sw.disabled = true;
+      sw.addEventListener('click', function () { n.shared = !n.shared; renderVault(); renderShares(true); });
+      row.appendChild(t); row.appendChild(sw); row.appendChild(m);
+      list.appendChild(row);
+    });
+    var c = notes.filter(function (n) { return n.shared; }).length;
+    indexLine.innerHTML = 'circle index: <b>' + c + '</b> of ' + notes.length + ' notes';
+  }
+  function renderShares(flash) {
+    sharesEl.innerHTML = '';
+    var s = notes.filter(function (n) { return n.shared; });
+    if (!s.length) { var e = document.createElement('div'); e.className = 'share-item'; e.innerHTML = '<span>Nothing shared yet.</span>'; sharesEl.appendChild(e); }
+    s.slice(0, 3).forEach(function (n) {
+      var d = document.createElement('div'); d.className = 'share-item' + (flash ? ' flash' : '');
+      var b = document.createElement('b'); b.textContent = n.title;
+      var sp = document.createElement('span'); sp.textContent = (n.ans || '').slice(0, 44) + '…';
+      d.appendChild(b); d.appendChild(sp); sharesEl.appendChild(d);
+    });
+  }
+  var typing = null;
+  function ask(item) {
+    if (typing) clearInterval(typing);
+    chat.innerHTML = '';
+    var q = document.createElement('div'); q.className = 'bubble q'; q.textContent = item.q; chat.appendChild(q);
+    var hit = notes.filter(function (n) { return n.shared && n.topic === item.topic; })[0];
+    var text = hit ? hit.ans : 'I’m not sure. She hasn’t shared anything about that. You could ask her yourself.';
+    var a = document.createElement('div'); a.className = 'bubble a caret'; chat.appendChild(a);
+    function done() {
+      a.classList.remove('caret');
+      var src = document.createElement('div'); src.className = 'src';
+      src.textContent = hit ? 'from: ' + hit.title : 'nothing in the circle index matched';
+      chat.appendChild(src);
+      if (!hit) { var h = document.createElement('button'); h.className = 'handoff'; h.type = 'button'; h.textContent = 'Send Zia a message →'; chat.appendChild(h); }
+    }
+    if (reduce) { a.textContent = text; done(); return; }
+    var i = 0;
+    typing = setInterval(function () {
+      i += 2; a.textContent = text.slice(0, i);
+      if (i >= text.length) { clearInterval(typing); typing = null; done(); }
+    }, 28);
+  }
+  questions.forEach(function (item) {
+    var c = document.createElement('button'); c.className = 'chip'; c.type = 'button'; c.textContent = item.q;
+    c.addEventListener('click', function () { ask(item); });
+    chips.appendChild(c);
+  });
+  renderVault(); renderShares(false);
+  // resting state: one answered question visible on load
+  chat.innerHTML = '';
+  (function () {
+    var q = document.createElement('div'); q.className = 'bubble q'; q.textContent = questions[0].q; chat.appendChild(q);
+    var a = document.createElement('div'); a.className = 'bubble a'; a.textContent = notes[0].ans; chat.appendChild(a);
+    var s = document.createElement('div'); s.className = 'src'; s.textContent = 'from: ' + notes[0].title; chat.appendChild(s);
+  })();
+})();
+</script>
+
 </body>
 </html>

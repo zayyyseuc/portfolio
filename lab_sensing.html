@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensing &amp; Calm Tech | Chen Zai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #ffffff; --card: #f5f3f0; --text: #17140f; --text2: #8a857c;
+            --border: rgba(23,20,15,0.08); --nav-bg: rgba(255,255,255,0.88);
+            --nav-h: 68px; --gutter: 3rem; --max: 1280px;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+        img { display: block; max-width: 100%; }
+        #main-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: var(--nav-h);
+            padding: 0 2.5rem; display: flex; align-items: center; justify-content: space-between;
+            background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-back { display: flex; align-items: center; gap: 0.5rem; color: var(--text2); text-decoration: none; font-size: 0.8125rem; letter-spacing: 0.05em; transition: color 0.2s; }
+        .nav-back:hover { color: var(--text); }
+        .nav-title { font-family: 'Newsreader', serif; font-size: 1rem; color: var(--text2); }
+        main { max-width: var(--max); margin: 0 auto; padding: calc(var(--nav-h) + 4.5rem) var(--gutter) 6rem; }
+        h1 { font-family: 'Newsreader', serif; font-weight: 300; font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.05; margin-bottom: 3rem; }
+        .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.25rem; }
+        .tile { display: block; color: inherit; text-decoration: none; }
+        .cover { display: block; aspect-ratio: 1 / 1; overflow: hidden; background: var(--card); border: 1px solid var(--border); border-radius: 2px; }
+        .cover img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        a.tile:hover .cover img { transform: scale(1.03); }
+        .name { display: block; margin-top: 0.85rem; font-size: 0.95rem; font-weight: 600; }
+        a.tile .name::after { content: " \2192"; color: var(--text2); font-weight: 400; }
+        @media (max-width: 900px) {
+            :root { --gutter: 16px; }
+            #main-nav { padding: 0 16px; }
+            .nav-title { display: none; }
+            main { padding-top: calc(var(--nav-h) + 2.5rem); }
+            h1 { margin-bottom: 2rem; }
+            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 0.75rem; }
+            .name { font-size: 0.85rem; margin-top: 0.5rem; }
+        }
+        @keyframes tileIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+        .no-vt .tile { animation: tileIn 0.6s cubic-bezier(0.2, 0, 0, 1) both; }
+        .no-vt .tile:nth-child(2) { animation-delay: 0.06s; }
+        .no-vt .tile:nth-child(3) { animation-delay: 0.12s; }
+        .no-vt .tile:nth-child(4) { animation-delay: 0.18s; }
+        @view-transition { navigation: auto; }
+        ::view-transition-group(*) { animation-duration: 0.7s; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
+        ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.35s; }
+        ::view-transition-group(lab-tile-2) { animation-delay: 0.05s; }
+        ::view-transition-group(lab-tile-3) { animation-delay: 0.1s; }
+        ::view-transition-group(lab-tile-4) { animation-delay: 0.15s; }
+        h1 { view-transition-name: lab-title; width: fit-content; }
+        @media (prefers-reduced-motion: reduce) { ::view-transition-group(*) { animation-duration: 0.01s; } .no-vt .tile { animation: none; } }
+    </style>
+    <script>if (!('onpagereveal' in window)) document.documentElement.classList.add('no-vt');</script>
+</head>
+<body>
+    <nav id="main-nav">
+        <a href="index.html#lab" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 13L5 8L10 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Lab
+        </a>
+        <span class="nav-title">Sensing &amp; Calm Tech</span>
+        <a href="lab_kinetic.html" class="nav-back">
+            Kinetic Objects
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+    </nav>
+    <main>
+        <h1>Sensing &amp; Calm Tech</h1>
+        <div class="grid">
+            <a class="tile" href="p_silent.html">
+                <span class="cover"><img src="images/lab/silent-signal.jpg" alt="Silent Signal" style="view-transition-name:lab-tile-1;object-position:center"></span>
+                <span class="name">Silent Signal</span>
+            </a>
+            <div class="tile">
+                <span class="cover"><img src="images/lab/above-glow.jpg" alt="Meanwhile, Above" style="view-transition-name:lab-tile-2;object-position:center"></span>
+                <span class="name">Meanwhile, Above</span>
+            </div>
+            <a class="tile" href="p_pet.html">
+                <span class="cover"><img src="images/lab/pet-space.jpg" alt="Pet Space" style="view-transition-name:lab-tile-3;object-position:35% center"></span>
+                <span class="name">Pet Space</span>
+            </a>
+            <a class="tile" href="p_urban.html">
+                <span class="cover"><img src="images/lab/urban-mirage.jpg" alt="Urban Mirage" style="view-transition-name:lab-tile-4;object-position:center"></span>
+                <span class="name">Urban Mirage</span>
+            </a>
+        </div>
+    </main>
+</body>
+</html>

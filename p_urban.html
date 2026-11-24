@@ -1054,32 +1054,32 @@
 
             <div class="tab-panel active" id="panel-overview">
                 <div class="panel-intro">
-                    <h3>Project Overview</h3>
-                    <p>Urban Mirage asks whether an apparently complete district is actually socially alive. The project reframes urban vacancy as a multisensory classification problem, then carries that hypothesis from proxy-data framing through multimodal model design to a battery-powered field prototype.</p>
+                    <h3>Is a district that looks finished actually alive?</h3>
+                    <p>Urban Mirage treats urban vacancy as something a district sounds and looks like, then takes that idea from model design to a battery-powered field prototype.</p>
                 </div>
 
                 <div class="content-grid">
                     <article class="content-cell">
-                        <div class="cell-label">Problem framing</div>
+                        <div class="cell-label">Challenge</div>
                         <div class="cell-title">Built density is not social vitality.</div>
                         <p class="cell-body">Visual documentation can register finished roads and illuminated towers while missing the rhythms that make a place inhabited. The useful question became: what evidence of everyday life remains at street level?</p>
                     </article>
                     <article class="content-cell">
-                        <div class="cell-label">Strategic choice</div>
+                        <div class="cell-label">Insight</div>
                         <div class="cell-title">Combine complementary signals.</div>
                         <p class="cell-body">Images capture spatial structure; audio captures temporal activity. A systematic weight sweep tested where their fusion was stronger and more stable than either modality alone.</p>
                     </article>
                     <article class="content-cell">
-                        <div class="cell-label">Delivered</div>
+                        <div class="cell-label">Result</div>
                         <div class="cell-title">A field-deployable sensing system.</div>
                         <p class="cell-body">The model was translated into synchronized image and acoustic acquisition modules with an onboard display and a compact battery-powered enclosure for in-situ use.</p>
                     </article>
                 </div>
 
                 <div class="stat-row">
-                    <div class="stat"><div class="stat-value">2<span>×</span></div><div class="stat-desc">Complementary modalities: spatial image evidence and temporal acoustic evidence.</div></div>
-                    <div class="stat"><div class="stat-value">11<span>×</span></div><div class="stat-desc">Fusion-weight settings tested to expose performance sensitivity rather than report a single lucky run.</div></div>
-                    <div class="stat"><div class="stat-value">76.7<span>%</span></div><div class="stat-desc">In-situ accuracy from the selected multimodal operating point.</div></div>
+                    <div class="stat"><div class="stat-value">2<span>×</span></div><div class="stat-desc">Sensing channels: image and sound</div></div>
+                    <div class="stat"><div class="stat-value">11<span>×</span></div><div class="stat-desc">Fusion weights tested, not one lucky run</div></div>
+                    <div class="stat"><div class="stat-value">76.7<span>%</span></div><div class="stat-desc">Accuracy in the field</div></div>
                 </div>
             </div>
 
@@ -1100,7 +1100,6 @@
                                 <div class="cell-label">Core Question</div>
                                 <div class="quote-block" style="margin: 0; padding: 1.25rem 1.5rem;">
                                     <p class="quote-text" style="font-size:1rem;">"How is emptiness perceived and detected?"</p>
-                                    <p class="quote-source">— Research Question</p>
                                 </div>
                             </div>
                             <div>
@@ -1142,8 +1141,7 @@
 
                         <!-- 列 3：Problem Statement -->
                         <div style="background: var(--bg); padding: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem;">
-                            <div class="cell-label">Problem Statement</div>
-
+                            
                             <div>
                                 <div class="cell-label" style="margin-bottom:0.5rem;">The Gap</div>
                                 <p style="font-size:0.78rem;color:var(--text2);line-height:1.75;">Architectural density and social vitality are decoupled. Large-scale districts can appear complete — roads paved, towers lit — yet remain thinly populated and socially quiet. This gap is invisible to conventional documentation.</p>
@@ -1223,11 +1221,9 @@
                             <div class="strat-card-inner">
                                 <div class="strat-card-header">
                                     <div>
-                                        <div class="strat-card-tag">Phase 00 — Proxy Dataset Design</div>
                                         <h2 class="strat-card-title">Class Mapping</h2>
                                         <p class="strat-card-desc">Ghost towns are compositional scenes — they don't have unique "ghost features" but rather unusual combinations of normal urban elements. We define a three-category classification schema (Urban Void / Residential / Urban Core) derived from POI density, night-time mobility, and acoustic profiles.</p>
                                     </div>
-                                    <span class="strat-card-badge">6 sub-classes</span>
                                 </div>
 
                                 <div class="strat-card-body" style="align-items: stretch;">
@@ -1291,11 +1287,9 @@
                                 <!-- TOP: header -->
                                 <div class="strat-card-header" style="flex-shrink:0;">
                                     <div>
-                                        <div class="strat-card-tag">Phase 01 — Unimodal Benchmarking</div>
                                         <h2 class="strat-card-title">Baseline</h2>
                                         <p class="strat-card-desc">Establishing performance ceilings for each individual modality. Audio-only achieved ~44% accuracy capturing temporal dynamics; image-only reached ~63% capturing spatial structure — neither sufficient alone for robust ghost-town classification.</p>
                                     </div>
-                                    <span class="strat-card-badge">Phase 01 of 04</span>
                                 </div>
 
                                 <!-- BOTTOM: two charts side by side, fills remaining space -->
@@ -1332,7 +1326,6 @@
 
                                 <div style="flex:1; display:flex; flex-direction:column; padding:2.5rem 2.5rem 2rem 2.5rem; gap:1.5rem;">
                                     <div style="flex-shrink:0;">
-                                        <div class="strat-card-tag">Phase 02 — Fusion Efficacy</div>
                                         <h2 class="strat-card-title">Multimodal Fusion</h2>
                                         <p class="strat-card-desc" style="margin-top:0.6rem;">Combined accuracy: <b>76.7%</b>. Audio covers visual weaknesses; image corrects audio ambiguities.</p>
                                     </div>
@@ -1349,11 +1342,9 @@
                             <div class="strat-card-inner">
                                 <div class="strat-card-header">
                                     <div>
-                                        <div class="strat-card-tag">Phase 03 — Hyperparameter Tuning</div>
                                         <h2 class="strat-card-title">Weight Sensitivity</h2>
                                         <p class="strat-card-desc">Systematically sweeping the fusion weight α from 0.0 to 1.0 to identify the optimal trust ratio between modalities. The "golden ratio" maximises system accuracy and reveals the relative contribution of each sensory stream.</p>
                                     </div>
-                                    <span class="strat-card-badge">α sweep 0.0 → 1.0</span>
                                 </div>
                                 <div class="strat-card-body" style="align-items: stretch;">
 
@@ -1431,11 +1422,9 @@
                             <div class="strat-card-inner">
                                 <div class="strat-card-header">
                                     <div>
-                                        <div class="strat-card-tag">Phase 04 — Experimental Analysis & Reflection</div>
                                         <h2 class="strat-card-title">Interpretation</h2>
                                         <p class="strat-card-desc">Confusion matrix analysis reveals which classes each modality handles best and worst, validating that audio and image errors are complementary — the necessary precondition for fusion to provide genuine benefit beyond simple averaging.</p>
                                     </div>
-                                    <span class="strat-card-badge">3 confusion matrices</span>
                                 </div>
                                 <div class="strat-card-body" style="align-items: stretch;">
 
